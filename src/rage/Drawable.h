@@ -22,7 +22,7 @@ namespace rage
         Vector4 mBoundingBox[2];
         atArray<rmcLod>* mLods[4];
         float mLodDistances[4];
-        uint32_t mBucketMask[4];
+        int32_t mBucketMask[4];
         float mRadius;
         int32_t field_64;
         int32_t field_68;
