@@ -72,7 +72,7 @@ namespace rage
         }
         else if(!strcmp(mType, "ptxmodel"))
         {
-            //todo: new(that) ptxModel(rsc);
+            new(that) ptxModel(rsc);
         }
         else
         {

@@ -72,4 +72,21 @@ namespace rage
         ptxRulePropList_obj2 field_31C[10];
     };
     ASSERT_SIZE(ptxModelRulePropList, 0x524);
+
+    class PtxNameDrawablePair
+    {
+    public:
+        PtxNameDrawablePair(const datResource& rsc) : field_4(rsc) 
+        {
+            rsc.PointerFixUp(field_0);
+        }
+
+        inline void Place(void* that, const datResource& rsc)
+        {
+            new(that) PtxNameDrawablePair(rsc);
+        }
+
+        char* field_0;
+        datOwner<class rmcDrawable> field_4;
+    };
 }

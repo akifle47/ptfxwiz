@@ -126,5 +126,26 @@ namespace rage
     ASSERT_SIZE(ptxSprite, 0x6A0);
 
 
-    //ASSERT_SIZE(ptxModel, 0x6A0);
+    class ptxModel : public ptxRule
+    {
+    public:
+        ptxModel(const datResource& rsc) : ptxRule(rsc), field_168(rsc), field_174(rsc) {}
+
+        float field_140;
+        float field_144;
+        float field_148;
+        int8_t field_14C[4];
+        float field_150;
+        float field_154;
+        float field_158;
+        int8_t field_15C[4];
+        float field_160;
+        float field_164;
+        atArray<PtxNameDrawablePair> field_168;
+        void *field_170;
+        ptxModelRulePropList field_174;
+        int8_t field_698[7];
+        int8_t field_69F;
+    };
+    ASSERT_SIZE(ptxModel, 0x6A0);
 }
