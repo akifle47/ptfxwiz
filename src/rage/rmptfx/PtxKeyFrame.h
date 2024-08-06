@@ -2,6 +2,7 @@
 #include "../../Utils.h"
 #include "../Base.h"
 #include "../Array.h"
+#include "../Vector.h"
 
 namespace rage
 {
@@ -16,33 +17,27 @@ namespace rage
     ASSERT_SIZE(ptxNetObject, 0x14);
 
 
-    struct rmPtfxKeyframe_obj1
+    struct ptxKeyFrameEntry
     {
-        float field_0;
-        float field_4;
-        float field_8;
-        float field_C;
-        float field_10;
-        float field_14;
-        float field_18;
-        float field_1C;
-        float field_20;
-        float field_24;
-        float field_28;
-        float field_2C;
+        float mTime;
+
+        int8_t field_4[0xC];
+
+        Vector4 mValue;
+        Vector4 Delta;
     };
-    ASSERT_SIZE(rmPtfxKeyframe_obj1, 0x30);
+    ASSERT_SIZE(ptxKeyFrameEntry, 0x30);
 
 
-    class rmPtfxKeyframe : ptxNetObject
+    class rmPtfxKeyframe : public ptxNetObject
     {
     public:
         rmPtfxKeyframe() {}
 
-        rmPtfxKeyframe(const datResource& rsc) : field_18(rsc) {}
+        rmPtfxKeyframe(const datResource& rsc) : mEntries(rsc) {}
 
         int8_t field_15;
-        atArray<rmPtfxKeyframe_obj1> field_18;
+        atArray<ptxKeyFrameEntry> mEntries;
         int32_t field_20;
         int32_t field_24;
     };
