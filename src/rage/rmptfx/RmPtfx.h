@@ -25,8 +25,8 @@ namespace rage
             mTextures.Place(&mTextures, rsc);
             //mDrawables.Place(&mDrawables, rsc);
             mRules.Place(&mRules, rsc);
-            //mEmitRules.Place(&mPtxEmitRules, rsc);
-            //mEffectRules.Place(&mPtxEffectRules, rsc);
+            mEmitRules.Place(&mEmitRules, rsc);
+            //mEffectRules.Place(&mEffectRules, rsc);
         }
 
         inline void Place(void* that, const datResource& rsc)

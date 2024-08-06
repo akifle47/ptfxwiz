@@ -9,33 +9,48 @@ namespace rage
     {
     public:
         virtual ~ptxEmitterData() = default;
-
-        ptxDomain* field_4;
-        int8_t field_8[4];
-        ptxDomain* field_C;
-        int8_t field_10[4];
-        rmPtfxKeyframe mKeyFrames[10];
-        void* field_1A4;
     };
-    ASSERT_SIZE(ptxEmitterData, 0x1A8);
-
 
     class ptxEmitRule : public atReferenceCounter
     {
-        //idk
+    public:
+        void Place(void* that, const datResource& rsc);
     };
 
-    class ptxEmitRuleStd : public atReferenceCounter
+    class ptxEmitRuleStd : public ptxEmitRule
     {
     public:
-        class stdEmitterData : public ptxEmitterData {};
+        class stdEmitterData : public ptxEmitterData
+        {
+        public:
+            stdEmitterData(const datResource& rsc) : field_4(rsc), field_C(rsc), mKeyFrames{rsc, rsc, rsc, rsc, rsc, rsc, rsc, rsc, rsc, rsc}, field_1A4(rsc) {}
+            
+            datOwner<ptxDomain> field_4;
+            int8_t field_8[4];
+            datOwner<ptxDomain> field_C;
+            int8_t field_10[4];
+            rmPtfxKeyframe mKeyFrames[10];
+            //seems to always be null
+            datOwner<void*> field_1A4;
+        };
+        ASSERT_SIZE(stdEmitterData, 0x1A8);
 
-        int8_t field_8[8];
-        ptxEmitRuleStd::stdEmitterData mEmitterData;
-        void* field_1B8[10];
-        char* field_1E0;
+    public:
+        ptxEmitRuleStd(const datResource& rsc) : mEmitterData(rsc), mKeyFrames{rsc, rsc, rsc, rsc, rsc, rsc, rsc, rsc, rsc, rsc} 
+        {
+            rsc.PointerFixUp(mName);
+            field_1E8 = 0;
+
+            assert(field_1E4 > 3.2f);
+        }
+
+        float field_8;
+        int8_t field_C[4];
+        stdEmitterData mEmitterData;
+        datOwner<rmPtfxKeyframe> mKeyFrames[10];
+        char* mName;
         float field_1E4;
-        int field_1E8;
+        int32_t field_1E8;
         int8_t field_1EC[4];
     };
     ASSERT_SIZE(ptxEmitRuleStd, 0x1F0);

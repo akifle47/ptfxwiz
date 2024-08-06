@@ -1,34 +1,34 @@
 #pragma once
 #include "PtxKeyFrame.h"
+#include "../DatOwner.h"
+#include "../Vector.h"
+#include "../Matrix.h"
 
 namespace rage
 {
     class ptxDomain : datBase
     {
     public:
+        enum class eDomainType
+        {
+            BOX = 0,
+            SPHERE,
+            CYLINDER,
+            VORTEX,
+            COUNT
+        };
+
+    public:
+        ptxDomain(const datResource& rsc) : mKeyFrames{rsc, rsc, rsc, rsc}, field_11C(rsc), field_120(0) {}
+
+        void Place(void* that, const datResource& rsc);
+
         float field_4;
-        uint32_t mType;
+        eDomainType mType;
         int32_t field_C;
         rmPtfxKeyframe mKeyFrames[4];
-        float field_B0;
-        float field_B4;
-        float field_B8;
-        int8_t field_BC[4];
-        float field_C0;
-        float field_C4;
-        float field_C8;
-        int8_t field_CC[4];
-        float field_D0;
-        float field_D4;
-        float field_D8;
-        int8_t field_DC[4];
-        float field_E0;
-        float field_E4;
-        float field_E8;
-        int8_t field_EC[4];
-        float field_F0;
-        float field_F4;
-        float field_F8;
+        Matrix34 field_B0;
+        Vector3 field_F0;
         int8_t field_FC[4];
         float field_100;
         float field_104;
@@ -37,11 +37,79 @@ namespace rage
         float field_110;
         float field_114;
         float field_118;
-        void* field_11C;
+        datOwner<void*> field_11C;
         int32_t field_120;
         int8_t field_124;
         int8_t field_125;
         int8_t field_126[10];
     };
     ASSERT_SIZE(ptxDomain, 0x130);
+
+
+    class ptxDomainBox : public ptxDomain
+    {
+    public:
+        ptxDomainBox(const datResource& rsc) : ptxDomain(rsc) {}
+
+        float field_130;
+        float field_134;
+        float field_138;
+        int8_t field_13C[4];
+        float field_140;
+        float field_144;
+        float field_148;
+        int8_t field_14C[4];
+        float field_150;
+        float field_154;
+        float field_158;
+        int8_t field_15C[4];
+    };
+    ASSERT_SIZE(ptxDomainBox, 0x160);
+
+
+    class ptxDomainSphere : public ptxDomain
+    {
+    public:
+        ptxDomainSphere(const datResource& rsc) : ptxDomain(rsc) {}
+
+        float field_130;
+        float field_134;
+        float field_138;
+        int8_t field_13C[4];
+    };
+    ASSERT_SIZE(ptxDomainSphere, 0x140);
+
+
+    class ptxDomainCylinder : public ptxDomain
+    {
+    public:
+        ptxDomainCylinder(const datResource& rsc) : ptxDomain(rsc) {}
+
+        float field_130;
+        float field_134;
+        float field_138;
+        int8_t field_13C[4];
+        float field_140;
+        float field_144;
+        float field_148;
+        int8_t field_14C[4];
+        float field_150;
+        float field_154;
+        float field_158;
+        int8_t field_15C[4];
+    };
+    ASSERT_SIZE(ptxDomainCylinder, 0x160);
+
+
+    class ptxDomainVortex : public ptxDomain
+    {
+    public:
+        ptxDomainVortex(const datResource& rsc) : ptxDomain(rsc) {}
+
+        float field_130;
+        float field_134;
+        float field_138;
+        int8_t field_13C[4];
+    };
+    ASSERT_SIZE(ptxDomainVortex, 0x140);
 }

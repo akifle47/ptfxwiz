@@ -140,6 +140,12 @@
     <ClCompile Include="src\RSC5Layout.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\rage\rmptfx\PtxDomain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rage\rmptfx\PtxEmitRule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="deps\zlib\bin\zlib.vcxproj" />
