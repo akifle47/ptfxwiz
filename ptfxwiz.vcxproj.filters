@@ -120,6 +120,12 @@
     <ClInclude Include="src\rage\rmptfx\PtxRenderState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\rage\rmptfx\PtxTriggerEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rage\rmptfx\PtxEvolution.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\rage\rmptfx\PtxRule.cpp">
@@ -147,6 +153,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\rage\rmptfx\PtxEmitRule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rage\rmptfx\PtxEvent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
