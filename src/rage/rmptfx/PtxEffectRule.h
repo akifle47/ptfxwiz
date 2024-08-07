@@ -6,59 +6,87 @@
 
 namespace rage
 {
-    struct ptxEffectRule_obj1
+    class ptxEvolutionGroup
     {
-        atArray<struct ptxEffectRule_obj1_obj1> field_0;
-        //todo: unknown 8 bytes
-        atArray<uint64_t> field_8;
+    public:
+        atArray<struct ptxEvolution> mEvoList;
+        atArray<struct ptxEvoBlendMode> mEvoBlendModeList;
         int8_t field_10[0x14];
-        struct ptxEffectRule_obj2* field_24;
+        struct ptxEvoHashIndexList* mEvoListIndices;
+        int8_t field_28[0x8];
     };
-    ASSERT_SIZE(ptxEffectRule_obj1, 0x28);
+    ASSERT_SIZE(ptxEvolutionGroup, 0x30);
 
 
-    struct ptxEffectRule_obj1_obj1
+    struct ptxEvolution
     {
-        char* field_0;
-        atArray<struct ptxEffectRule_obj1_obj1_obj1> field_4;
+        char* mEvoName;
+        atArray<struct ptxEvoPropList> mPropList;
+        int8_t field_C[0x8];
     };
-    ASSERT_SIZE(ptxEffectRule_obj1_obj1, 0xC);
+    ASSERT_SIZE(ptxEvolution, 0x14);
 
-    struct ptxEffectRule_obj1_obj1_obj1
+    struct ptxEvoBlendMode
     {
-        void* field_0;
-        int8_t field_4[0x24];
-        atArray<rmPtfxKeyframe> mKeyframes;
+        int32_t field_0;
+        int32_t field_4;
     };
-    ASSERT_SIZE(ptxEffectRule_obj1_obj1_obj1, 0x30);
+    ASSERT_SIZE(ptxEvoBlendMode, 0x8);
 
+    struct ptxEvoPropList
+    {
+        int32_t field_0;
+        int32_t field_4;
+        int32_t field_8;
+        int32_t field_C;
+        int32_t field_10;
+        int32_t field_14;
+        int32_t field_18;
+        int32_t field_1C;
+        int32_t field_20;
+        int32_t field_24;
+        atArray<struct ptxEvoProp> mPropList;
+    };
+    ASSERT_SIZE(ptxEvoPropList, 0x30);
 
-    struct ptxEffectRule_obj2
+    struct ptxEvoProp
+    {
+        rmPtfxKeyframe mKeyFrameData;
+        int32_t mRegID;
+    };
+    ASSERT_SIZE(ptxEvoProp, 0x2C);
+
+    struct ptxEvoHashIndexList
     {
         int8_t field_0;
-        //first is (probably) a hash of ptxEffectRule_obj1::field_0::field_0
-        //second is an index into ptxEffectRule_obj1::field_0
-        atArray<std::pair<uint32_t, uint32_t>> field_4;
+        //first is a hash of ptxEvolutionGroup::mEvoList::mEvoName
+        //second is an index into ptxEvolutionGroup::mEvoList
+        atArray<std::pair<uint32_t, uint32_t>> mList;
     };
-    ASSERT_SIZE(ptxEffectRule_obj2, 0xC);
-
+    ASSERT_SIZE(ptxEvoHashIndexList, 0xC);
+        
 
     class ptxEffectRule : public atReferenceCounter
     {
     public:
-        rmPtfxKeyframe mKeyFrames[6];
-        void* field_F8;
+        rmPtfxKeyframe mKFColorTint;
+        rmPtfxKeyframe mKFColorTintMax;
+        rmPtfxKeyframe mKFZoom;
+        rmPtfxKeyframe mKFRotation;
+        rmPtfxKeyframe mKFDataSphere;
+        rmPtfxKeyframe mKFDataCapsuleA;
+        char* mName;
         int32_t field_FC;
-        ptxEffectRule_obj1* field_100;
+        ptxEvolutionGroup* mPtxEvoGroup;
         float field_104;
         void* field_108;
-        int8_t field_10C;
-        int8_t field_10D;
-        int8_t field_10E;
+        int8_t mZoomCullDistance;
+        bool mUseRandomColor;
+        bool mUseDefaultFunctors;
         int8_t field_10F[2];
-        int8_t field_111;
-        int8_t field_112;
-        int8_t field_113;
+        bool mHasDataSphere;
+        int8_t mDataObjectType;
+        uint8_t mGameFlags;
         int32_t field_114;
         int8_t field_118[7];
         int8_t field_11F;
@@ -70,32 +98,30 @@ namespace rage
     {
     public:
         ptxTimeLine mTimeline;
-        float field_144;
-        float field_148;
-        float field_14C;
-        float field_150;
-        float field_154;
-        float field_158;
-        float field_15C;
-        float field_160;
-        float field_164;
-        float field_168;
+        float mFadeDistance;
+        float mCullRadius;
+        float mCullDistance;
+        float mLodNearDistance;
+        float mLodFarDistance;
+        float mFileVersion;
+        float mDurationMin;
+        float mDurationMax;
+        float mTimeScalarMin;
+        float mTimeScalarMax;
         int32_t field_16C;
         int32_t field_170;
-        int8_t field_174;
-        int8_t field_175;
-        int8_t field_176;
-        int8_t field_177;
-        int8_t field_178;
-        int8_t field_179;
+        bool mUseCullSphere;
+        bool mCullNoUpdate;
+        bool mCullNoEmit;
+        bool mCullNoDraw;
+        bool mSortEvents;
+        int8_t mQuality;
         int8_t field_17A[4];
-        float field_180;
+        float mCullSphere;
         float field_184;
         float field_188;
         int8_t field_18C[4];
-        float field_190;
-        float field_194;
-        float field_198;
+        Vector3 mRandomOffsetPos;
         int8_t field_19C[3];
         int8_t field_19F;
     };

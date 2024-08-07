@@ -23,15 +23,32 @@ namespace rage
         class stdEmitterData : public ptxEmitterData
         {
         public:
-            stdEmitterData(const datResource& rsc) : field_4(rsc), field_C(rsc), mKeyFrames{rsc, rsc, rsc, rsc, rsc, rsc, rsc, rsc, rsc, rsc}, field_1A4(rsc) {}
+            stdEmitterData(const datResource& rsc) : mEmitterDomain(rsc), mVelocityDomain(rsc), mSpawnRateKF(rsc), mSpawnDistKF(rsc), 
+                                                     mTimeScaleKF(rsc), mSpawnLifeKF(rsc), mSpeedKF(rsc), mSizeKFOT(rsc), mAccelerationKFOT(rsc), 
+                                                     mDampeningKFOT(rsc), mMatrixWeightKFOT(rsc), mInheritVelKFOT(rsc)
+            {
+                if(mPtxRuleName)
+                {
+                    rsc.PointerFixUp(mPtxRuleName);
+                }
+            }
             
-            datOwner<ptxDomain> field_4;
+            datOwner<ptxDomain> mEmitterDomain;
             int8_t field_8[4];
-            datOwner<ptxDomain> field_C;
+            datOwner<ptxDomain> mVelocityDomain;
             int8_t field_10[4];
-            rmPtfxKeyframe mKeyFrames[10];
+            rmPtfxKeyframe mSpawnRateKF;
+            rmPtfxKeyframe mSpawnDistKF;
+            rmPtfxKeyframe mTimeScaleKF;
+            rmPtfxKeyframe mSpawnLifeKF;
+            rmPtfxKeyframe mSpeedKF;
+            rmPtfxKeyframe mSizeKFOT;
+            rmPtfxKeyframe mAccelerationKFOT;
+            rmPtfxKeyframe mDampeningKFOT;
+            rmPtfxKeyframe mMatrixWeightKFOT;
+            rmPtfxKeyframe mInheritVelKFOT;
             //seems to always be null
-            datOwner<void*> field_1A4;
+            char* mPtxRuleName;
         };
         ASSERT_SIZE(stdEmitterData, 0x1A8);
 
@@ -41,17 +58,18 @@ namespace rage
             rsc.PointerFixUp(mName);
             field_1E8 = 0;
 
-            assert(field_1E4 > 3.2f);
+            assert(mFileVersion > 3.2f);
         }
 
-        float field_8;
+        float mDuration;
         int8_t field_C[4];
         stdEmitterData mEmitterData;
         datOwner<rmPtfxKeyframe> mKeyFrames[10];
         char* mName;
-        float field_1E4;
+        float mFileVersion;
         int32_t field_1E8;
-        int8_t field_1EC[4];
+        bool mOneShot;
+        int8_t field_1EC[3];
     };
     ASSERT_SIZE(ptxEmitRuleStd, 0x1F0);
 }

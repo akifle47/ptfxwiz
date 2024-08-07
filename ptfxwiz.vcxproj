@@ -112,6 +112,7 @@
     <ClInclude Include="src\rage\rmptfx\PtxRule.h" />
     <ClInclude Include="src\rage\rmptfx\PtxRulePropList.h" />
     <ClInclude Include="src\rage\rmptfx\PtxTimeline.h" />
+    <ClInclude Include="src\rage\rmptfx\PtxTriggerEvent.h" />
     <ClInclude Include="src\rage\rmptfx\RmPtfx.h" />
     <ClInclude Include="src\rage\rmptfx\RmPtfxShader.h" />
     <ClInclude Include="src\rage\rmptfx\RmPtfxShaderVar.h" />
@@ -130,6 +131,7 @@
     <ClCompile Include="src\rage\Resource.cpp" />
     <ClCompile Include="src\rage\rmptfx\PtxDomain.cpp" />
     <ClCompile Include="src\rage\rmptfx\PtxEmitRule.cpp" />
+    <ClCompile Include="src\rage\rmptfx\PtxEvent.cpp" />
     <ClCompile Include="src\rage\rmptfx\PtxRule.cpp" />
     <ClCompile Include="src\rage\rmptfx\RmPtfxShaderVar.cpp" />
     <ClCompile Include="src\rage\Texture.cpp" />

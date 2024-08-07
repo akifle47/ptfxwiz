@@ -25,7 +25,11 @@ namespace rage
 
         float field_4;
         eDomainType mType;
-        int32_t field_C;
+        int32_t mDomainFunction;
+        //rmPtfxKeyframe mPositionKF;
+        //rmPtfxKeyframe mDirectionKF;
+        //rmPtfxKeyframe mSizeKF;
+        //rmPtfxKeyframe mInnerSize;
         rmPtfxKeyframe mKeyFrames[4];
         Matrix34 field_B0;
         Vector3 field_F0;
@@ -36,16 +40,16 @@ namespace rage
         float field_10C;
         float field_110;
         float field_114;
-        float field_118;
+        float mFileVersion;
         datOwner<void*> field_11C;
         int32_t field_120;
-        int8_t field_124;
-        int8_t field_125;
+        bool mWorldSpace;
+        bool mPointRelative;
         int8_t field_126[10];
     };
     ASSERT_SIZE(ptxDomain, 0x130);
 
-
+    //uses mPositionKF, mDirectionKF, mSizeKF and mInnerSize
     class ptxDomainBox : public ptxDomain
     {
     public:
@@ -63,10 +67,11 @@ namespace rage
         float field_154;
         float field_158;
         int8_t field_15C[4];
+    //uses mPositionKF, mDirectionKF, mSizeKF and mInnerSize
     };
     ASSERT_SIZE(ptxDomainBox, 0x160);
 
-
+    //uses mPositionKF, and mSizeKF
     class ptxDomainSphere : public ptxDomain
     {
     public:
@@ -79,7 +84,7 @@ namespace rage
     };
     ASSERT_SIZE(ptxDomainSphere, 0x140);
 
-
+    //uses mPositionKF, mDirectionKF, mSizeKF and mInnerSize
     class ptxDomainCylinder : public ptxDomain
     {
     public:
@@ -100,7 +105,7 @@ namespace rage
     };
     ASSERT_SIZE(ptxDomainCylinder, 0x160);
 
-
+    //uses mPositionKF, mDirectionKF and mSizeKF
     class ptxDomainVortex : public ptxDomain
     {
     public:

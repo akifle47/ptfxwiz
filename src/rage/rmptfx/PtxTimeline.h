@@ -11,12 +11,11 @@ namespace rage
         virtual ~ptxTimeLine() = default;
 
         float field_4;
-        float field_8;
-        int32_t field_C;
+        float mPreUpdate;
+        int32_t mNumLoops;
         atArray<ptxEvent> mEvents;
-        void* field_18;
-        int8_t field_1C[7];
-        int8_t field_23;
+        datOwner<void*> field_18;
+        int8_t field_1C[8];
     };
     ASSERT_SIZE(ptxTimeLine, 0x24);
 }
