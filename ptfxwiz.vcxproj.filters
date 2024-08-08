@@ -158,6 +158,9 @@
     <ClCompile Include="src\rage\rmptfx\PtxEvent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\rage\rmptfx\PtxEffectRule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="deps\zlib\bin\zlib.vcxproj" />

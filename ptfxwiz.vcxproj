@@ -131,6 +131,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\rage\Resource.cpp" />
     <ClCompile Include="src\rage\rmptfx\PtxDomain.cpp" />
+    <ClCompile Include="src\rage\rmptfx\PtxEffectRule.cpp" />
     <ClCompile Include="src\rage\rmptfx\PtxEmitRule.cpp" />
     <ClCompile Include="src\rage\rmptfx\PtxEvent.cpp" />
     <ClCompile Include="src\rage\rmptfx\PtxRule.cpp" />
