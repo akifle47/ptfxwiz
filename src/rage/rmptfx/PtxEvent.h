@@ -3,7 +3,7 @@
 #include "../Vector.h"
 #include "PtxDomain.h"
 #include "PtxTriggerEvent.h"
-//#include "PtxEffectRule.h"
+#include "PtxEvolution.h"
 
 namespace rage
 {
@@ -17,11 +17,15 @@ namespace rage
         };
 
     public:
+        ptxEvent(const datResource& rsc) : mEvoGroup(rsc) {}
+
         virtual ~ptxEvent() = default;
+
+        void Place(void* that, const datResource& rsc);
 
         int32_t field_4;
         float mTriggerTime;
-        struct ptxEvolutionGroup* mEvoGroup;
+        datOwner<ptxEvolutionGroup> mEvoGroup;
         float field_10;
         eEventType mType;
         int32_t mTriggerCap;
@@ -40,6 +44,12 @@ namespace rage
     class ptxEventEffect : public ptxEvent
     {
     public:
+        ptxEventEffect(const datResource& rsc) : ptxEvent(rsc), field_94(rsc), mEmitterDomain(rsc)
+        {
+            if(mEffectName)
+                rsc.PointerFixUp(mEffectName);
+        }
+
         Vector3 mRotationMin;
         int8_t field_2C[0x4];
         ptxEventEffect_obj1 mOverrideMins;
@@ -49,7 +59,7 @@ namespace rage
         char* mEffectName;
         datOwner<void*> field_94;
         int32_t field_98;
-        ptxDomain* mEmitterDomain;
+        datOwner<ptxDomain> mEmitterDomain;
         int8_t field_A0[4];
         int8_t field_A4;
         int8_t field_A5[10];
@@ -61,6 +71,14 @@ namespace rage
     class ptxEventEmitter : public ptxEvent
     {
     public:
+        ptxEventEmitter(const datResource& rsc) : ptxEvent(rsc), field_48(rsc), field_4C(rsc)
+        {
+            if(mEmmiterRuleName)
+                rsc.PointerFixUp(mEmmiterRuleName);
+            if(mPtxRuleName)
+                rsc.PointerFixUp(mPtxRuleName);
+        }
+
         float mDurationScalarMin;
         float mDurationScalarMax;
         float mTimeScalarMin;

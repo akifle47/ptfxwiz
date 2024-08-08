@@ -10,6 +10,8 @@ namespace rage
     public:
         virtual ~ptxTimeLine() = default;
 
+        ptxTimeLine(const datResource& rsc) : mEvents(rsc), field_18(rsc) {}
+
         float field_4;
         float mPreUpdate;
         int32_t mNumLoops;

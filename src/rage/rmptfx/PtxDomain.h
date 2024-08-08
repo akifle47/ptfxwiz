@@ -19,18 +19,17 @@ namespace rage
         };
 
     public:
-        ptxDomain(const datResource& rsc) : mKeyFrames{rsc, rsc, rsc, rsc}, field_11C(rsc), field_120(0) {}
+        ptxDomain(const datResource& rsc) : mPositionKF(rsc), mDirectionKF(rsc), mSizeKF(rsc), mInnerSize(rsc), field_11C(rsc), field_120(0) {}
 
         void Place(void* that, const datResource& rsc);
 
         float field_4;
         eDomainType mType;
         int32_t mDomainFunction;
-        //rmPtfxKeyframe mPositionKF;
-        //rmPtfxKeyframe mDirectionKF;
-        //rmPtfxKeyframe mSizeKF;
-        //rmPtfxKeyframe mInnerSize;
-        rmPtfxKeyframe mKeyFrames[4];
+        rmPtfxKeyframe mPositionKF;
+        rmPtfxKeyframe mDirectionKF;
+        rmPtfxKeyframe mSizeKF;
+        rmPtfxKeyframe mInnerSize;
         Matrix34 field_B0;
         Vector3 field_F0;
         int8_t field_FC[4];

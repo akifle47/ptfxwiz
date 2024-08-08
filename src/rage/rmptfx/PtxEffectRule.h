@@ -10,6 +10,17 @@ namespace rage
     class ptxEffectRule : public atReferenceCounter
     {
     public:
+        ptxEffectRule(const datResource& rsc) : mKFColorTint(rsc), mKFColorTintMax(rsc), mKFZoom(rsc), mKFRotation(rsc), mKFDataSphere(rsc),
+                                                mKFDataCapsuleA(rsc), mPtxEvoGroup(rsc)
+        {
+            if(mName)
+            {
+                rsc.PointerFixUp(mName);
+            }
+        }
+
+        void Place(void* that, const datResource& rsc);
+
         rmPtfxKeyframe mKFColorTint;
         rmPtfxKeyframe mKFColorTintMax;
         rmPtfxKeyframe mKFZoom;
@@ -18,7 +29,7 @@ namespace rage
         rmPtfxKeyframe mKFDataCapsuleA;
         char* mName;
         int32_t field_FC;
-        ptxEvolutionGroup* mPtxEvoGroup;
+        datOwner<ptxEvolutionGroup> mPtxEvoGroup;
         float field_104;
         void* field_108;
         int8_t mZoomCullDistance;
@@ -38,6 +49,12 @@ namespace rage
     class ptxEffectRuleStd : public ptxEffectRule
     {
     public:
+        ptxEffectRuleStd(const datResource& rsc) : ptxEffectRule(rsc), mTimeline(rsc)
+        {
+            field_170 = 0;
+            mQuality = mQuality == 0 ? mQuality : 0;
+        }
+
         ptxTimeLine mTimeline;
         float mFadeDistance;
         float mCullRadius;
