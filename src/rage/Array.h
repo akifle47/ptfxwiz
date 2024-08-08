@@ -11,6 +11,13 @@ namespace rage
     public:
         atArray() : mElements(nullptr), mCount(0), mCapacity(0) {}
 
+        atArray(CounterT capacity)
+        {
+            mElements = new T[capacity];
+            mCount = 0;
+            mCapacity = capacity;
+        }
+
         atArray(const atArray<T, CounterT>& rhs)
         {
             mCount = rhs.mCount;
@@ -55,6 +62,41 @@ namespace rage
         const T& operator[](CounterT index) const
         {
             return mElements[index];
+        }
+        
+        void Insert(T &entry, CounterT index)
+        {
+            if(mCount == mCapacity)
+            {
+                Grow();
+            }
+
+            for(CounterT i = mCount; i > index; i--)
+            {
+                mElements[i] = mElements[i - 1];
+            }
+
+            mCount++;
+            mElements[index] = entry;
+        }
+
+        T& Grow(CounterT allocStep = 16)
+        {
+            if(mCount == mCapacity)
+            {
+                mCapacity = CounterT(mCapacity + allocStep);
+
+                T* newElements = new T[mCapacity];
+                for(CounterT i = 0; i < mCount; i++)
+                {
+                    newElements[i] = mElements[i];
+                }
+                delete[] mElements;
+
+                mElements = newElements;
+            }
+
+            return mElements[mCount++];
         }
 
         void AddToLayout(RSC5Layout& layout, uint32_t depth)
