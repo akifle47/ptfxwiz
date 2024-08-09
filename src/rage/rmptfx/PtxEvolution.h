@@ -1,5 +1,6 @@
 #pragma once
 #include "../Array.h"
+#include "../DatOwner.h"
 #include "PtxKeyFrame.h"
 
 namespace rage
@@ -14,7 +15,7 @@ namespace rage
             new(that) ptxEvolutionGroup(rsc); 
         }
 
-        atArray<class ptxEvolution> mEvoList;
+        atArray<datOwner<class ptxEvolution>> mEvoList;
         atArray<struct ptxEvoBlendMode> mEvoBlendModeList;
         int8_t field_10[0x14];
         struct ptxEvoHashIndexList* mEvoListIndices;
@@ -40,7 +41,7 @@ namespace rage
         }
 
         char* mEvoName;
-        atArray<class ptxEvoPropList> mPropList;
+        atArray<datOwner<class ptxEvoPropList>> mPropList;
         int8_t field_C[0x8];
     };
     ASSERT_SIZE(ptxEvolution, 0x14);

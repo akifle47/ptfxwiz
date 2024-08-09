@@ -8,7 +8,7 @@ namespace rage
         mEvoListIndices = new ptxEvoHashIndexList(mEvoList.mCount);
         for(uint16_t i = 0; i < mEvoList.mCount; i++)
         {
-            mEvoListIndices->AddToList(atStringHash(mEvoList[i].mEvoName), i);
+            mEvoListIndices->AddToList(atStringHash(mEvoList[i]->mEvoName), i);
         }
     }
 }

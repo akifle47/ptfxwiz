@@ -23,7 +23,8 @@ namespace rage
         RmPtfxLibrary(const datResource& rsc)
         {
             mTextures.Place(&mTextures, rsc);
-            //mDrawables.Place(&mDrawables, rsc);
+            //todo
+            mDrawables.Place(&mDrawables, rsc);
             mRules.Place(&mRules, rsc);
             mEmitRules.Place(&mEmitRules, rsc);
             mEffectRules.Place(&mEffectRules, rsc);

@@ -15,7 +15,7 @@ namespace rage
         float field_4;
         float mPreUpdate;
         int32_t mNumLoops;
-        atArray<ptxEvent> mEvents;
+        atArray<datOwner<ptxEvent>> mEvents;
         datOwner<void*> field_18;
         int8_t field_1C[8];
     };
