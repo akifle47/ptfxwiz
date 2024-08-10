@@ -15,11 +15,7 @@ namespace rage
     {
     public:
         PtxList() {}
-
-        PtxList(const PtxList& rhs)
-        {
-        }
-
+        
         PtxList(const datResource& rsc)
         {
             mTextures.Place(&mTextures, rsc);

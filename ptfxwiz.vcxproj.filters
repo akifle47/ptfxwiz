@@ -39,7 +39,7 @@
     <ClInclude Include="src\rage\rmptfx\PtxTimeline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\rage\rmptfx\RmPtfx.h">
+    <ClInclude Include="src\rage\rmptfx\PtxList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\rage\rmptfx\RmPtfxShader.h">

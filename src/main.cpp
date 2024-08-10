@@ -25,12 +25,8 @@ void LoadTXD(std::filesystem::path filePath)
         return;
     }
 
-    auto& data = *(rage::pgDictionary<rage::grcTexturePC>*)rsc->Map->Chunks->DestAddr.get();
-    data.Place(&data, *rsc);
-    rage::pgDictionary<rage::grcTexturePC> txd(data);
-
-    rsc.reset();
-
+    auto& txd = *(rage::pgDictionary<rage::grcTexturePC>*)rsc->Map->Chunks->DestAddr.get();
+    txd.Place(&txd, *rsc);
 
     RSC5Layout layout;
     layout.Save(txd, filePath.parent_path() / "txd.wtd", 8);
@@ -44,9 +40,9 @@ void LoadParticleLibrary(std::filesystem::path filePath)
         return;
     }
 
-    auto& data = *(rage::PtxList*)rsc->Map->Chunks->DestAddr.get();
-    data.Place(&data, *rsc);
-    //rage::PtxList rmptfxLib(data);
+    auto& ptxLib = *(rage::PtxList*)rsc->Map->Chunks->DestAddr.get();
+    ptxLib.Place(&ptxLib, *rsc);
 
-    rsc.reset();
+    RSC5Layout layout;
+    //layout.Save(ptxLib, filePath.parent_path() / "ptxlib.wpfl", 8);
 }

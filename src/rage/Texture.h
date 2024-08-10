@@ -72,6 +72,7 @@ namespace rage
             rsc.PointerFixUp(mPixelData);
         }
 
+        //texture copy should probably be handled in grcTextureFactory like in rage but im not bothering wit hthat rn
         grcTexturePC(const grcTexturePC& rhs)
         {
             memcpy(this, &rhs, sizeof(grcTexturePC));
