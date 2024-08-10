@@ -1,6 +1,6 @@
 #include "rage/Dictionary.h"
 #include "rage/Texture.h"
-#include "rage/rmptfx/RmPtfx.h"
+#include "rage/rmptfx/PtxList.h"
 #include "ResourceLoader.h"
 #include "Log.h"
 
@@ -44,9 +44,9 @@ void LoadParticleLibrary(std::filesystem::path filePath)
         return;
     }
 
-    auto& data = *(rage::RmPtfxLibrary*)rsc->Map->Chunks->DestAddr.get();
+    auto& data = *(rage::PtxList*)rsc->Map->Chunks->DestAddr.get();
     data.Place(&data, *rsc);
-    //rage::RmPtfxLibrary rmptfxLib(data);
+    //rage::PtxList rmptfxLib(data);
 
     rsc.reset();
 }

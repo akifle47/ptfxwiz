@@ -11,16 +11,16 @@
 
 namespace rage
 {
-    class RmPtfxLibrary
+    class PtxList
     {
     public:
-        RmPtfxLibrary() {}
+        PtxList() {}
 
-        RmPtfxLibrary(const RmPtfxLibrary& rhs)
+        PtxList(const PtxList& rhs)
         {
         }
 
-        RmPtfxLibrary(const datResource& rsc)
+        PtxList(const datResource& rsc)
         {
             mTextures.Place(&mTextures, rsc);
             //todo
@@ -32,7 +32,7 @@ namespace rage
 
         inline void Place(void* that, const datResource& rsc)
         {
-            new(that) RmPtfxLibrary(rsc);
+            new(that) PtxList(rsc);
         }
 
         datOwner<pgDictionary<grcTexturePC>> mTextures;
@@ -43,5 +43,5 @@ namespace rage
         datOwner<pgDictionary<ptxEmitRule>> mEmitRules;
         datOwner<pgDictionary<ptxEffectRule>> mEffectRules;
     };
-    ASSERT_SIZE(RmPtfxLibrary, 0x1C);
+    ASSERT_SIZE(PtxList, 0x1C);
 }
