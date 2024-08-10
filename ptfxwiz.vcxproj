@@ -109,6 +109,7 @@
     <ClInclude Include="src\rage\rmptfx\PtxEvent.h" />
     <ClInclude Include="src\rage\rmptfx\PtxEvolution.h" />
     <ClInclude Include="src\rage\rmptfx\PtxKeyFrame.h" />
+    <ClInclude Include="src\rage\rmptfx\PtxList.h" />
     <ClInclude Include="src\rage\rmptfx\PtxRenderState.h" />
     <ClInclude Include="src\rage\rmptfx\PtxRule.h" />
     <ClInclude Include="src\rage\rmptfx\PtxRulePropList.h" />
