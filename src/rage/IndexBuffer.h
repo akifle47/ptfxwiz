@@ -8,14 +8,24 @@ namespace rage
     class grcIndexBuffer : datBase
     {
     public:
+        grcIndexBuffer(const datResource& rsc) : mIndexData(rsc) {}
+
         uint32_t mIndexCount;
-        uint16_t* mIndexData;
+        datOwner<uint16_t> mIndexData;
     };
     ASSERT_SIZE(grcIndexBuffer, 0xC);
+
 
     class grcIndexBufferD3D : grcIndexBuffer
     {
     public:
+        grcIndexBufferD3D(const datResource& rsc) : grcIndexBuffer(rsc) {}
+
+        inline void Place(void* that, const datResource& rsc)
+        {
+            new(that) grcIndexBufferD3D(rsc);
+        }
+
         struct IDirect3DIndexBuffer9* mIndexBufferD3D;
         void* mStagingBuffer;
         uint32_t mLockFlags;

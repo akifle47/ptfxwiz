@@ -50,11 +50,17 @@ namespace rage
     class crBoneData
     {
     public:
+        crBoneData(const datResource& rsc) : mNext(rsc), mChild(rsc), mParent(rsc), mJointData(rsc)
+        {
+            if(mName)
+                rsc.PointerFixUp(mName);
+        }
+
         char* mName;
         uint32_t mFlags;
-        crBoneData* mNext;
-        crBoneData* mChild;
-        crBoneData* mParent;
+        datOwner<crBoneData> mNext;
+        datOwner<crBoneData> mChild;
+        datOwner<crBoneData> mParent;
         uint16_t mIndex;
         uint16_t mId;
         uint16_t mMirrorIndex;
@@ -73,7 +79,7 @@ namespace rage
         Vector4 mTransMax;
         Vector4 mRotMin;
         Vector4 mRotMax;
-        void* mJointData;
+        datOwner<void*> mJointData;
         uint32_t mNameHash;
         int32_t field_D8;
         int32_t field_DC;
@@ -83,6 +89,25 @@ namespace rage
     class crSkeletonData
     {
     public:
+        crSkeletonData(const datResource& rsc) : mBoneIdMappings(rsc), mParentBoneIndices(rsc), mBoneWorldOrient(rsc), mBoneWorldOrientInverted(rsc),
+                                                 mBoneLocalTransforms(rsc)
+        {
+            if(mBones)
+            {
+                rsc.PointerFixUp(mBones);
+
+                for(uint16_t i = 0; i < mNumBones; i++)
+                {
+                    new(mBones) crBoneData(rsc);
+                }
+            }
+        }
+
+        inline void Place(void* that, const datResource& rsc)
+        {
+            new(that) crSkeletonData(rsc);
+        }
+
         struct BoneIdData
         {
             uint16_t ID;
@@ -90,10 +115,10 @@ namespace rage
         };
 
         crBoneData* mBones;
-        int32_t mParentBoneIndices;
-        Matrix34* mBoneWorldOrient;
-        Matrix34* mBoneWorldOrientInverted;
-        Matrix34* mBoneLocalTransforms;
+        datOwner<int32_t> mParentBoneIndices;
+        datOwner<Matrix34> mBoneWorldOrient;
+        datOwner<Matrix34> mBoneWorldOrientInverted;
+        datOwner<Matrix34> mBoneLocalTransforms;
         uint16_t mNumBones;
         uint16_t mTransLockCount;
         uint16_t mRotLockCount;

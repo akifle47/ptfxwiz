@@ -117,10 +117,12 @@
     <ClInclude Include="src\rage\rmptfx\PtxTriggerEvent.h" />
     <ClInclude Include="src\rage\rmptfx\RmPtfxShader.h" />
     <ClInclude Include="src\rage\rmptfx\RmPtfxShaderVar.h" />
+    <ClInclude Include="src\rage\ShaderGroup.h" />
     <ClInclude Include="src\rage\StringHash.h" />
     <ClInclude Include="src\rage\Shader.h" />
     <ClInclude Include="src\rage\Skeleton.h" />
     <ClInclude Include="src\rage\Texture.h" />
+    <ClInclude Include="src\rage\TextureReference.h" />
     <ClInclude Include="src\rage\Vector.h" />
     <ClInclude Include="src\rage\VertexBuffer.h" />
     <ClInclude Include="src\rage\VertexDecl.h" />
@@ -138,6 +140,7 @@
     <ClCompile Include="src\rage\rmptfx\PtxEvolution.cpp" />
     <ClCompile Include="src\rage\rmptfx\PtxRule.cpp" />
     <ClCompile Include="src\rage\rmptfx\RmPtfxShaderVar.cpp" />
+    <ClCompile Include="src\rage\Shader.cpp" />
     <ClCompile Include="src\rage\Texture.cpp" />
     <ClCompile Include="src\ResourceLoader.cpp" />
     <ClCompile Include="src\RSC5Layout.cpp" />

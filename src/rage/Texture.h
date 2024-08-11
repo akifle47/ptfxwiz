@@ -41,6 +41,14 @@ namespace rage
     class grcTexture : public pgBase
     {
     public:
+        enum class eType : uint8_t
+        {
+            STANDARD = 0,
+            RENDER_TARGET,
+            REFERENCE
+        };
+
+    public:
         void AddToLayout(RSC5Layout& layout, uint32_t depth)
         {
             pgBase::AddToLayout(layout, depth);
@@ -51,7 +59,7 @@ namespace rage
             pgBase::SerializePtrs(layout, rsc, depth);
         }
 
-        uint8_t mResourceType;
+        eType mResourceType;
         uint8_t mLayerCount;
         uint16_t mRefCount;
         int32_t field_C;

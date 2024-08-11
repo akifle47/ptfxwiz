@@ -5,12 +5,19 @@
 
 namespace rage
 {
-    class grmModel : datBase
+    class grmModel : public datBase
     {
     public:
-        atArray<grmGeometryQB> mGeometries;
-        Vector4* mBounds;
-        int8_t* mShaderMappings;
+        grmModel(const datResource& rsc) : mGeometries(rsc), mBounds(rsc), mShaderMappings(rsc) {}
+
+        inline void Place(void* that, const datResource& rsc)
+        {
+            new(that) grmModel(rsc);
+        }
+
+        atArray<datOwner<grmGeometryQB>> mGeometries;
+        datOwner<Vector4> mBounds;
+        datOwner<int8_t> mShaderMappings;
         uint8_t mBoneCount;
         uint8_t mFlags;
         uint8_t mType;

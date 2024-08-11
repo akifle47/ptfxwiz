@@ -19,17 +19,25 @@ namespace rage
     class grmGeometryQB : public grmGeometry
     {
     public:
-        grcVertexBufferD3D* mVertexBuffers[4];
-        grcIndexBufferD3D* mIndexBuffers[4];
+        grmGeometryQB(const datResource& rsc) : mVertexBuffers{rsc, rsc, rsc, rsc}, mIndexBuffers{rsc, rsc, rsc, rsc},
+                                                mInstanceVertexBuffer(rsc), mBoneIndices(rsc) {}
+
+        inline void Place(void* that, const datResource& rsc)
+        {
+            new(that) grmGeometryQB(rsc);
+        }
+
+        datOwner<grcVertexBufferD3D> mVertexBuffers[4];
+        datOwner<grcIndexBufferD3D> mIndexBuffers[4];
         uint32_t mIndexCount;
         uint32_t mPrimitiveCount;
         uint16_t mVertexCount;
         uint16_t mPrimitiveType;
-        uint16_t* mBoneIndices;
+        datOwner<uint16_t> mBoneIndices;
         uint16_t mStride;
         uint16_t mBoneCount;
         grcVertexDeclaration* mInstanceVertexDeclaration;
-        grcVertexBufferD3D* mInstanceVertexBuffer;
+        datOwner<grcVertexBufferD3D> mInstanceVertexBuffer;
         int32_t mUseGlobalStreamIndex;
     };
     ASSERT_SIZE(grmGeometryQB, 0x4C);

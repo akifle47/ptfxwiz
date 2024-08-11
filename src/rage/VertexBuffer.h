@@ -8,20 +8,29 @@ namespace rage
     class grcVertexBuffer : public datBase
     {
     public:
+        grcVertexBuffer(const datResource& rsc) : mFvf(rsc), mVertexData(rsc) {}
+
         uint16_t mVertexCount;
         bool mIsLocked;
         bool mIsDynamic;
         void* mLockedData;
         uint32_t mStride;
-        grcFvf* mFvf;
+        datOwner<grcFvf> mFvf;
         int32_t mLockThreadId;
-        void* mVertexData;
+        datOwner<void*> mVertexData;
     };
     ASSERT_SIZE(grcVertexBuffer, 0x1C);
 
     class grcVertexBufferD3D : public grcVertexBuffer
     {
     public:
+        grcVertexBufferD3D(const datResource& rsc) : grcVertexBuffer(rsc) {}
+
+        inline void Place(void* that, const datResource& rsc)
+        {
+            new(that) grcVertexBufferD3D(rsc);
+        }
+
         struct IDirect3DVertexBuffer9* mVertexBufferdD3D;
         void* mStagingBuffer;
         uint32_t field_24;
