@@ -4,15 +4,15 @@
 namespace rage
 {
     template<typename T>
-    struct datOwner
+    struct datRef
     {
-        datOwner()
+        datRef()
         {}
 
-        datOwner(T* ptr) : Ptr(ptr)
+        datRef(T* ptr) : Ptr(ptr)
         {}
 
-        datOwner(const datResource& rsc)
+        datRef(const datResource& rsc)
         {
             if(!Ptr)
             {
@@ -26,11 +26,6 @@ namespace rage
             }
 
             rsc.PointerFixUp(Ptr);
-
-            if constexpr(requires { Ptr->Place(Ptr, rsc); })
-            {
-                Ptr->Place(Ptr, rsc);
-            }
         }
 
         T& operator*() const 
@@ -70,7 +65,7 @@ namespace rage
 
         inline void Place(void* that, const datResource& rsc)
         {
-            new(that) datOwner<T>(rsc);
+            new(that) datRef<T>(rsc);
         }
 
     private:

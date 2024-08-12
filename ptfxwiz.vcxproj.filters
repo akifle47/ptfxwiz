@@ -135,6 +135,9 @@
     <ClInclude Include="src\rage\TextureReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\rage\DatRef.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\rage\rmptfx\PtxRule.cpp">

@@ -94,6 +94,7 @@
     <ClInclude Include="src\rage\Array.h" />
     <ClInclude Include="src\rage\Base.h" />
     <ClInclude Include="src\rage\DatOwner.h" />
+    <ClInclude Include="src\rage\DatRef.h" />
     <ClInclude Include="src\rage\Dictionary.h" />
     <ClInclude Include="src\rage\Drawable.h" />
     <ClInclude Include="src\rage\fvf.h" />
