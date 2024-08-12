@@ -1,6 +1,6 @@
 #pragma once
 #include "../Base.h"
-#include "../Resource.h"
+#include "../DatRef.h"
 #include "PtxKeyFrame.h"
 
 namespace rage
@@ -123,6 +123,6 @@ namespace rage
         }
 
         char* mName;
-        datOwner<class rmcDrawable> mDrawable;
+        datRef<class rmcDrawable> mDrawable;
     };
 }
