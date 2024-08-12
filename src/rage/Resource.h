@@ -123,7 +123,7 @@ namespace rage
             uint32_t chunkIndex = Map->ContainsSrc(ptr);
             if(chunkIndex == -1)
             {
-                Log::Error("Could not find pointer 0x%p in chunks for resource %s", ptr, DebugName.get());
+                Log::Error("Could not find pointer 0x%p in chunks for resource %s", ptr, *DebugName);
                 return -1;
             }
 
