@@ -45,6 +45,9 @@ namespace rage
 
         void AddToLayout(RSC5Layout& layout, uint32_t depth)
         {
+            if(!Ptr)
+                return;
+
             layout.AddObject(Ptr, RSC5Layout::eBlockType::VIRTUAL);
 
             if constexpr(requires { Ptr->AddToLayout(layout, depth); })
@@ -55,6 +58,9 @@ namespace rage
 
         void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
         {
+            if(!Ptr)
+                return;
+
             if constexpr(requires { Ptr->SerializePtrs(layout, rsc, depth); })
             {
                 Ptr->SerializePtrs(layout, rsc, depth + 1);
