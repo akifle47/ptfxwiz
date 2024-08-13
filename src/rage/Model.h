@@ -15,16 +15,31 @@ namespace rage
             new(that) grmModel(rsc);
         }
 
+        void AddToLayout(RSC5Layout& layout, uint32_t depth)
+        {
+            mGeometries.AddToLayout(layout, depth);
+
+            layout.AddObject(mBounds.Get(), RSC5Layout::eBlockType::VIRTUAL, mGeometries.mCount + (mGeometries.mCount == 0 ? 0 : 1));
+            layout.AddObject(mShaderMappings.Get(), RSC5Layout::eBlockType::VIRTUAL, mShaderMappingCount);
+        }
+
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
+        {
+            mGeometries.SerializePtrs(layout, rsc, depth);
+            mBounds.SerializePtrs(layout, rsc, depth);
+            mShaderMappings.SerializePtrs(layout, rsc, depth);
+        }
+
         atArray<datOwner<grmGeometryQB>> mGeometries;
         datOwner<Vector4> mBounds;
-        datOwner<int8_t> mShaderMappings;
+        datOwner<uint16_t> mShaderMappings;
         uint8_t mBoneCount;
         uint8_t mFlags;
         uint8_t mType;
         uint8_t mBoneIndex;
         uint8_t mStride;
         bool mSkinned;
-        int16_t mShaderMappingCount;
+        uint16_t mShaderMappingCount;
     };
     ASSERT_SIZE(grmModel, 0x1C);
 

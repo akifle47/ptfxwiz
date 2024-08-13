@@ -138,6 +138,9 @@
     <ClInclude Include="src\rage\DatRef.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\rage\2DEffects.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\rage\rmptfx\PtxRule.cpp">
@@ -174,9 +177,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\rage\rmptfx\PtxEvolution.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\rage\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

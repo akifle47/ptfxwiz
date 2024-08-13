@@ -56,6 +56,25 @@ namespace rage
                 rsc.PointerFixUp(mName);
         }
 
+        void AddToLayout(RSC5Layout& layout, uint32_t depth)
+        {
+            layout.AddObject(mName, RSC5Layout::eBlockType::VIRTUAL, strlen(mName) + 1);
+            mNext.AddToLayout(layout, depth);
+            mChild.AddToLayout(layout, depth);
+            mParent.AddToLayout(layout, depth);
+            mJointData.AddToLayout(layout, depth);
+        }
+
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
+        {
+            layout.SerializePtr(mName, strlen(mName) + 1);
+
+            mNext.SerializePtrs(layout, rsc, depth);
+            mChild.SerializePtrs(layout, rsc, depth);
+            mParent.SerializePtrs(layout, rsc, depth);
+            mJointData.SerializePtrs(layout, rsc, depth);
+        }
+
         char* mName;
         uint32_t mFlags;
         datOwner<crBoneData> mNext;
@@ -86,6 +105,7 @@ namespace rage
     };
     ASSERT_SIZE(crBoneData, 0xE0);
 
+
     class crSkeletonData
     {
     public:
@@ -108,6 +128,45 @@ namespace rage
             new(that) crSkeletonData(rsc);
         }
 
+
+        void AddToLayout(RSC5Layout& layout, uint32_t depth)
+        {
+            mBoneIdMappings.AddToLayout(layout, depth);
+            mParentBoneIndices.AddToLayout(layout, depth);
+            mBoneWorldOrient.AddToLayout(layout, depth);
+            mBoneWorldOrientInverted.AddToLayout(layout, depth);
+            mBoneLocalTransforms.AddToLayout(layout, depth);
+
+            if(mBones)
+            {
+                layout.AddObject(mBones, RSC5Layout::eBlockType::VIRTUAL, mNumBones);
+
+                for(uint16_t i = 0; i < mNumBones; i++)
+                {
+                    mBones[i].AddToLayout(layout, depth);
+                }
+            }
+        }
+
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
+        {
+            mBoneIdMappings.SerializePtrs(layout, rsc, depth);
+            mParentBoneIndices.SerializePtrs(layout, rsc, depth);
+            mBoneWorldOrient.SerializePtrs(layout, rsc, depth);
+            mBoneWorldOrientInverted.SerializePtrs(layout, rsc, depth);
+            mBoneLocalTransforms.SerializePtrs(layout, rsc, depth);
+            
+            if(mBones)
+            {
+                for(uint16_t i = 0; i < mNumBones; i++)
+                {
+                    mBones[i].SerializePtrs(layout, rsc, depth);
+                }
+
+                layout.SerializePtr(mBones, sizeof(crBoneData) * mNumBones);
+            }
+        }
+
         struct BoneIdData
         {
             uint16_t ID;
@@ -127,6 +186,7 @@ namespace rage
         atArray<BoneIdData> mBoneIdMappings;
         uint32_t mUsageCount;
         uint32_t mCRC;
+        //i think the game always zeroes both of these?
         char* mJointDataFileName;
         crJointDataFile mJointData;
     };

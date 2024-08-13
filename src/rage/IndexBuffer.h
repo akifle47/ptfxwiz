@@ -10,6 +10,16 @@ namespace rage
     public:
         grcIndexBuffer(const datResource& rsc) : mIndexData(rsc) {}
 
+        void AddToLayout(RSC5Layout& layout, uint32_t depth)
+        {
+            layout.AddObject(mIndexData.Get(), RSC5Layout::eBlockType::PHYSICAL, mIndexCount);
+        }
+
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
+        {
+            layout.SerializePtr(mIndexData.Get(), sizeof(mIndexCount) * mIndexCount);
+        }
+
         uint32_t mIndexCount;
         datOwner<uint16_t> mIndexData;
     };
@@ -24,6 +34,16 @@ namespace rage
         inline void Place(void* that, const datResource& rsc)
         {
             new(that) grcIndexBufferD3D(rsc);
+        }
+
+        void AddToLayout(RSC5Layout& layout, uint32_t depth)
+        {
+            grcIndexBuffer::AddToLayout(layout, depth);
+        }
+
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
+        {
+            grcIndexBuffer::SerializePtrs(layout, rsc, depth);
         }
 
         struct IDirect3DIndexBuffer9* mIndexBufferD3D;

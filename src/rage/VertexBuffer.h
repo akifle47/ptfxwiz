@@ -10,6 +10,18 @@ namespace rage
     public:
         grcVertexBuffer(const datResource& rsc) : mFvf(rsc), mVertexData(rsc) {}
 
+        void AddToLayout(RSC5Layout& layout, uint32_t depth)
+        {
+            mFvf.AddToLayout(layout, depth);
+            layout.AddObject(mVertexData.Get(), RSC5Layout::eBlockType::PHYSICAL, mVertexCount * mStride);
+        }
+
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
+        {
+            mFvf.SerializePtrs(layout, rsc, depth);
+            layout.SerializePtr(mVertexData.Get(), mVertexCount * mStride);
+        }
+
         uint16_t mVertexCount;
         bool mIsLocked;
         bool mIsDynamic;
@@ -31,6 +43,16 @@ namespace rage
             new(that) grcVertexBufferD3D(rsc);
         }
 
+        void AddToLayout(RSC5Layout& layout, uint32_t depth)
+        {
+            grcVertexBuffer::AddToLayout(layout, depth);
+        }
+
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
+        {
+            grcVertexBuffer::SerializePtrs(layout, rsc, depth);
+        }
+
         struct IDirect3DVertexBuffer9* mVertexBufferdD3D;
         void* mStagingBuffer;
         uint32_t field_24;
@@ -41,4 +63,5 @@ namespace rage
         int32_t field_38;
         int32_t field_3C;
     };
+    ASSERT_SIZE(grcVertexBufferD3D, 0x40);
 }

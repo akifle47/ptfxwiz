@@ -16,6 +16,7 @@ namespace rage
     };
     ASSERT_SIZE(grmGeometry, 0xC);
 
+
     class grmGeometryQB : public grmGeometry
     {
     public:
@@ -25,6 +26,34 @@ namespace rage
         inline void Place(void* that, const datResource& rsc)
         {
             new(that) grmGeometryQB(rsc);
+        }
+
+        void AddToLayout(RSC5Layout& layout, uint32_t depth)
+        {
+            for(uint8_t i = 0; i < 4; i++)
+            {
+                mVertexBuffers[i].AddToLayout(layout, depth);
+                mIndexBuffers[i].AddToLayout(layout, depth);
+            }
+
+            mInstanceVertexBuffer.AddToLayout(layout, depth);
+
+            if(mBoneCount)
+            {
+                layout.AddObject(mBoneIndices.Get(), RSC5Layout::eBlockType::VIRTUAL, mBoneCount);
+            }
+        }
+
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
+        {
+            for(uint8_t i = 0; i < 4; i++)
+            {
+                mVertexBuffers[i].SerializePtrs(layout, rsc, depth);
+                mIndexBuffers[i].SerializePtrs(layout, rsc, depth);
+            }
+
+            mInstanceVertexBuffer.SerializePtrs(layout, rsc, depth);
+            mBoneIndices.SerializePtrs(layout, rsc, depth);
         }
 
         datOwner<grcVertexBufferD3D> mVertexBuffers[4];

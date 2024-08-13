@@ -23,8 +23,40 @@ namespace rage
             new(that) grmShaderGroup(rsc);
         }
 
+        void AddToLayout(RSC5Layout& layout, uint32_t depth)
+        {
+            mTextures.AddToLayout(layout, depth);
+            mShaders.AddToLayout(layout, depth);
+
+            field_10.AddToLayout(layout, depth);
+            field_18.AddToLayout(layout, depth);
+            field_20.AddToLayout(layout, depth);
+            field_28.AddToLayout(layout, depth);
+            field_30.AddToLayout(layout, depth);
+
+            field_38.AddToLayout(layout, depth);
+            mVertexFormats.AddToLayout(layout, depth);
+            mIndexMappings.AddToLayout(layout, depth);
+        }
+
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
+        {
+            mTextures.SerializePtrs(layout, rsc, depth);
+            mShaders.SerializePtrs(layout, rsc, depth);
+
+            field_10.SerializePtrs(layout, rsc, depth);
+            field_18.SerializePtrs(layout, rsc, depth);
+            field_20.SerializePtrs(layout, rsc, depth);
+            field_28.SerializePtrs(layout, rsc, depth);
+            field_30.SerializePtrs(layout, rsc, depth);
+
+            field_38.SerializePtrs(layout, rsc, depth);
+            mVertexFormats.SerializePtrs(layout, rsc, depth);
+            mIndexMappings.SerializePtrs(layout, rsc, depth);
+        }
+
         datOwner<pgDictionary<grcTexturePC>> mTextures;
-        atArray<datOwner<grmShader>> mShaders;
+        atArray<datOwner<grmShaderFx>> mShaders;
         //todo: unknown types
         atArray<datOwner<void*>> field_10;
         atArray<datOwner<void*>> field_18;

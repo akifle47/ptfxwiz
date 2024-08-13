@@ -12,46 +12,152 @@ namespace rage
     class grcInstanceData
     {
     public:
+        struct Entry 
+        {
+            union 
+            {
+                void* AsVoid;
+                grcTexturePC* AsTexture;
+                grcTextureReference* AsTextureRef;
+                Vector4* AsVector4;
+                Matrix44* AsMatrix44;
+            };
+        };
+
+    public:
         grcInstanceData(const datResource& rsc)
         {
             if(mEntries)
-                rsc.PointerFixUp(mEntries);    
-            if(mDataCounts)
-                rsc.PointerFixUp(mDataCounts);    
+                rsc.PointerFixUp(mEntries);
+            if(mEntriesCounts)
+                rsc.PointerFixUp(mEntriesCounts);
             if(mEntriesHashes)
                 rsc.PointerFixUp(mEntriesHashes);
 
             for(uint32_t i = 0; i < mCount; i++)
             {
-                rsc.PointerFixUp(mEntries[i].Data);
+                if(!mEntries[i].AsVoid)
+                    continue;
 
-                if(!mDataCounts[i])
+                rsc.PointerFixUp(mEntries[i].AsVoid);
+
+                if(!mEntriesCounts[i])
                 {
-                    if(mEntries[i].Texture->mResourceType == grcTexture::eType::REFERENCE)
+                    if(mEntries[i].AsTextureRef->mResourceType == grcTexture::eType::REFERENCE)
                     {
-                        new(mEntries[i].TextureRef) grcTextureReference(rsc);
+                        new(mEntries[i].AsTextureRef) grcTextureReference(rsc);
+                    }
+                    else if(mEntries[i].AsTexture->mResourceType == grcTexture::eType::STANDARD)
+                    {
+                        new(mEntries[i].AsTexture) grcTexturePC(rsc);
                     }
                 }
             }
         }
 
-        struct Entry 
+        void AddToLayout(RSC5Layout& layout, uint32_t depth)
         {
-            union 
+            if(!mEntries)
+                return;
+
+            layout.AddObject(mEntries, RSC5Layout::eBlockType::VIRTUAL, mTotalSize);
+
+            for(uint8_t i = 0; i < mCount; i++)
             {
-                void* Data;
-                grcTexturePC* Texture;
-                grcTextureReference* TextureRef;
-                Vector4* Vector;
-                Matrix44* Matrix;
-            };
-        };
+                if(!mEntries[i].AsVoid)
+                    continue;
+
+                if(!mEntriesCounts[i])
+                {
+                    if(mEntries[i].AsTexture->mResourceType == grcTexture::eType::STANDARD)
+                    {
+                        layout.AddObject(mEntries[i].AsTexture, RSC5Layout::eBlockType::VIRTUAL);
+                        mEntries[i].AsTexture->AddToLayout(layout, depth);
+                    }
+                    else if(mEntries[i].AsTextureRef->mResourceType == grcTexture::eType::REFERENCE)
+                    {
+                        layout.AddObject(mEntries[i].AsTextureRef, RSC5Layout::eBlockType::VIRTUAL);
+                        mEntries[i].AsTextureRef->AddToLayout(layout, depth);
+                    }
+                }
+                else
+                {
+                    layout.AddObject((uint8_t*)mEntries[i].AsVoid, RSC5Layout::eBlockType::VIRTUAL);
+                }
+            }
+        }
+
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
+        {
+            if(!mEntries)
+                return;
+
+            uint32_t countsOffset = 4 * ((mCount + 3) & ~3u); //alligned to 4
+            uint32_t hashesOffset = ((mCount + 15) & ~15) + countsOffset; //alligned to 16
+            uint32_t nextEntryOffset = countsOffset + hashesOffset;
+
+            //todo: important!! this should be done by finding the effect this instance uses then the parameter and getting the entry/param size-
+            //from that, but i cant load effects yet so im using this method from LibertyFourXYZ which i assume mostly works. see 0xAC60 on patch 8
+            for(uint8_t i = 0; i < mCount; i++)
+            {
+                if(!mEntries[i].AsVoid)
+                    continue;
+
+                switch(mEntriesCounts[i])
+                {
+                    case 0:
+                        if(mEntries[i].AsTextureRef->mResourceType == grcTexture::eType::REFERENCE)
+                        {
+                            mEntries[i].AsTextureRef->SerializePtrs(layout, rsc, depth + 1);
+                            layout.SerializePtr(mEntries[i].AsTextureRef, sizeof(grcTextureReference));
+                        }
+                        else if(mEntries[i].AsTexture->mResourceType == grcTexture::eType::STANDARD)
+                        {
+                            mEntries[i].AsTexture->SerializePtrs(layout, rsc, depth + 1);
+                            layout.SerializePtr(mEntries[i].AsTexture, sizeof(grcTexturePC));
+                        }
+                    break;
+
+                    case 1:
+                    case 4:
+                    case 8:
+                    case 14:
+                    case 15:
+                    case 16:
+                    {
+                        uint32_t size = 0;
+                        if(mEntriesCounts[i] == 8)
+                            size = 16 * 6;
+                        else
+                            size = 16 * mEntriesCounts[i];
+
+                        uintptr_t *entry = (uintptr_t*)((uintptr_t)mEntries + nextEntryOffset);
+                        layout.SerializePtr(entry, size);
+                        mEntries[i].AsVoid = entry;
+
+                        nextEntryOffset += size;
+                    }
+                    break;
+
+                    default:
+                        __debugbreak();
+                }
+            }
+
+            layout.SerializePtr(mEntries, mTotalSize);
+
+            layout.BackupPtr(mEntriesCounts);
+            mEntriesCounts = (uint8_t*)((uintptr_t)mEntries + countsOffset);
+
+            layout.BackupPtr(mEntriesHashes);
+            mEntriesHashes = (uint32_t*)((uintptr_t)mEntries + hashesOffset);
+        }
 
         Entry* mEntries;
         class grcEffect *mEffect;
         uint32_t mCount;
         uint32_t mTotalSize;
-        uint8_t* mDataCounts;
+        uint8_t* mEntriesCounts;
         uint32_t mEffectHash;
         void* field_18;
         uint32_t field_1C;
@@ -68,22 +174,26 @@ namespace rage
     public:
         grmShader(const datResource& rsc) : mInstanceData(rsc) {}
 
-        void Place(void* that, const datResource& rsc);
+        void AddToLayout(RSC5Layout& layout, uint32_t depth)
+        {
+            pgBase::AddToLayout(layout, depth);
+            mInstanceData.AddToLayout(layout, depth);
+        }
+
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
+        {
+            pgBase::SerializePtrs(layout, rsc, depth);
+            mInstanceData.SerializePtrs(layout, rsc, depth);
+        }
 
         uint8_t mVersion;
         uint8_t mDrawBucket;
 
-        union 
+        union
         {
-            struct 
-            {
-                uint8_t mHasPreset : 1;
-                uint8_t mUnknown : 7;
-            };
-
-            uint8_t mFlags;
+            uint8_t mHasPreset : 1;
+            uint8_t mUnknown : 7;
         };
-
         int8_t field_B;
         int16_t field_C;
         uint16_t mEffectIndex;
@@ -115,11 +225,11 @@ namespace rage
             if(mName)
                 rsc.PointerFixUp(mName);
 
-            if(*(uint32_t*)mValue)
+            if(mVoid)
             {
                 if(mType == eValueType::TEXTURE || mType == eValueType::MATRIX34 || mType == eValueType::MATRIX44)
                 {
-                    rsc.PointerFixUp(*(uint32_t*)mValue);
+                    rsc.PointerFixUp(mVoid);
                 }
             }
         }
@@ -129,8 +239,49 @@ namespace rage
             new(that) grmShaderPresetParams(rsc);
         }
 
-        //todo: make this an union with every type in eValueType
-        uint8_t mValue[16];
+        void AddToLayout(RSC5Layout& layout, uint32_t depth)
+        {
+            mNext.AddToLayout(layout, depth);
+
+            layout.AddObject(mName, RSC5Layout::eBlockType::VIRTUAL, strlen(mName) + 1);
+
+            if(mVoid)
+            {
+                if(mType == eValueType::TEXTURE || mType == eValueType::MATRIX34 || mType == eValueType::MATRIX44)
+                {
+                    layout.AddObject((uint32_t*)mVoid, RSC5Layout::eBlockType::VIRTUAL);
+                }
+            }
+        }
+
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
+        {
+            mNext.SerializePtrs(layout, rsc, depth);
+
+            layout.SerializePtr(mName, strlen(mName) + 1);
+
+            if(mVoid)
+            {
+                if(mType == eValueType::TEXTURE || mType == eValueType::MATRIX34 || mType == eValueType::MATRIX44)
+                {
+                    layout.SerializePtr(mVoid, sizeof(uintptr_t*));
+                }
+            }
+        }
+
+        union
+        {
+            void* mVoid;
+            int32_t mInt;
+            float mFloat;
+            Vector2 mVector2;
+            Vector3 mVector3;
+            Vector4 mVector4;
+            grcTexture* mTexture;
+            bool mBool;
+            Matrix34* mMatrix34;
+            Matrix44* mMatrix44;
+        };
         char *mName;
         eValueType mType;
         datOwner<grmShaderPresetParams> mNext;
@@ -148,11 +299,39 @@ namespace rage
         {
             if(mName)
                 rsc.PointerFixUp(mName);
-
             if(mPresetName)
-            {
                 rsc.PointerFixUp(mPresetName);
-            }
+        }
+
+        void Place(void* that, const datResource& rsc)
+        {
+            new(that) grmShaderFx(rsc);
+        }
+
+        void AddToLayout(RSC5Layout& layout, uint32_t depth)
+        {
+            grmShader::AddToLayout(layout, depth);
+
+            field_4C.AddToLayout(layout, depth);
+            field_50.AddToLayout(layout, depth);
+
+            layout.AddObject(mName, RSC5Layout::eBlockType::VIRTUAL, strlen(mName) + 1);
+            layout.AddObject(mPresetName, RSC5Layout::eBlockType::VIRTUAL, strlen(mName) + 1);
+
+            mShaderPresetParams.AddToLayout(layout, depth);
+        }
+
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
+        {
+            grmShader::SerializePtrs(layout, rsc, depth);
+
+            field_4C.SerializePtrs(layout, rsc, depth);
+            field_50.SerializePtrs(layout, rsc, depth);
+
+            layout.SerializePtr(mName, strlen(mName) + 1);
+            layout.SerializePtr(mPresetName, strlen(mPresetName) + 1);
+
+            mShaderPresetParams.SerializePtrs(layout, rsc, depth);
         }
 
         char* mName;

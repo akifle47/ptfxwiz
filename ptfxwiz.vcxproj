@@ -91,6 +91,7 @@
   <ItemGroup>
     <ClInclude Include="src\DDS.h" />
     <ClInclude Include="src\Log.h" />
+    <ClInclude Include="src\rage\2DEffects.h" />
     <ClInclude Include="src\rage\Array.h" />
     <ClInclude Include="src\rage\Base.h" />
     <ClInclude Include="src\rage\DatOwner.h" />
@@ -141,7 +142,6 @@
     <ClCompile Include="src\rage\rmptfx\PtxEvolution.cpp" />
     <ClCompile Include="src\rage\rmptfx\PtxRule.cpp" />
     <ClCompile Include="src\rage\rmptfx\RmPtfxShaderVar.cpp" />
-    <ClCompile Include="src\rage\Shader.cpp" />
     <ClCompile Include="src\rage\Texture.cpp" />
     <ClCompile Include="src\ResourceLoader.cpp" />
     <ClCompile Include="src\RSC5Layout.cpp" />

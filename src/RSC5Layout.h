@@ -48,6 +48,10 @@ public:
     template<typename T> 
     void AddObject(const T* object, eBlockType blockType, uint32_t count = 1)
     {
+        assert(object != nullptr);
+        assert(sizeof(T) > 0);
+        assert(count > 0);
+
         RSC5Object rscObject
         {
             .Ptr = object,
@@ -73,6 +77,11 @@ public:
         T* oldObj = obj;
         obj = (T*)mObjectsPositions[obj];
         memcpy((uint8_t*)obj + mResource.GetFixUp(obj), oldObj, objSize);
+    }
+
+    void BackupPtr(void* ptr)
+    {
+        mOldObjectsPositions.push_back(std::make_pair<void*, void*>((void*)&ptr, (void*)*(uint32_t*)&ptr));
     }
 
 private:
