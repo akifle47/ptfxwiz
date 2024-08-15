@@ -52,6 +52,9 @@ public:
         assert(sizeof(T) > 0);
         assert(count > 0);
 
+        if(std::find(mObjectsPtrs.cbegin(), mObjectsPtrs.cend(), object) != mObjectsPtrs.cend())
+            return;
+
         RSC5Object rscObject
         {
             .Ptr = object,
@@ -60,9 +63,7 @@ public:
             .BlockType = blockType,
         };
 
-        if(std::find(mObjects.cbegin(), mObjects.cend(), rscObject) != mObjects.end())
-            return;
-
+        mObjectsPtrs.push_back(rscObject.Ptr);
         mObjects.push_back(rscObject);
     }
 
@@ -113,6 +114,9 @@ private:
     rage::datResourceInfo mResourceInfo;
 
     std::vector<RSC5Object> mObjects;
+    //this is used to check if an object has already been added to mObjects as looping through every entry in it can get pretty slow when it has
+    //thousands of entries since each one is 16 bytes.
+    std::vector<const void*> mObjectsPtrs;
     std::map<const void*, const void*> mObjectsPositions;
     std::vector<std::pair<void*, void*>> mOldObjectsPositions;
 
