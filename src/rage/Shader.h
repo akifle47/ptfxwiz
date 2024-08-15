@@ -47,10 +47,6 @@ namespace rage
                     {
                         new(mEntries[i].AsTextureRef) grcTextureReference(rsc);
                     }
-                    else if(mEntries[i].AsTexture->mResourceType == grcTexture::eType::STANDARD)
-                    {
-                        new(mEntries[i].AsTexture) grcTexturePC(rsc);
-                    }
                 }
             }
         }
@@ -69,12 +65,7 @@ namespace rage
 
                 if(!mEntriesCounts[i])
                 {
-                    if(mEntries[i].AsTexture->mResourceType == grcTexture::eType::STANDARD)
-                    {
-                        layout.AddObject(mEntries[i].AsTexture, RSC5Layout::eBlockType::VIRTUAL);
-                        mEntries[i].AsTexture->AddToLayout(layout, depth);
-                    }
-                    else if(mEntries[i].AsTextureRef->mResourceType == grcTexture::eType::REFERENCE)
+                    if(mEntries[i].AsTextureRef->mResourceType == grcTexture::eType::REFERENCE)
                     {
                         layout.AddObject(mEntries[i].AsTextureRef, RSC5Layout::eBlockType::VIRTUAL);
                         mEntries[i].AsTextureRef->AddToLayout(layout, depth);
@@ -110,11 +101,6 @@ namespace rage
                         {
                             mEntries[i].AsTextureRef->SerializePtrs(layout, rsc, depth + 1);
                             layout.SerializePtr(mEntries[i].AsTextureRef, sizeof(grcTextureReference));
-                        }
-                        else if(mEntries[i].AsTexture->mResourceType == grcTexture::eType::STANDARD)
-                        {
-                            mEntries[i].AsTexture->SerializePtrs(layout, rsc, depth + 1);
-                            layout.SerializePtr(mEntries[i].AsTexture, sizeof(grcTexturePC));
                         }
                     break;
 
