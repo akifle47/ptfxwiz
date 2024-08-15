@@ -58,8 +58,7 @@ public:
         RSC5Object rscObject
         {
             .Ptr = object,
-            .Size = sizeof(T),
-            .Count = count,
+            .Size = sizeof(T) * count,
             .BlockType = blockType,
         };
 
@@ -88,19 +87,13 @@ public:
 private:
     struct RSC5Object
     {
-        uint32_t GetSize() const
+        inline uint32_t GetSize() const
         {
-            return Size * Count;
-        }
-
-        bool operator==(const RSC5Object& rhs) const
-        {
-            return Ptr == rhs.Ptr;
+            return Size;
         }
 
         const void* Ptr;
         uint32_t Size;
-        uint32_t Count;
 
         eBlockType BlockType;
     };
