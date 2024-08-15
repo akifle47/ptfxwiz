@@ -87,11 +87,6 @@ public:
 private:
     struct RSC5Object
     {
-        inline uint32_t GetSize() const
-        {
-            return Size;
-        }
-
         const void* Ptr;
         uint32_t Size;
 

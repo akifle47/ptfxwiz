@@ -37,8 +37,18 @@ void RSC5Layout::Create()
     mResourceInfo.IsResource   = true;
     mResourceInfo.IsCompressed = true;
 
+    struct
+    {
+        bool operator()(const RSC5Layout::RSC5Object &a, const RSC5Layout::RSC5Object &b) const { return a.Size > b.Size; }
+    } sortBySize;
+
+    std::sort(virtualObjects.begin(), virtualObjects.end(), sortBySize);
+    std::sort(physicalObjects.begin(), physicalObjects.end(), sortBySize);
+
     ProcessObjects(virtualObjects);
+    Log::Info("Done processing virtual objects.");
     ProcessObjects(physicalObjects);
+    Log::Info("Done processing physical objects.");
 }
 
 void RSC5Layout::ProcessObjects(std::span<RSC5Object> objects)
@@ -63,13 +73,13 @@ void RSC5Layout::ProcessObjects(std::span<RSC5Object> objects)
     //*ensure page can fit the largest object (?)
     for(const auto& object : objects)
     {
-        while(object.GetSize() > info.PageSize)
+        while(object.Size > info.PageSize)
             info.PageSize = basePageSize << ++info.PageSizeFactor;
     }
 
     std::vector<uint32_t> pageMapping(1, info.PageSize);
-    std::vector<bool> isObjectUsed(objects.size());
-
+    std::vector<uint8_t> isObjectUsed(objects.size());
+    
     uint32_t pageSize = pageMapping.back();
     uint32_t posInPage = 0;
     uint32_t pagePos = 0;
@@ -89,18 +99,21 @@ void RSC5Layout::ProcessObjects(std::span<RSC5Object> objects)
 
     for(uint8_t pass = 0; pass < 1 + USE_SMALL_PAGES; pass++)
     {
-        while(!std::all_of(isObjectUsed.cbegin(), isObjectUsed.cend(), [](bool b) { return b == true; } ))
+        while(!std::all_of(isObjectUsed.crbegin(), isObjectUsed.crend(), [](bool b) { return b == true; } ))
         {
             uint32_t selectedObjectSize = 0;
             int32_t selectedObjectIndex = -1;
 
+            //this is probably only faster in debug builds but i'll go insane if i have to wait 2 minutes every time i have to test my code
+            uint8_t* isObjectUsedPtr = isObjectUsed.data();
+            uint32_t objCount = objects.size();
             //*find the largest unused object
-            for(uint32_t i = 0; i < objects.size(); i++)
+            for(uint32_t i = 0; i < objCount; i++)
             {
-                if(isObjectUsed[i]) 
+                if(isObjectUsedPtr[i]) 
                     continue;
 
-                uint32_t objectSize = objects[i].GetSize();
+                uint32_t objectSize = objects[i].Size;
                 if(posInPage + objectSize <= pageSize && objectSize > selectedObjectSize)
                 {
                     selectedObjectSize = objectSize;
@@ -242,7 +255,7 @@ void RSC5Layout::ProcessObjects(std::span<RSC5Object> objects)
                 if(currPtr < lastPagePos) 
                     continue;
 
-                uint32_t objSize = objects[i].GetSize();
+                uint32_t objSize = objects[i].Size;
                 bool ok = false;
 
                 // check in which small page this object can be placed
