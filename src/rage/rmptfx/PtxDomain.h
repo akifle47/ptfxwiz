@@ -1,8 +1,7 @@
 #pragma once
 #include "PtxKeyFrame.h"
 #include "../DatOwner.h"
-#include "../Vector.h"
-#include "../Matrix.h"
+#include "../math/Matrix.h"
 
 namespace rage
 {

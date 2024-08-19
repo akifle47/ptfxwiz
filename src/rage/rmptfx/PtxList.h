@@ -1,8 +1,8 @@
 #pragma once
 #include "../../Utils.h"
 #include "../Dictionary.h"
-#include "../Texture.h"
-#include "../Drawable.h"
+#include "../grcore/Texture.h"
+#include "../grmodel/Drawable.h"
 #include "PtxRule.h"
 #include "PtxEmitRule.h"
 #include "PtxEffectRule.h"

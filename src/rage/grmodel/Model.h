@@ -1,7 +1,7 @@
 #pragma once
-#include "Base.h"
-#include "Geometry.h"
-#include "../Utils.h"
+#include "../Base.h"
+#include "../grcore/Geometry.h"
+#include "../../Utils.h"
 
 namespace rage
 {

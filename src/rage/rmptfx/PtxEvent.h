@@ -1,6 +1,6 @@
 #pragma once
 #include "../../Utils.h"
-#include "../Vector.h"
+#include "../math/Vector.h"
 #include "PtxDomain.h"
 #include "PtxTriggerEvent.h"
 #include "PtxEvolution.h"

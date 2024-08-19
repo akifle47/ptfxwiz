@@ -1,7 +1,7 @@
 #pragma once
-#include "Base.h"
-#include "Dictionary.h"
-#include "Array.h"
+#include "../Base.h"
+#include "../Dictionary.h"
+#include "../Array.h"
 #include "Shader.h"
 
 namespace rage

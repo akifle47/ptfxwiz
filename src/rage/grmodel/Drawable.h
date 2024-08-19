@@ -1,11 +1,11 @@
 #pragma once
-#include "../Utils.h"
-#include "Vector.h"
-#include "Array.h"
+#include "../../Utils.h"
+#include "../math/Vector.h"
+#include "../Array.h"
 #include "Model.h"
 #include "Skeleton.h"
 #include "ShaderGroup.h"
-#include "2DEffects.h"
+#include "../2DEffects.h"
 
 namespace rage
 {

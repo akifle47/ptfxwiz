@@ -1,5 +1,5 @@
 #pragma once
-#include "Vector.h"
+#include "math/Vector.h"
 #include "../Utils.h"
 
 class C2dEffect

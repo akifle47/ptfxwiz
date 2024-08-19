@@ -2,7 +2,7 @@
 #include "../../Utils.h"
 #include "../Resource.h"
 #include "PtxKeyFrame.h"
-#include "../Texture.h"
+#include "../grcore/Texture.h"
 
 namespace rage
 {

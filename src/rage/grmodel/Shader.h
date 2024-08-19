@@ -1,11 +1,10 @@
 #pragma once
-#include "Base.h"
-#include "Array.h"
-#include "Dictionary.h"
-#include "TextureReference.h"
-#include "Matrix.h"
-#include "Vector.h"
-#include "../Utils.h"
+#include "../Base.h"
+#include "../Array.h"
+#include "../Dictionary.h"
+#include "../grcore/TextureReference.h"
+#include "../math/Matrix.h"
+#include "../../Utils.h"
 
 namespace rage
 {

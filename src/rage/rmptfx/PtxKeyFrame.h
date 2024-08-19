@@ -2,7 +2,7 @@
 #include "../../Utils.h"
 #include "../Base.h"
 #include "../Array.h"
-#include "../Vector.h"
+#include "../math/Vector.h"
 
 namespace rage
 {

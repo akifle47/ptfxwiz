@@ -1,7 +1,7 @@
 #pragma once
-#include "Base.h"
-#include "Resource.h"
-#include "../DDS.h"
+#include "../Base.h"
+#include "../Resource.h"
+#include "../../DDS.h"
 
 #include <d3d9.h>
 

@@ -1,7 +1,7 @@
 #pragma once
-#include "Matrix.h"
-#include "Array.h"
-#include "../Utils.h"
+#include "../math/Matrix.h"
+#include "../Array.h"
+#include "../../Utils.h"
 
 #include <cstdint>
 

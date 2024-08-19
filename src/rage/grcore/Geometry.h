@@ -1,7 +1,7 @@
 #pragma once
-#include "../Utils.h"
-#include "Array.h"
-#include "Base.h"
+#include "../../Utils.h"
+#include "../Array.h"
+#include "../Base.h"
 #include "VertexDecl.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
