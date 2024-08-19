@@ -19,7 +19,7 @@ namespace rage
         {
             mGeometries.AddToLayout(layout, depth);
 
-            layout.AddObject(mBounds.Get(), RSC5Layout::eBlockType::VIRTUAL, mGeometries.mCount + (mGeometries.mCount == 0 ? 0 : 1));
+            layout.AddObject(mBounds.Get(), RSC5Layout::eBlockType::VIRTUAL, mGeometries.GetCount() + (mGeometries.GetCount() == 0 ? 0 : 1));
             layout.AddObject(mShaderMappings.Get(), RSC5Layout::eBlockType::VIRTUAL, mShaderMappingCount);
         }
 

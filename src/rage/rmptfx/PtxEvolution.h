@@ -105,9 +105,9 @@ namespace rage
         {
             uint16_t newEntryIndex = 0;
 
-            if(mList.mCount)
+            if(mList.GetCount())
             {
-                for(uint16_t i = 0; i < mList.mCount; i++)
+                for(uint16_t i = 0; i < mList.GetCount(); i++)
                 {
                     if(mList[i].first < hash)
                         newEntryIndex = i;

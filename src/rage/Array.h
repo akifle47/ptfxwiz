@@ -18,15 +18,15 @@ namespace rage
             mCapacity = capacity;
         }
 
-        atArray(const atArray<T, CounterT>& rhs)
+        atArray(const atArray<T, CounterT>& that)
         {
-            mCount = rhs.mCount;
-            mCapacity = rhs.mCapacity;
+            mCount = that.mCount;
+            mCapacity = that.mCapacity;
             mElements = new T[mCapacity];
 
             for(CounterT i = 0; i < mCount; i++)
             {
-                mElements[i] = rhs.mElements[i];
+                mElements[i] = that.mElements[i];
             }
         }
 
@@ -48,9 +48,36 @@ namespace rage
 
         ~atArray()
         {
+            Clear();
+        }
+
+        atArray<T, CounterT>& operator=(const atArray<T, CounterT>& that)
+        {
+            if(this == &that)
+            {
+                return *this;
+            }
+
+            Clear();
+
+            mCount = that.mCount;
+            mCapacity = that.mCapacity;
+            mElements = new T[mCapacity];
+
+            for(CounterT i = 0; i < mCount; i++)
+            {
+                mElements[i] = that.mElements[i];
+            }
+
+            return *this;
+        }
+
+        void Clear()
+        {
             if(mElements)
             {
                 delete[] mElements;
+                mElements = nullptr;
             }
         }
 
@@ -80,6 +107,12 @@ namespace rage
             mElements[index] = entry;
         }
 
+        T& Append()
+        {
+            assert(mCount <= mCapacity);
+            return mElements[mCount++];
+        }
+
         T& Grow(CounterT allocStep = 16)
         {
             if(mCount == mCapacity)
@@ -97,6 +130,16 @@ namespace rage
             }
 
             return mElements[mCount++];
+        }
+
+        CounterT GetCount() const
+        {
+            return mCount;
+        }
+
+        CounterT GetCapacity() const
+        {
+            return mCapacity;
         }
 
         void AddToLayout(RSC5Layout& layout, uint32_t depth)
@@ -136,6 +179,7 @@ namespace rage
             new(that) atArray<T>(rsc);
         }
 
+    private:
         T* mElements;
         CounterT mCount;
         CounterT mCapacity;
