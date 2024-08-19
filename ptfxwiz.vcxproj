@@ -93,6 +93,7 @@
   <ItemGroup>
     <ClInclude Include="src\AString.h" />
     <ClInclude Include="src\DDS.h" />
+    <ClInclude Include="src\EffectList.h" />
     <ClInclude Include="src\Log.h" />
     <ClInclude Include="src\rage\2DEffects.h" />
     <ClInclude Include="src\rage\Array.h" />
@@ -100,6 +101,7 @@
     <ClInclude Include="src\rage\DatOwner.h" />
     <ClInclude Include="src\rage\DatRef.h" />
     <ClInclude Include="src\rage\Dictionary.h" />
+    <ClInclude Include="src\rage\grcore\Effect.h" />
     <ClInclude Include="src\rage\grmodel\Drawable.h" />
     <ClInclude Include="src\rage\grcore\fvf.h" />
     <ClInclude Include="src\rage\grcore\Geometry.h" />
@@ -136,7 +138,9 @@
     <ClInclude Include="src\Utils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\EffectList.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\rage\grcore\Effect.cpp" />
     <ClCompile Include="src\rage\Resource.cpp" />
     <ClCompile Include="src\rage\rmptfx\PtxDomain.cpp" />
     <ClCompile Include="src\rage\rmptfx\PtxEffectRule.cpp" />

@@ -141,6 +141,12 @@
     <ClInclude Include="src\rage\2DEffects.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\rage\grcore\Effect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EffectList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\AString.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -180,6 +186,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\rage\rmptfx\PtxEvolution.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rage\grcore\Effect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EffectList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
