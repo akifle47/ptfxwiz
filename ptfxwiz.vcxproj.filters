@@ -141,6 +141,9 @@
     <ClInclude Include="src\rage\2DEffects.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\AString.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\rage\rmptfx\PtxRule.cpp">
