@@ -21,6 +21,11 @@ public:
         mString = strdup(str);
     }
 
+    AString(const AString& that)
+    {
+        mString = strdup(that.mString);
+    }
+
     ~AString()
     {
         if(mString)
@@ -68,6 +73,11 @@ public:
     bool operator==(const AString& rhs)
     {
         return strcmp(mString, rhs.mString) == 0;
+    }
+
+    bool operator==(const char* rhs)
+    {
+        return strcmp(mString, rhs) == 0;
     }
 
     char& operator[](uint32_t index)
