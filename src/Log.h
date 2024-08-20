@@ -3,7 +3,7 @@
 
 namespace Log
 {
-    static bool msBreakOnError = true;
+    inline bool mBreakOnError = true;
 
     template<typename ...Args>
     inline void Info(const char* fmt, Args ...args)
@@ -28,7 +28,7 @@ namespace Log
         printf("\n");
 
 #ifdef _DEBUG
-        if(msBreakOnError)
+        if(mBreakOnError)
             __debugbreak();
 #endif
     }
