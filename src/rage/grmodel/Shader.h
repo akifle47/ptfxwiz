@@ -153,7 +153,7 @@ namespace rage
             field_50.AddToLayout(layout, depth);
 
             layout.AddObject(mName, RSC5Layout::eBlockType::VIRTUAL, strlen(mName) + 1);
-            layout.AddObject(mPresetName, RSC5Layout::eBlockType::VIRTUAL, strlen(mName) + 1);
+            layout.AddObject(mPresetName, RSC5Layout::eBlockType::VIRTUAL, strlen(mPresetName) + 1);
 
             mShaderPresetParams.AddToLayout(layout, depth);
         }
