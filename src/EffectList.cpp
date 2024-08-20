@@ -63,9 +63,9 @@ namespace EffectList
         return true;
     }
 
-    const rage::grcEffect* GetEffectByHash(uint32_t hash)
+    rage::grcEffect* GetEffectByHash(uint32_t hash)
     {
-        for(const auto& effect : sEffects)
+        for(auto& effect : sEffects)
         {
             if(effect.GetHash() == hash)
                 return &effect;
@@ -75,11 +75,11 @@ namespace EffectList
         return nullptr;
     }
 
-    const rage::grcEffect* EffectList::GetEffectByName(const char* name)
+    rage::grcEffect* EffectList::GetEffectByName(const char* name)
     {
         uint32_t hash = rage::atStringHash(name);
 
-        for(const auto& effect : sEffects)
+        for(auto& effect : sEffects)
         {
             if(effect.GetHash() == hash)
                 return &effect;

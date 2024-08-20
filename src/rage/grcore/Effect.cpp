@@ -1,6 +1,7 @@
 #include "Effect.h"
 #include "TextureReference.h"
 #include "../StringHash.h"
+#include "../../EffectList.h"
 
 namespace rage
 {
@@ -67,6 +68,21 @@ namespace rage
         }
     }
 
+    const grcParameter* grcEffect::FindParameterByName(const char* name) const
+    {
+        return FindParameterByHash(atStringHash(name));
+    }
+
+    const grcParameter* grcEffect::FindParameterByHash(uint32_t hash) const
+    {
+        for(uint16_t i = 0; i < mParameters.GetCount(); i++)
+        {
+            if(mParameters[i].mName1Hash == hash)
+                return &mParameters[i];
+        }
+
+        return nullptr;
+    }
 
     //grcProgram
 
@@ -118,12 +134,17 @@ namespace rage
 
     //grcParameter
 
+    uint32_t grcParameter::GetTotalSize() const
+    {
+        return mCount * 16 * sParamTypeSizeFactor[(uint32_t)mType];
+    }
+
     void grcParameter::Load(std::ifstream& file)
     {
         file.read((char*)&mType, 1);
         file.read((char*)&mCount, 1);
 
-        if(!mCount && mType != Type::SAMPLER_STATE)
+        if(!mCount && mType != Type::TEXTURE)
         {
             mCount = 1;
         }
@@ -150,7 +171,7 @@ namespace rage
         if(!mSize)
             return;
 
-        if(mType == Type::SAMPLER_STATE)
+        if(mType == Type::TEXTURE)
         {
             mValue.AsVoid = new uint8_t[4 * mSize];
             file.read((char*)mValue.AsVoid, 4 * mSize);
@@ -264,6 +285,9 @@ namespace rage
                 }
             }
         }
+
+        mEffect = EffectList::GetEffectByHash(mEffectHash);
+        assert(mEffect != nullptr);
     }
 
     void grcInstanceData::AddToLayout(RSC5Layout& layout, uint32_t depth)
@@ -271,7 +295,7 @@ namespace rage
         if(!mEntries)
             return;
 
-        layout.AddObject(mEntries, RSC5Layout::eBlockType::VIRTUAL, mTotalSize);
+        layout.AddObject((uint8_t*)mEntries, RSC5Layout::eBlockType::VIRTUAL, mTotalSize);
 
         for(uint8_t i = 0; i < mCount; i++)
         {
@@ -286,10 +310,6 @@ namespace rage
                     mEntries[i].AsTextureRef->AddToLayout(layout, depth);
                 }
             }
-            else
-            {
-                layout.AddObject((uint8_t*)mEntries[i].AsVoid, RSC5Layout::eBlockType::VIRTUAL);
-            }
         }
     }
 
@@ -300,52 +320,33 @@ namespace rage
 
         uint32_t countsOffset = 4 * ((mCount + 3) & ~3u); //alligned to 4
         uint32_t hashesOffset = ((mCount + 15) & ~15) + countsOffset; //alligned to 16
-        uint32_t nextEntryOffset = countsOffset + hashesOffset;
+        uint32_t entriesOffset = countsOffset + hashesOffset;
 
-        //todo: important!! this should be done by finding the effect this instance uses then the parameter and getting the entry/param size-
-        //from that, but i cant load effects yet so im using this method from LibertyFourXYZ which i assume mostly works. see 0xAC60 on patch 8
+        Entry* entriesO = mEntries;
+        layout.SerializePtr(mEntries, mTotalSize);
+        Entry* newEntries = (Entry*)((uint8_t*)(mEntries) + rsc.GetFixUp((void*)mEntries));
+
         for(uint8_t i = 0; i < mCount; i++)
         {
-            if(!mEntries[i].AsVoid)
+            if(!newEntries[i].AsVoid)
                 continue;
 
-            switch(mEntriesCounts[i])
+            const grcParameter* param = mEffect->FindParameterByHash(mEntriesHashes[i]);
+
+            if(param->mType == grcParameter::Type::TEXTURE)
             {
-                case 0:
-                if(mEntries[i].AsTextureRef->mResourceType == grcTexture::eType::REFERENCE)
+                if(newEntries[i].AsTextureRef->mResourceType == grcTexture::eType::REFERENCE)
                 {
-                    mEntries[i].AsTextureRef->SerializePtrs(layout, rsc, depth + 1);
-                    layout.SerializePtr(mEntries[i].AsTextureRef, sizeof(grcTextureReference));
+                    entriesO[i].AsTextureRef->SerializePtrs(layout, rsc, depth + 1);
+                    layout.SerializePtr(entriesO[i].AsTextureRef, sizeof(grcTextureReference));
+                    newEntries[i].AsTextureRef = entriesO[i].AsTextureRef;
+                    continue;
                 }
-                break;
-
-                case 1:
-                case 4:
-                case 8:
-                case 14:
-                case 15:
-                case 16:
-                {
-                    uint32_t size = 0;
-                    if(mEntriesCounts[i] == 8)
-                        size = 16 * 6;
-                    else
-                        size = 16 * mEntriesCounts[i];
-
-                    uintptr_t *entry = (uintptr_t*)((uintptr_t)mEntries + nextEntryOffset);
-                    layout.SerializePtr(entry, size);
-                    mEntries[i].AsVoid = entry;
-
-                    nextEntryOffset += size;
-                }
-                break;
-
-                default:
-                __debugbreak();
             }
-        }
 
-        layout.SerializePtr(mEntries, mTotalSize);
+            newEntries[i].AsVoid = ((uint8_t*)mEntries + entriesOffset);
+            entriesOffset += param->GetTotalSize();
+        }
 
         layout.BackupPtr(mEntriesCounts);
         mEntriesCounts = (uint8_t*)((uintptr_t)mEntries + countsOffset);

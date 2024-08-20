@@ -23,6 +23,8 @@ namespace rage
         };
 
     public:
+        friend class grcEffect;
+
         grcInstanceData() = default;
         grcInstanceData(const datResource& rsc);
 
@@ -116,6 +118,8 @@ namespace rage
     class grcPass
     {
     public:
+        friend class grcEffect;
+
         void Load(std::ifstream& file);
     
     private:
@@ -129,6 +133,8 @@ namespace rage
     class grcPasses
     {
     public:
+        friend class grcEffect;
+
         void Load(std::ifstream& file);
 
     private:
@@ -141,6 +147,8 @@ namespace rage
     class grcTechnique
     {
     public:
+        friend class grcEffect;
+
         grcTechnique() : mNameHash(0), mName(nullptr), mPasses() {}
 
         ~grcTechnique()
@@ -200,9 +208,12 @@ namespace rage
     class grcParameter
     {
     public:
+        friend class grcEffect;
+        friend class grcInstanceData;
+
         enum class Type : uint8_t
         {
-            NONE = 0, INT, FLOAT, VECTOR2, VECTOR3, VECTOR4, SAMPLER_STATE, BOOL, MATRIX3X4, MATRIX4X4, STRING, COUNT
+            NONE = 0, INT, FLOAT, VECTOR2, VECTOR3, VECTOR4, TEXTURE, BOOL, MATRIX3X4, MATRIX4X4, STRING, COUNT
         };
 
         
@@ -231,6 +242,14 @@ namespace rage
             }
         }
 
+        const char* GetName1() const { return mName1; };
+        const char* GetName2() const { return mName2; };
+        uint32_t GetName1Hash() const { return mName1Hash; };
+        uint32_t GetName2Hash() const { return mName2Hash; };
+
+        Type GetType() const { return mType; }
+
+        uint32_t GetTotalSize() const;
         void Load(std::ifstream& file);
 
     private:
@@ -332,6 +351,9 @@ namespace rage
                 mFilePath = nullptr;
             }
         }
+
+        const grcParameter* FindParameterByName(const char* name) const;
+        const grcParameter* FindParameterByHash(uint32_t hash) const;
 
         uint32_t GetHash() const { return mEffectHash; }
 
