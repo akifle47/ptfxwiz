@@ -1,20 +1,29 @@
 #include "ResourceLoader.h"
+#include "AString.h"
 
 #include <fstream>
 #include <zlib/zlib.h>
 
 bool ResourceLoader::Load(std::filesystem::path filePath, uint32_t expectedVersion, rage::datResource* rscOut, rage::datResourceInfo* infoOut)
 {
+    AString absolutePath(std::filesystem::absolute(filePath).string().c_str());
+
     if(!rscOut)
     {
         Log::Error("rscOut must not be nullptr.");
         return false;
     }
 
+    if(!std::filesystem::exists(filePath))
+    {
+        Log::Error("File \"%s\" does not exist.", absolutePath.Get());
+        return false;
+    }
+
     std::ifstream file(filePath, std::ios::binary);
     if(!file.good())
     {
-        Log::Error("Failed to open resource file %s.", filePath.string().c_str());
+        Log::Error("Unable to open resource file \"%s\".", absolutePath.Get());
         return false;
     }
 
@@ -27,13 +36,13 @@ bool ResourceLoader::Load(std::filesystem::path filePath, uint32_t expectedVersi
 
     if(rscHeader.Magic != rage::datResourceFileHeader::MAGIC_RSC5)
     {
-        Log::Error("%s uses an unsupported version or is not a resource file.", filePath.string().c_str());
+        Log::Error("File \"%s\" uses an unsupported version or is not a resource file.", absolutePath.Get());
         return false;
     }
 
     if(rscHeader.Version != expectedVersion)
     {
-        Log::Error("Failed to load \"%s\" - Caller expected a resource using version %d but the resource uses version %d.", filePath.string().c_str(), expectedVersion, rscHeader.Version);
+        Log::Error("Failed to load resource file \"%s\" - Expected version %d but the resource uses version %d.", absolutePath.Get(), expectedVersion, rscHeader.Version);
         return false;
     };
     
