@@ -20,14 +20,14 @@ namespace rage
             mGeometries.AddToLayout(layout, depth);
 
             layout.AddObject(mBounds.Get(), RSC5Layout::eBlockType::VIRTUAL, mGeometries.GetCount() + (mGeometries.GetCount() == 0 ? 0 : 1));
-            layout.AddObject(mShaderMappings.Get(), RSC5Layout::eBlockType::VIRTUAL, mShaderMappingCount);
+            layout.AddObject(mShaderMappings.Get(), RSC5Layout::eBlockType::VIRTUAL, sizeof(uint16_t) * mShaderMappingCount);
         }
 
         void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
         {
             mGeometries.SerializePtrs(layout, rsc, depth);
             mBounds.SerializePtrs(layout, rsc, depth);
-            mShaderMappings.SerializePtrs(layout, rsc, depth);
+            layout.SerializePtr(mShaderMappings.Get(), sizeof(uint16_t) * mShaderMappingCount);
         }
 
         atArray<datOwner<grmGeometryQB>> mGeometries;
