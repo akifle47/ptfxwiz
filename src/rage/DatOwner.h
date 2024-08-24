@@ -71,7 +71,14 @@ namespace rage
                 Ptr->SerializePtrs(layout, rsc, depth + 1);
             }
 
-            layout.SerializePtr(Ptr, sizeof(T));
+            if constexpr(requires { Ptr->GetObjectSize(); })
+            {
+                layout.SerializePtr(Ptr, Ptr->GetObjectSize());
+            }
+            else
+            {
+                layout.SerializePtr(Ptr, sizeof(T));
+            }
         }
 
         inline void Place(void* that, const datResource& rsc)

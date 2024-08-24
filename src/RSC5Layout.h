@@ -45,6 +45,7 @@ public:
 
     //ideally these would be private functions that can be acessed by serializable classes in some way like declaring them friends but that would 
     //mean declaring every single serializable class a friend since friendship doesnt transfer to children and i cant think of a better way to do this rn
+
     template<typename T> 
     void AddObject(const T* object, eBlockType blockType, uint32_t count = 1)
     {
@@ -58,9 +59,16 @@ public:
         RSC5Object rscObject
         {
             .Ptr = object,
-            .Size = sizeof(T) * count,
-            .BlockType = blockType,
+            .BlockType = blockType
         };
+        if constexpr(requires { object->GetObjectSize(); })
+        {
+            rscObject.Size = object->GetObjectSize() * count;
+        }
+        else
+        {
+            rscObject.Size = sizeof(T) * count;
+        }
 
         mObjectsPtrs.push_back(rscObject.Ptr);
         mObjects.push_back(rscObject);
