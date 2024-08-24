@@ -32,4 +32,5 @@ namespace rage
         char* mName;
         grcTexture* mTexture;
     };
+    ASSERT_SIZE(grcTextureReference, 0x1C);
 }
