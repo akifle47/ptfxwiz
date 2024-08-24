@@ -17,7 +17,7 @@ namespace rage
 
         void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
         {
-            layout.SerializePtr(mIndexData.Get(), sizeof(mIndexCount) * mIndexCount);
+            layout.SerializePtr(mIndexData.Get(), sizeof(uint16_t) * mIndexCount);
         }
 
         uint32_t mIndexCount;
