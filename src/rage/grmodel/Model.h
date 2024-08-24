@@ -26,7 +26,8 @@ namespace rage
         void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
         {
             mGeometries.SerializePtrs(layout, rsc, depth);
-            mBounds.SerializePtrs(layout, rsc, depth);
+
+            layout.SerializePtr(mBounds.Get(), sizeof(Vector4) * (mGeometries.GetCount() + (mGeometries.GetCount() == 0 ? 0 : 1)));
             layout.SerializePtr(mShaderMappings.Get(), sizeof(uint16_t) * mShaderMappingCount);
         }
 

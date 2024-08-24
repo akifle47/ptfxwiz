@@ -61,11 +61,6 @@ namespace rage
             if(!Ptr)
                 return;
 
-            if constexpr(requires { Ptr->SerializePtrs(layout, rsc, depth); })
-            {
-                Ptr->SerializePtrs(layout, rsc, depth + 1);
-            }
-
             layout.SerializePtr(Ptr, sizeof(T));
         }
 
