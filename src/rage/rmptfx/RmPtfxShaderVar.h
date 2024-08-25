@@ -1,6 +1,7 @@
 #pragma once
 #include "../../Utils.h"
 #include "../Resource.h"
+#include "../DatRef.h"
 #include "PtxKeyFrame.h"
 #include "../grcore/Texture.h"
 
@@ -31,7 +32,11 @@ namespace rage
             delete[] mName;
         }
 
+        void AddToLayout(RSC5Layout& layout, uint32_t depth);
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth);
+
         void Place(void* that, const datResource& rsc);
+        uint32_t GetObjectSize() const;
 
         int32_t field_4;
         char* mName;
@@ -112,9 +117,8 @@ namespace rage
     class rmPtfxShaderVar_Texture : public rmPtfxShaderVar
     {
     public:
-        rmPtfxShaderVar_Texture(const datResource& rsc)
+        rmPtfxShaderVar_Texture(const datResource& rsc) : mTexture(rsc)
         {
-            rsc.PointerFixUp(mTexture);
             rsc.PointerFixUp(mTextureName);
         }
 
@@ -123,7 +127,19 @@ namespace rage
             delete[] mTextureName;
         }
 
-        grcTexturePC* mTexture;
+        void AddToLayout(RSC5Layout& layout, uint32_t depth)
+        {
+            mTexture.AddToLayout(layout, depth);
+            layout.AddObject(mTextureName, RSC5Layout::eBlockType::VIRTUAL, strlen(mTextureName) + 1);
+        }
+
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
+        {
+            mTexture.SerializePtrs(layout, rsc, depth);
+            layout.SerializePtr(mTextureName, strlen(mTextureName) + 1);
+        }
+
+        datRef<grcTexturePC> mTexture;
         char* mTextureName;
         int8_t pad[8];
     };
@@ -134,6 +150,16 @@ namespace rage
     {
     public:
         rmPtfxShaderVar_Keyframe(const datResource& rsc) : mKeyframe(rsc) {}
+
+        void AddToLayout(RSC5Layout& layout, uint32_t depth)
+        {
+            mKeyframe.AddToLayout(layout, depth);
+        }
+
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
+        {
+            mKeyframe.SerializePtrs(layout, rsc, depth);
+        }
 
         int8_t field_20[8];
         rmPtfxKeyframe mKeyframe;

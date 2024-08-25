@@ -19,11 +19,17 @@ namespace rage
         ptxRule(const datResource& rsc) : mSpawnEffectA(rsc), mSpawnEffectB(rsc)
         {
             rsc.PointerFixUp(mName);
-            field_8 = 0;
-            mFlags &= ~2;
         }
 
+        void AddToLayout(RSC5Layout& layout, uint32_t depth);
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth);
+
         void Place(void* that, const datResource& rsc);
+
+        uint32_t GetObjectSize() const
+        {
+            return 0x6A0;
+        }
 
         int32_t field_8;
         float mFileVersion;
@@ -52,6 +58,20 @@ namespace rage
         //ptxSprite();
 
         ptxSprite(const datResource& rsc) : ptxRule(rsc), field_184(rsc), mProps(rsc), mShader(rsc) {}
+
+        void AddToLayout(RSC5Layout& layout, uint32_t depth)
+        {
+            field_184.AddToLayout(layout, depth);
+            mProps.AddToLayout(layout, depth);
+            mShader.AddToLayout(layout, depth);
+        }
+
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
+        {
+            field_184.SerializePtrs(layout, rsc, depth);
+            mProps.SerializePtrs(layout, rsc, depth);
+            mShader.SerializePtrs(layout, rsc, depth);
+        }
 
         float field_140;
         float field_144;
@@ -84,6 +104,18 @@ namespace rage
     {
     public:
         ptxModel(const datResource& rsc) : ptxRule(rsc), mDrawables(rsc), mProps(rsc) {}
+
+        void AddToLayout(RSC5Layout& layout, uint32_t depth)
+        {
+            mDrawables.AddToLayout(layout, depth);
+            mProps.AddToLayout(layout, depth);
+        }
+
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
+        {
+            mDrawables.SerializePtrs(layout, rsc, depth);
+            mProps.SerializePtrs(layout, rsc, depth);
+        }
 
         Vector3 mRotation;
         int8_t field_14C[4];

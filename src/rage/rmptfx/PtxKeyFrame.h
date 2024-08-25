@@ -36,6 +36,16 @@ namespace rage
 
         rmPtfxKeyframe(const datResource& rsc) : mEntries(rsc) {}
 
+        void AddToLayout(RSC5Layout& layout, uint32_t depth)
+        {
+            mEntries.AddToLayout(layout, depth);
+        }
+
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
+        {
+            mEntries.SerializePtrs(layout, rsc, depth);
+        }
+
         int8_t field_15;
         atArray<ptxKeyFrameEntry> mEntries;
         int32_t field_20;

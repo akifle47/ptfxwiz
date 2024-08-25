@@ -41,6 +41,24 @@ namespace rage
             delete[] mTechName;
         }
 
+        void AddToLayout(RSC5Layout& layout, uint32_t depth)
+        {
+            mVars.AddToLayout(layout, depth);
+            mShaderTemplate.AddToLayout(layout, depth);
+
+            layout.AddObject(mName, RSC5Layout::eBlockType::VIRTUAL, strlen(mName) + 1);
+            layout.AddObject(mTechName, RSC5Layout::eBlockType::VIRTUAL, strlen(mTechName) + 1);
+        }
+
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
+        {
+            mVars.SerializePtrs(layout, rsc, depth);
+            mShaderTemplate.SerializePtrs(layout, rsc, depth);
+
+            layout.SerializePtr(mName, strlen(mName) + 1);
+            layout.SerializePtr(mTechName, strlen(mTechName) + 1);
+        }
+
         char* mName;
         char* mTechName;
         //computed at runtime

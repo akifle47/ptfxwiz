@@ -28,6 +28,16 @@ namespace rage
 
         ptxTriggerEvent(const datResource& rsc) : field_60(rsc) {}
 
+        void AddToLayout(RSC5Layout& layout, uint32_t depth)
+        {
+            field_60.AddToLayout(layout, depth);
+        }
+
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
+        {
+            field_60.SerializePtrs(layout, rsc, depth);
+        }
+
         ptxTriggerEventScalars mEffectSpawnerAtRatio;
         int8_t field_24[0xC];
         ptxTriggerEventScalars mEffectSpawnerOnCollision;

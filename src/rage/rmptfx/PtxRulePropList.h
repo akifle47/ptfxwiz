@@ -2,6 +2,7 @@
 #include "../Base.h"
 #include "../DatRef.h"
 #include "PtxKeyFrame.h"
+#include "../grmodel/Drawable.h"
 
 namespace rage
 {
@@ -13,6 +14,16 @@ namespace rage
         inline void Place(void* that, const datResource& rsc)
         {
             new(that) ptxRulePropList_obj1(rsc);
+        }
+
+        void AddToLayout(RSC5Layout& layout, uint32_t depth)
+        {
+            field_40.AddToLayout(layout, depth);
+        }
+
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
+        {
+            field_40.SerializePtrs(layout, rsc, depth);
         }
 
         char mName[64];
@@ -31,6 +42,18 @@ namespace rage
 
         ptxRulePropList_obj2(const datResource& rsc) : mKeyFrame(rsc), field_2C(rsc) {}
 
+        void AddToLayout(RSC5Layout& layout, uint32_t depth)
+        {
+            mKeyFrame.AddToLayout(layout, depth);
+            field_2C.AddToLayout(layout, depth);
+        }
+
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
+        {
+            mKeyFrame.SerializePtrs(layout, rsc, depth);
+            field_2C.SerializePtrs(layout, rsc, depth);
+        }
+
         rmPtfxKeyframe mKeyFrame;
         int8_t field_28[4];
         datOwner<void*> field_2C;
@@ -47,6 +70,46 @@ namespace rage
                                                   mDampeningMinKF(rsc), mDampeningMaxKF(rsc), mMatrixWeightKF(rsc), mPlaybackRateKF(rsc), 
                                                   mAlphaKF(rsc), mPositionNoiseKF(rsc), mVelocityNoiseKF(rsc), mCollisionVelocityDampeningKF(rsc), 
                                                   mWindInfluenceKF(rsc), mVortexPropsKF(rsc) {}
+
+        void AddToLayout(RSC5Layout& layout, uint32_t depth)
+        {
+            mBiasLinks.AddToLayout(layout, depth);
+
+            mColorKF.AddToLayout(layout, depth);
+            mColorMaxKF.AddToLayout(layout, depth);
+            mAccelerationMinKF.AddToLayout(layout, depth);
+            mAccelerationMaxKF.AddToLayout(layout, depth);
+            mDampeningMinKF.AddToLayout(layout, depth);
+            mDampeningMaxKF.AddToLayout(layout, depth);
+            mMatrixWeightKF.AddToLayout(layout, depth);
+            mPlaybackRateKF.AddToLayout(layout, depth);
+            mAlphaKF.AddToLayout(layout, depth);
+            mPositionNoiseKF.AddToLayout(layout, depth);
+            mVelocityNoiseKF.AddToLayout(layout, depth);
+            mCollisionVelocityDampeningKF.AddToLayout(layout, depth);
+            mWindInfluenceKF.AddToLayout(layout, depth);
+            mVortexPropsKF.AddToLayout(layout, depth);
+        }
+
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
+        {
+            mBiasLinks.SerializePtrs(layout, rsc, depth);
+
+            mColorKF.SerializePtrs(layout, rsc, depth);
+            mColorMaxKF.SerializePtrs(layout, rsc, depth);
+            mAccelerationMinKF.SerializePtrs(layout, rsc, depth);
+            mAccelerationMaxKF.SerializePtrs(layout, rsc, depth);
+            mDampeningMinKF.SerializePtrs(layout, rsc, depth);
+            mDampeningMaxKF.SerializePtrs(layout, rsc, depth);
+            mMatrixWeightKF.SerializePtrs(layout, rsc, depth);
+            mPlaybackRateKF.SerializePtrs(layout, rsc, depth);
+            mAlphaKF.SerializePtrs(layout, rsc, depth);
+            mPositionNoiseKF.SerializePtrs(layout, rsc, depth);
+            mVelocityNoiseKF.SerializePtrs(layout, rsc, depth);
+            mCollisionVelocityDampeningKF.SerializePtrs(layout, rsc, depth);
+            mWindInfluenceKF.SerializePtrs(layout, rsc, depth);
+            mVortexPropsKF.SerializePtrs(layout, rsc, depth);
+        }
 
         atArray<ptxRulePropList_obj1> mBiasLinks;
         int8_t field_C[4];
@@ -76,6 +139,36 @@ namespace rage
                                                         mInitRotateVelKFOT(rsc), mRotateVelKF(rsc), mDirectionalKF(rsc), mDirectionalVelKF(rsc), 
                                                         mTextureAnimRateKF(rsc), mTrailPropsKF(rsc) {}
 
+        void AddToLayout(RSC5Layout& layout, uint32_t depth)
+        {
+            ptxRulePropList::AddToLayout(layout, depth);
+
+            mSizeKF.AddToLayout(layout, depth);
+            mThetaKF.AddToLayout(layout, depth);
+            mInitThetaKFOT.AddToLayout(layout, depth);
+            mInitRotateVelKFOT.AddToLayout(layout, depth);
+            mRotateVelKF.AddToLayout(layout, depth);
+            mDirectionalKF.AddToLayout(layout, depth);
+            mDirectionalVelKF.AddToLayout(layout, depth);
+            mTextureAnimRateKF.AddToLayout(layout, depth);
+            mTrailPropsKF.AddToLayout(layout, depth);
+        }
+
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
+        {
+            ptxRulePropList::SerializePtrs(layout, rsc, depth);
+
+            mSizeKF.SerializePtrs(layout, rsc, depth);
+            mThetaKF.SerializePtrs(layout, rsc, depth);
+            mInitThetaKFOT.SerializePtrs(layout, rsc, depth);
+            mInitRotateVelKFOT.SerializePtrs(layout, rsc, depth);
+            mRotateVelKF.SerializePtrs(layout, rsc, depth);
+            mDirectionalKF.SerializePtrs(layout, rsc, depth);
+            mDirectionalVelKF.SerializePtrs(layout, rsc, depth);
+            mTextureAnimRateKF.SerializePtrs(layout, rsc, depth);
+            mTrailPropsKF.SerializePtrs(layout, rsc, depth);
+        }
+
         ptxRulePropList_obj2 mSizeKF;
         ptxRulePropList_obj2 mThetaKF;
         ptxRulePropList_obj2 mInitThetaKFOT;
@@ -95,6 +188,38 @@ namespace rage
         ptxModelRulePropList(const datResource& rsc) : ptxRulePropList(rsc), mSizeMin(rsc), mSizeMax(rsc), mInitialThetaMin(rsc), 
                                                        mInitialThetaMax(rsc), mThetaMin(rsc), mThetaMax(rsc), mInitialRotationMin(rsc), 
                                                        mInitialRotationMax(rsc), mInitRotationSpeed(rsc), mRotationSpeed(rsc) {}
+
+        void AddToLayout(RSC5Layout& layout, uint32_t depth)
+        {
+            ptxRulePropList::AddToLayout(layout, depth);
+
+            mSizeMin.AddToLayout(layout, depth);
+            mSizeMax.AddToLayout(layout, depth);
+            mInitialThetaMin.AddToLayout(layout, depth);
+            mInitialThetaMax.AddToLayout(layout, depth);
+            mThetaMin.AddToLayout(layout, depth);
+            mThetaMax.AddToLayout(layout, depth);
+            mInitialRotationMin.AddToLayout(layout, depth);
+            mInitialRotationMax.AddToLayout(layout, depth);
+            mInitRotationSpeed.AddToLayout(layout, depth);
+            mRotationSpeed.AddToLayout(layout, depth);
+        }
+
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
+        {
+            ptxRulePropList::SerializePtrs(layout, rsc, depth);
+
+            mSizeMin.SerializePtrs(layout, rsc, depth);
+            mSizeMax.SerializePtrs(layout, rsc, depth);
+            mInitialThetaMin.SerializePtrs(layout, rsc, depth);
+            mInitialThetaMax.SerializePtrs(layout, rsc, depth);
+            mThetaMin.SerializePtrs(layout, rsc, depth);
+            mThetaMax.SerializePtrs(layout, rsc, depth);
+            mInitialRotationMin.SerializePtrs(layout, rsc, depth);
+            mInitialRotationMax.SerializePtrs(layout, rsc, depth);
+            mInitRotationSpeed.SerializePtrs(layout, rsc, depth);
+            mRotationSpeed.SerializePtrs(layout, rsc, depth);
+        }
 
         ptxRulePropList_obj2 mSizeMin;
         ptxRulePropList_obj2 mSizeMax;
@@ -117,12 +242,24 @@ namespace rage
             rsc.PointerFixUp(mName);
         }
 
+        void AddToLayout(RSC5Layout& layout, uint32_t depth)
+        {
+            layout.AddObject(mName, RSC5Layout::eBlockType::VIRTUAL, strlen(mName) + 1);
+            mDrawable.AddToLayout(layout, depth);
+        }
+
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
+        {
+            layout.SerializePtr(mName, strlen(mName) + 1);
+            mDrawable.SerializePtrs(layout, rsc, depth);
+        }
+
         inline void Place(void* that, const datResource& rsc)
         {
             new(that) PtxNameDrawablePair(rsc);
         }
 
         char* mName;
-        datRef<class rmcDrawable> mDrawable;
+        datRef<rmcDrawable> mDrawable;
     };
 }
