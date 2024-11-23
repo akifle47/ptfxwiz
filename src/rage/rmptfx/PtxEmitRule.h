@@ -2,6 +2,7 @@
 #include "../../Utils.h"
 #include "../ReferenceCounter.h"
 #include "PtxDomain.h"
+#include "../DatRef.h"
 
 namespace rage
 {
@@ -14,7 +15,15 @@ namespace rage
     class ptxEmitRule : public atReferenceCounter
     {
     public:
+        void AddToLayout(RSC5Layout& layout, uint32_t depth);
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth);
+
         void Place(void* that, const datResource& rsc);
+
+        uint32_t GetObjectSize() const
+        {
+            return 0x1F0;
+        }
     };
 
     class ptxEmitRuleStd : public ptxEmitRule
@@ -28,11 +37,12 @@ namespace rage
                                                      mDampeningKFOT(rsc), mMatrixWeightKFOT(rsc), mInheritVelKFOT(rsc)
             {
                 if(mPtxRuleName)
-                {
                     rsc.PointerFixUp(mPtxRuleName);
-                }
             }
             
+            void AddToLayout(RSC5Layout& layout, uint32_t depth);
+            void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth);
+
             datOwner<ptxDomain> mEmitterDomain;
             int8_t field_8[4];
             datOwner<ptxDomain> mVelocityDomain;
@@ -61,10 +71,13 @@ namespace rage
             assert(mFileVersion > 3.2f);
         }
 
+        void AddToLayout(RSC5Layout& layout, uint32_t depth);
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth);
+
         float mDuration;
         int8_t field_C[4];
         stdEmitterData mEmitterData;
-        datOwner<rmPtfxKeyframe> mKeyFrames[10];
+        datRef<rmPtfxKeyframe> mKeyFrames[10];
         char* mName;
         float mFileVersion;
         int32_t field_1E8;

@@ -19,11 +19,28 @@ namespace rage
         PtxList(const datResource& rsc)
         {
             mTextures.Place(&mTextures, rsc);
-            //todo
             mDrawables.Place(&mDrawables, rsc);
             mRules.Place(&mRules, rsc);
             mEmitRules.Place(&mEmitRules, rsc);
             mEffectRules.Place(&mEffectRules, rsc);
+        }
+
+        void AddToLayout(RSC5Layout& layout, uint32_t depth)
+        {
+            mTextures.AddToLayout(layout, depth);
+            mDrawables.AddToLayout(layout, depth);
+            mRules.AddToLayout(layout, depth);
+            mEmitRules.AddToLayout(layout, depth);
+            //mEffectRules.AddToLayout(layout, depth);
+        }
+
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
+        {
+            mTextures.SerializePtrs(layout, rsc, depth);
+            mDrawables.SerializePtrs(layout, rsc, depth);
+            mRules.SerializePtrs(layout, rsc, depth);
+            mEmitRules.SerializePtrs(layout, rsc, depth);
+            //mEffectRules->SerializePtrs(layout, rsc, depth);
         }
 
         inline void Place(void* that, const datResource& rsc)

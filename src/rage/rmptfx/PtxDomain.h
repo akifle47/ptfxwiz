@@ -20,7 +20,12 @@ namespace rage
     public:
         ptxDomain(const datResource& rsc) : mPositionKF(rsc), mDirectionKF(rsc), mSizeKF(rsc), mInnerSize(rsc), field_11C(rsc), field_120(0) {}
 
+        void AddToLayout(RSC5Layout& layout, uint32_t depth);
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth);
+
         void Place(void* that, const datResource& rsc);
+
+        uint32_t GetObjectSize() const;
 
         float field_4;
         eDomainType mType;
@@ -65,7 +70,6 @@ namespace rage
         float field_154;
         float field_158;
         int8_t field_15C[4];
-    //uses mPositionKF, mDirectionKF, mSizeKF and mInnerSize
     };
     ASSERT_SIZE(ptxDomainBox, 0x160);
 
