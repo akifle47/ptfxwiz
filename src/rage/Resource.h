@@ -84,7 +84,7 @@ namespace rage
     struct datResourceChunk
     {
         uint32_t SrcAddr;
-        std::unique_ptr<uint8_t[]> DestAddr;
+        uint32_t DestAddr;
         uint32_t Size;
     };
     ASSERT_SIZE(datResourceChunk, 0xC);
@@ -94,6 +94,8 @@ namespace rage
     {
         ptrdiff_t ContainsSrc(const void* ptr) const;
         ptrdiff_t ContainsDest(const void* ptr) const;
+
+        void FreePhysicalChunks();
         void FillMap(const uint8_t* resourceData);
 
         uint16_t VirtualCount;
@@ -127,7 +129,7 @@ namespace rage
                 return -1;
             }
 
-            return (ptrdiff_t)Map->Chunks[chunkIndex].DestAddr.get() - Map->Chunks[chunkIndex].SrcAddr;
+            return (ptrdiff_t)Map->Chunks[chunkIndex].DestAddr - Map->Chunks[chunkIndex].SrcAddr;
         }
 
         std::unique_ptr<datResourceMap> Map;

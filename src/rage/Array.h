@@ -37,9 +37,9 @@ namespace rage
 
             rsc.PointerFixUp(mElements);
 
-            for(CounterT i = 0; i < mCount; i++)
+            if constexpr(requires { mElements[0].Place(&mElements[0], rsc); })
             {
-                if constexpr(requires { mElements[i].Place(&mElements[i], rsc); })
+                for(CounterT i = 0; i < mCount; i++)
                 {
                     mElements[i].Place(&mElements[i], rsc);
                 }

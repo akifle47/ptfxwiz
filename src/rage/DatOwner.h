@@ -19,7 +19,7 @@ namespace rage
                 return;
             }
 
-            if(rsc.Map->ContainsDest(Ptr) == -1)
+            if(rsc.Map->ContainsDest(&Ptr) == -1)
             {
                 Ptr = nullptr;
                 return;

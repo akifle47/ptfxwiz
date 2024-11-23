@@ -10,43 +10,42 @@ void rage::datResourceInfo::GenerateMap(datResourceMap& map) const
     map.VirtualCount  = GetVirtualChunkCount();
     map.PhysicalCount = GetPhysicalChunkCount();
 
-    uint32_t base = datResourceFileHeader::VIRTUAL_BASE;
     datResourceChunk* chunk = map.Chunks;
-    uint32_t chunkSize = GetVirtualChunkSize();
-    uint32_t totalSize = GetVirtualSize();
 
-    for(uint32_t i = 0; i < GetVirtualChunkCount(); i++, chunk++) 
+    uint32_t base = datResourceFileHeader::VIRTUAL_BASE;
+    uint32_t size = GetVirtualSize();
+    uint32_t chunkSize = GetVirtualChunkSize();
+    uint32_t dest = (uint32_t)new uint8_t[size];
+    memset((void*)dest, 0xCD, size);
+
+    for(uint32_t i = 0; i < GetVirtualChunkCount(); i++, chunk++)
     {
-        while (chunkSize > totalSize) chunkSize >>= 1;
-        chunk->SrcAddr  = base;
-        chunk->DestAddr = nullptr;
+        while(chunkSize > size) chunkSize >>= 1;
+        chunk->SrcAddr = base;
+        chunk->DestAddr = dest;
         chunk->Size     = chunkSize;
 
-        base      += chunkSize;
-        totalSize -= chunkSize;
+        base += chunkSize;
+        dest += chunkSize;
+        size -= chunkSize;
     }
 
     base = datResourceFileHeader::PHYSICAL_BASE;
+    size = GetPhysicalSize();
     chunkSize = GetPhysicalChunkSize();
-    totalSize = GetPhysicalSize();
+    dest = (uint32_t)new uint8_t[size];
+    memset((void*)dest, 0xCD, size);
+
     for(uint32_t i = 0; i < GetPhysicalChunkCount(); i++, chunk++) 
     {
-        while (chunkSize > totalSize) chunkSize >>= 1;
+        while(chunkSize > size) chunkSize >>= 1;
         chunk->SrcAddr  = base;
-        chunk->DestAddr = nullptr;
+        chunk->DestAddr = dest;
         chunk->Size     = chunkSize;
 
-        base      += chunkSize;
-        totalSize -= chunkSize;
-    }
-
-
-    chunk = map.Chunks;
-    for(uint32_t i = 0; i < uint32_t(map.VirtualCount + map.PhysicalCount); i++) 
-    {
-        chunk->DestAddr = std::make_unique<uint8_t[]>(chunk->Size);
-        memset(chunk->DestAddr.get(), 0xCD, chunk->Size);
-        chunk++;
+        dest   += chunkSize;
+        base   += chunkSize;
+        size   -= chunkSize;
     }
 }
 //============= datResourceMap
@@ -54,7 +53,7 @@ ptrdiff_t rage::datResourceMap::ContainsSrc(const void* ptr) const
 {
     uint32_t chunkCount = VirtualCount + PhysicalCount;
     uint32_t chunkIndex = 0;
-    for(const datResourceChunk* chunk = Chunks; (uint32_t)ptr < chunk->SrcAddr || (uint32_t)ptr >= chunk->SrcAddr + chunk->Size; chunk++)
+    for(const datResourceChunk* chunk = Chunks; (uint32_t)ptr < chunk->SrcAddr || (uint32_t)ptr >= chunk->SrcAddr + chunk->Size; ++chunk)
     {
         if(++chunkIndex >= chunkCount)
         {
@@ -69,10 +68,9 @@ ptrdiff_t rage::datResourceMap::ContainsDest(const void* ptr) const
 {
     uint32_t chunkCount = VirtualCount + PhysicalCount;
     uint32_t chunkIndex = 0;
-    for(const datResourceChunk* chunk = Chunks; 
-       (uint32_t)ptr < (uint32_t)chunk->DestAddr.get() || (uint32_t)ptr >= (uint32_t)chunk->DestAddr.get() + chunk->Size; chunk++)
+    for(const datResourceChunk* chunk = Chunks; (uint32_t)ptr < chunk->DestAddr || (uint32_t)ptr >= chunk->DestAddr + chunk->Size; ++chunk)
     {
-        if(chunkIndex >= chunkCount)
+        if(++chunkIndex >= chunkCount)
         {
             return -1;
         }
@@ -87,7 +85,7 @@ void rage::datResourceMap::FillMap(const uint8_t* resourceData)
     datResourceChunk* chunk = Chunks;
     for(uint32_t i = 0; i < uint32_t(VirtualCount + PhysicalCount); i++)
     {
-        memmove(chunk->DestAddr.get(), resourceData + pos, chunk->Size);
+        memmove((void*)chunk->DestAddr, resourceData + pos, chunk->Size);
         pos += chunk->Size;
         chunk++;
     }
@@ -139,7 +137,7 @@ void rage::datResource::SaveToDisk(std::filesystem::path filePath, uint32_t vers
     for(uint32_t i = 0; i < uint32_t(Map->VirtualCount + Map->PhysicalCount); i++)
     {
         const datResourceChunk& chunk = Map->Chunks[i];
-        memcpy(&uncompressedData[pos], chunk.DestAddr.get(), chunk.Size);
+        memcpy(&uncompressedData[pos], (void*)chunk.DestAddr, chunk.Size);
         pos += chunk.Size;
     }
 
@@ -155,6 +153,6 @@ void rage::datResource::SaveToDisk(std::filesystem::path filePath, uint32_t vers
 
     file.write((char*)&datResourceFileHeader::MAGIC_RSC5, 4);
     file.write((char*)&version, 4);
-    file.write((char*)&rscInfo, sizeof(rscInfo));
+    file.write((char*)&rscInfo, 4);
     file.write((char*)compressedData.data(), compressedSize);
 }

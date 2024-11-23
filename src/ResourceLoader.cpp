@@ -45,7 +45,7 @@ bool ResourceLoader::Load(std::filesystem::path filePath, uint32_t expectedVersi
         Log::Error("Failed to load resource file \"%s\" - Expected version %d but the resource uses version %d.", absolutePath.Get(), expectedVersion, rscHeader.Version);
         return false;
     };
-    
+
     uintmax_t fileSize = std::filesystem::file_size(filePath);
     std::vector<uint8_t> rscData(rscHeader.Info.GetVirtualSize() + rscHeader.Info.GetPhysicalSize());
 
@@ -54,8 +54,8 @@ bool ResourceLoader::Load(std::filesystem::path filePath, uint32_t expectedVersi
         uLongf uncompressedSize = (uLongf)rscData.size();
 
         std::vector<uint8_t> compressedData((uint32_t)fileSize - sizeof(rage::datResourceFileHeader));
-        file.read((char*)compressedData.data(), compressedData.size()); 
-        
+        file.read((char*)compressedData.data(), compressedData.size());
+
         uncompress(rscData.data(), &uncompressedSize, compressedData.data(), (uLongf)rscData.size());
     }
     else
@@ -65,6 +65,6 @@ bool ResourceLoader::Load(std::filesystem::path filePath, uint32_t expectedVersi
 
     rscHeader.Info.GenerateMap(*rscOut->Map);
     rscOut->Map->FillMap(rscData.data());
-    
+
     return true;
 }
