@@ -19,7 +19,7 @@ void LoadAndSaveParticleList(std::filesystem::path filePathIn, std::filesystem::
 
 int main(int32_t argc, char** argv)
 {
-    Log::mBreakOnError = false;
+    Log::mBreakOnError = true;
 
     char gamePath[256] {'\0'};
 
@@ -60,13 +60,19 @@ int main(int32_t argc, char** argv)
 
     if(argc == 1)
     {
-        char input[256] {};
+        char input[256] {0};
+        wchar_t inputW[256] {0};
+        DWORD bytesRead = 0;
 
         while(true)
         {
             printf("> ");
 
-            fgets(input, 256, stdin);
+            ZeroMemory(input, std::size(input));
+            ZeroMemory(inputW, std::size(inputW));
+
+            std::ignore = ReadConsoleW(GetStdHandle(STD_INPUT_HANDLE), inputW, 256, &bytesRead, nullptr);
+            WideCharToMultiByte(CP_UTF8, 0, inputW, -1, input, std::size(input), nullptr, nullptr);
 
             if(ProcessInput(input))
             {
@@ -80,7 +86,7 @@ int main(int32_t argc, char** argv)
 
 bool ProcessInput(const char* input)
 {
-    if(input[0] == '\n')
+    if(std::iscntrl(input[0]))
         return false;
 
     if(memcmp(input, "-q", 2) == 0 || memcmp(input, "-quit", 5) == 0)
@@ -168,6 +174,8 @@ void PrintHelp()
     printf("                     is provided the file will be saved as in_file_out.\n");
 }
 
+using Txd = rage::pgDictionary<rage::grcTexturePC>;
+
 void LoadAndSaveTXD(std::filesystem::path filePathIn, std::filesystem::path filePathOut)
 {
     std::unique_ptr<rage::datResource> rsc = std::make_unique<rage::datResource>(filePathIn.string().c_str());
@@ -176,8 +184,8 @@ void LoadAndSaveTXD(std::filesystem::path filePathIn, std::filesystem::path file
         return;
     }
 
-    auto& txd = *(rage::pgDictionary<rage::grcTexturePC>*)rsc->Map->Chunks->DestAddr.get();
-    txd.Place(&txd, *rsc);
+    Txd* txd((Txd*)rsc->Map->Chunks->DestAddr);
+    txd->Place(txd, *rsc);
     
     if(filePathOut.empty())
     {
@@ -186,7 +194,7 @@ void LoadAndSaveTXD(std::filesystem::path filePathIn, std::filesystem::path file
     }
 
     RSC5Layout layout;
-    layout.Save(txd, filePathOut, 8);
+    layout.Save(*txd, filePathOut, 8);
 }
 
 void LoadAndSaveDrawable(std::filesystem::path filePathIn, std::filesystem::path filePathOut)
@@ -197,7 +205,7 @@ void LoadAndSaveDrawable(std::filesystem::path filePathIn, std::filesystem::path
         return;
     }
 
-    auto& drwbl = *(gtaDrawable*)drsc->Map->Chunks->DestAddr.get();
+    auto& drwbl = *(gtaDrawable*)drsc->Map->Chunks->DestAddr;
     drwbl.Place(&drwbl, *drsc);
 
     if(filePathOut.empty())
@@ -218,7 +226,7 @@ void LoadAndSaveParticleList(std::filesystem::path filePathIn, std::filesystem::
         return;
     }
 
-    auto& ptxlist = *(rage::PtxList*)rsc->Map->Chunks->DestAddr.get();
+    auto& ptxlist = *(rage::PtxList*)rsc->Map->Chunks->DestAddr;
     ptxlist.Place(&ptxlist, *rsc);
 
     if(filePathOut.empty())
@@ -228,5 +236,5 @@ void LoadAndSaveParticleList(std::filesystem::path filePathIn, std::filesystem::
     }
 
     RSC5Layout layout;
-    //layout.Save(ptxlist, filePathOut, 36);
+    layout.Save(ptxlist, filePathOut, 36);
 }
