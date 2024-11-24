@@ -6,41 +6,39 @@
 
 namespace rage
 {
-    class ptxRulePropList_obj1
+    class ptxBiasLink
     {
     public:
-        ptxRulePropList_obj1(const datResource& rsc) : field_40(rsc) {}
+        ptxBiasLink(const datResource& rsc) : mPropIDs(rsc) {}
 
         inline void Place(void* that, const datResource& rsc)
         {
-            new(that) ptxRulePropList_obj1(rsc);
+            new(that) ptxBiasLink(rsc);
         }
 
         void AddToLayout(RSC5Layout& layout, uint32_t depth)
         {
-            field_40.AddToLayout(layout, depth);
+            mPropIDs.AddToLayout(layout, depth);
         }
 
         void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
         {
-            field_40.SerializePtrs(layout, rsc, depth);
+            mPropIDs.SerializePtrs(layout, rsc, depth);
         }
 
         char mName[64];
-        //todo: unknown type
-        datOwner<void*> field_40;
-        int8_t field_44[7];
-        int8_t field_4B;
+        atArray<uint32_t> mPropIDs;
+        int8_t field_48[4];
     };
-    ASSERT_SIZE(ptxRulePropList_obj1, 0x4C);
+    ASSERT_SIZE(ptxBiasLink, 0x4C);
 
 
-    class ptxRulePropList_obj2
+    class rmPtxfxProp
     {
     public:
-        ptxRulePropList_obj2() {}
+        rmPtxfxProp() {}
 
-        ptxRulePropList_obj2(const datResource& rsc) : mKeyFrame(rsc), field_2C(rsc) {}
+        rmPtxfxProp(const datResource& rsc) : mKeyFrame(rsc), field_2C(rsc) {}
 
         void AddToLayout(RSC5Layout& layout, uint32_t depth)
         {
@@ -60,7 +58,7 @@ namespace rage
         int8_t field_30[3];
         int8_t field_33;
     };
-    ASSERT_SIZE(ptxRulePropList_obj2, 0x34);
+    ASSERT_SIZE(rmPtxfxProp, 0x34);
 
 
     class ptxRulePropList : public datBase
@@ -111,23 +109,23 @@ namespace rage
             mVortexPropsKF.SerializePtrs(layout, rsc, depth);
         }
 
-        atArray<ptxRulePropList_obj1> mBiasLinks;
+        atArray<ptxBiasLink> mBiasLinks;
         int8_t field_C[4];
-        ptxRulePropList_obj2 mColorKF;
-        ptxRulePropList_obj2 mColorMaxKF;
-        ptxRulePropList_obj2 mAccelerationMinKF;
-        ptxRulePropList_obj2 mAccelerationMaxKF;
-        ptxRulePropList_obj2 mDampeningMinKF;
-        ptxRulePropList_obj2 mDampeningMaxKF;
-        ptxRulePropList_obj2 mMatrixWeightKF;
-        ptxRulePropList_obj2 mPlaybackRateKF;
-        ptxRulePropList_obj2 mAlphaKF;
-        ptxRulePropList_obj2 mPositionNoiseKF;
-        ptxRulePropList_obj2 mVelocityNoiseKF;
-        ptxRulePropList_obj2 mCollisionVelocityDampeningKF;
-        ptxRulePropList_obj2 mCollisionImpVarKF;
-        ptxRulePropList_obj2 mWindInfluenceKF;
-        ptxRulePropList_obj2 mVortexPropsKF;
+        rmPtxfxProp mColorKF;
+        rmPtxfxProp mColorMaxKF;
+        rmPtxfxProp mAccelerationMinKF;
+        rmPtxfxProp mAccelerationMaxKF;
+        rmPtxfxProp mDampeningMinKF;
+        rmPtxfxProp mDampeningMaxKF;
+        rmPtxfxProp mMatrixWeightKF;
+        rmPtxfxProp mPlaybackRateKF;
+        rmPtxfxProp mAlphaKF;
+        rmPtxfxProp mPositionNoiseKF;
+        rmPtxfxProp mVelocityNoiseKF;
+        rmPtxfxProp mCollisionVelocityDampeningKF;
+        rmPtxfxProp mCollisionImpVarKF;
+        rmPtxfxProp mWindInfluenceKF;
+        rmPtxfxProp mVortexPropsKF;
     };
     ASSERT_SIZE(ptxRulePropList, 0x31C);
 
@@ -169,15 +167,15 @@ namespace rage
             mTrailPropsKF.SerializePtrs(layout, rsc, depth);
         }
 
-        ptxRulePropList_obj2 mSizeKF;
-        ptxRulePropList_obj2 mThetaKF;
-        ptxRulePropList_obj2 mInitThetaKFOT;
-        ptxRulePropList_obj2 mInitRotateVelKFOT;
-        ptxRulePropList_obj2 mRotateVelKF;
-        ptxRulePropList_obj2 mDirectionalKF;
-        ptxRulePropList_obj2 mDirectionalVelKF;
-        ptxRulePropList_obj2 mTextureAnimRateKF;
-        ptxRulePropList_obj2 mTrailPropsKF;
+        rmPtxfxProp mSizeKF;
+        rmPtxfxProp mThetaKF;
+        rmPtxfxProp mInitThetaKFOT;
+        rmPtxfxProp mInitRotateVelKFOT;
+        rmPtxfxProp mRotateVelKF;
+        rmPtxfxProp mDirectionalKF;
+        rmPtxfxProp mDirectionalVelKF;
+        rmPtxfxProp mTextureAnimRateKF;
+        rmPtxfxProp mTrailPropsKF;
     };
     ASSERT_SIZE(ptxSpriteRulePropList, 0x4F0);
 
@@ -221,16 +219,16 @@ namespace rage
             mRotationSpeed.SerializePtrs(layout, rsc, depth);
         }
 
-        ptxRulePropList_obj2 mSizeMin;
-        ptxRulePropList_obj2 mSizeMax;
-        ptxRulePropList_obj2 mInitialThetaMin;
-        ptxRulePropList_obj2 mInitialThetaMax;
-        ptxRulePropList_obj2 mThetaMin;
-        ptxRulePropList_obj2 mThetaMax;
-        ptxRulePropList_obj2 mInitialRotationMin;
-        ptxRulePropList_obj2 mInitialRotationMax;
-        ptxRulePropList_obj2 mInitRotationSpeed;
-        ptxRulePropList_obj2 mRotationSpeed;
+        rmPtxfxProp mSizeMin;
+        rmPtxfxProp mSizeMax;
+        rmPtxfxProp mInitialThetaMin;
+        rmPtxfxProp mInitialThetaMax;
+        rmPtxfxProp mThetaMin;
+        rmPtxfxProp mThetaMax;
+        rmPtxfxProp mInitialRotationMin;
+        rmPtxfxProp mInitialRotationMax;
+        rmPtxfxProp mInitRotationSpeed;
+        rmPtxfxProp mRotationSpeed;
     };
     ASSERT_SIZE(ptxModelRulePropList, 0x524);
 
