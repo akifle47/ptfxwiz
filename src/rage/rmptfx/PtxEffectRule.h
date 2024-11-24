@@ -19,6 +19,14 @@ namespace rage
             }
         }
 
+        void AddToLayout(RSC5Layout& layout, uint32_t depth);
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth);
+
+        uint32_t GetObjectSize() const
+        {
+            return 0x1A0;
+        }
+
         void Place(void* that, const datResource& rsc);
 
         rmPtfxKeyframe mKFColorTint;
@@ -54,6 +62,9 @@ namespace rage
             field_170 = 0;
             mQuality = mQuality == 0 ? mQuality : 0;
         }
+
+        void AddToLayout(RSC5Layout& layout, uint32_t depth);
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth);
 
         ptxTimeLine mTimeline;
         float mFadeDistance;

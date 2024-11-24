@@ -10,6 +10,9 @@ namespace rage
     public:
         ptxEvolutionGroup(const datResource& rsc);
 
+        void AddToLayout(RSC5Layout& layout, uint32_t depth);
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth);
+
         inline void Place(void* that, const datResource& rsc)
         {
             new(that) ptxEvolutionGroup(rsc); 
@@ -27,13 +30,10 @@ namespace rage
     class ptxEvolution
     {
     public:
-        ptxEvolution(const datResource& rsc) : mPropList(rsc)
-        {
-            if(mEvoName)
-            {
-                rsc.PointerFixUp(mEvoName);
-            }
-        }
+        ptxEvolution(const datResource& rsc);
+
+        void AddToLayout(RSC5Layout& layout, uint32_t depth);
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth);
 
         inline void Place(void* that, const datResource& rsc)
         {
@@ -59,6 +59,9 @@ namespace rage
     public:
         ptxEvoPropList(const datResource& rsc) : mPropList(rsc) {}
 
+        void AddToLayout(RSC5Layout& layout, uint32_t depth);
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth);
+
         inline void Place(void* that, const datResource& rsc)
         {
             new(that) ptxEvoPropList(rsc);
@@ -74,21 +77,24 @@ namespace rage
         int32_t field_1C;
         int32_t field_20;
         int32_t field_24;
-        atArray<class ptxEvoProp> mPropList;
+        atArray<datOwner<class ptxEvoProp>> mPropList;
     };
     ASSERT_SIZE(ptxEvoPropList, 0x30);
 
     class ptxEvoProp
     {
     public:
-        ptxEvoProp(const datResource& rsc) : mKeyFrameData(rsc) {}
+        ptxEvoProp(const datResource& rsc) : mKeyFrames(rsc) {}
+
+        void AddToLayout(RSC5Layout& layout, uint32_t depth);
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth);
 
         inline void Place(void* that, const datResource& rsc)
         {
             new(that) ptxEvoProp(rsc);
         }
 
-        rmPtfxKeyframe mKeyFrameData;
+        rmPtfxKeyframe mKeyFrames;
         int32_t mRegID;
     };
     ASSERT_SIZE(ptxEvoProp, 0x2C);

@@ -31,7 +31,7 @@ namespace rage
             mDrawables.AddToLayout(layout, depth);
             mRules.AddToLayout(layout, depth);
             mEmitRules.AddToLayout(layout, depth);
-            //mEffectRules.AddToLayout(layout, depth);
+            mEffectRules.AddToLayout(layout, depth);
         }
 
         void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
@@ -40,7 +40,7 @@ namespace rage
             mDrawables.SerializePtrs(layout, rsc, depth);
             mRules.SerializePtrs(layout, rsc, depth);
             mEmitRules.SerializePtrs(layout, rsc, depth);
-            //mEffectRules->SerializePtrs(layout, rsc, depth);
+            mEffectRules.SerializePtrs(layout, rsc, depth);
         }
 
         inline void Place(void* that, const datResource& rsc)

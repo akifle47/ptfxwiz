@@ -13,8 +13,6 @@ namespace rage
     {
     public:
         ptxRule() = delete;
-
-        ptxRule(const char* type);
         
         ptxRule(const datResource& rsc) : mSpawnEffectA(rsc), mSpawnEffectB(rsc)
         {

@@ -194,6 +194,9 @@
     <ClCompile Include="src\EffectList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\rage\rmptfx\PtxTimeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="deps\zlib\bin\zlib.vcxproj" />

@@ -2,7 +2,6 @@
 #include "../../Utils.h"
 #include "../math/Vector.h"
 #include "PtxDomain.h"
-#include "PtxTriggerEvent.h"
 #include "PtxEvolution.h"
 
 namespace rage
@@ -21,7 +20,12 @@ namespace rage
 
         virtual ~ptxEvent() = default;
 
+        void AddToLayout(RSC5Layout& layout, uint32_t depth);
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth);
+
         void Place(void* that, const datResource& rsc);
+
+        uint32_t GetObjectSize() const;
 
         int32_t field_4;
         float mTriggerTime;
@@ -34,28 +38,31 @@ namespace rage
     ASSERT_SIZE(ptxEvent, 0x20);
 
 
-    //not really sure about the size of this
-    struct ptxEventEffect_obj1
+    struct ptxEffectOverridables
     {
-        ptxTriggerEventScalars mSpawnEffect;
+        Vector3 mSizeScale;
+        float pad_4;
+        float mDuration;
+        float mPlaybackRate;
+        uint32_t mColorTint;
+        float mZoom;
+        uint32_t mWhichFields;
+        int8_t field_24[12];
     };
-    ASSERT_SIZE(ptxEventEffect_obj1, 0x24);
+    ASSERT_SIZE(ptxEffectOverridables, 0x30);
 
     class ptxEventEffect : public ptxEvent
     {
     public:
-        ptxEventEffect(const datResource& rsc) : ptxEvent(rsc), field_94(rsc), mEmitterDomain(rsc)
-        {
-            if(mEffectName)
-                rsc.PointerFixUp(mEffectName);
-        }
+        ptxEventEffect(const datResource& rsc);
+
+        void AddToLayout(RSC5Layout& layout, uint32_t depth);
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth);
 
         Vector3 mRotationMin;
         int8_t field_2C[0x4];
-        ptxEventEffect_obj1 mOverrideMins;
-        int8_t field_54[0x10];
-        ptxEventEffect_obj1 mOverrideMaxes;
-        int8_t field_88[0x8];
+        ptxEffectOverridables mOverrideMins;
+        ptxEffectOverridables mOverrideMaxes;
         char* mEffectName;
         datOwner<void*> field_94;
         int32_t field_98;
@@ -71,13 +78,10 @@ namespace rage
     class ptxEventEmitter : public ptxEvent
     {
     public:
-        ptxEventEmitter(const datResource& rsc) : ptxEvent(rsc), field_48(rsc), field_4C(rsc)
-        {
-            if(mEmmiterRuleName)
-                rsc.PointerFixUp(mEmmiterRuleName);
-            if(mPtxRuleName)
-                rsc.PointerFixUp(mPtxRuleName);
-        }
+        ptxEventEmitter(const datResource& rsc);
+
+        void AddToLayout(RSC5Layout& layout, uint32_t depth);
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth);
 
         float mDurationScalarMin;
         float mDurationScalarMax;

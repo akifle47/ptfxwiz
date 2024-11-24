@@ -148,6 +148,7 @@
     <ClCompile Include="src\rage\rmptfx\PtxEvent.cpp" />
     <ClCompile Include="src\rage\rmptfx\PtxEvolution.cpp" />
     <ClCompile Include="src\rage\rmptfx\PtxRule.cpp" />
+    <ClCompile Include="src\rage\rmptfx\PtxTimeline.cpp" />
     <ClCompile Include="src\rage\rmptfx\RmPtfxShaderVar.cpp" />
     <ClCompile Include="src\rage\grcore\Texture.cpp" />
     <ClCompile Include="src\ResourceLoader.cpp" />
