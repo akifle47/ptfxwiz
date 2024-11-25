@@ -1,4 +1,6 @@
 #include "PtxEvent.h"
+#include "PtxEmitRule.h"
+#include "PtxRule.h"
 
 namespace rage
 {
@@ -96,7 +98,7 @@ namespace rage
     }
 
 
-    ptxEventEmitter::ptxEventEmitter(const datResource& rsc) : ptxEvent(rsc), field_48(rsc), field_4C(rsc)
+    ptxEventEmitter::ptxEventEmitter(const datResource& rsc) : ptxEvent(rsc), mEmitRule(rsc), mRule(rsc)
     {
         if(mEmmiterRuleName)
             rsc.PointerFixUp(mEmmiterRuleName);
@@ -106,8 +108,8 @@ namespace rage
 
     void ptxEventEmitter::AddToLayout(RSC5Layout& layout, uint32_t depth)
     {
-        field_48.AddToLayout(layout, depth);
-        field_4C.AddToLayout(layout, depth);
+        mEmitRule.AddToLayout(layout, depth);
+        mRule.AddToLayout(layout, depth);
 
         if(mEmmiterRuleName)
             layout.AddObject(mEmmiterRuleName, RSC5Layout::eBlockType::VIRTUAL, strlen(mEmmiterRuleName) + 1);
@@ -117,8 +119,8 @@ namespace rage
 
     void ptxEventEmitter::SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
     {
-        field_48.SerializePtrs(layout, rsc, depth);
-        field_4C.SerializePtrs(layout, rsc, depth);
+        mEmitRule.SerializePtrs(layout, rsc, depth);
+        mRule.SerializePtrs(layout, rsc, depth);
 
         if(mEmmiterRuleName)
             layout.SerializePtr(mEmmiterRuleName, strlen(mEmmiterRuleName) + 1);

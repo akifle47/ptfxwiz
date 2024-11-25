@@ -86,7 +86,7 @@ namespace rage
         int32_t mEndTexAnimFrame;
         int32_t mNumTextureTilesX;
         int32_t mNumTextureTilesY;
-        //todo: unknown type
+        //unknown type - always null
         datOwner<void*> field_184;
         ptxSpriteRulePropList mProps;
         rmPtfxShader mShader;

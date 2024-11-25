@@ -57,7 +57,7 @@ namespace rage
 
         datOwner<pgDictionary<grcTexturePC>> mTextures;
         atArray<datOwner<grmShaderFx>> mShaders;
-        //todo: unknown types
+        //unknown types - always empty
         atArray<datOwner<void*>> field_10;
         atArray<datOwner<void*>> field_18;
         atArray<datOwner<void*>> field_20;

@@ -44,6 +44,7 @@ namespace rage
         float field_110;
         float field_114;
         float mFileVersion;
+        //unknown type - always null
         datOwner<void*> field_11C;
         int32_t field_120;
         bool mWorldSpace;

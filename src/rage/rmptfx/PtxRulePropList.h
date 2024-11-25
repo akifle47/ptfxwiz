@@ -54,6 +54,7 @@ namespace rage
 
         rmPtfxKeyframe mKeyFrame;
         int8_t field_28[4];
+        //todo: unknown type
         datOwner<void*> field_2C;
         int8_t field_30[3];
         int8_t field_33;

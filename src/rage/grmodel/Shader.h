@@ -173,7 +173,9 @@ namespace rage
 
         char* mName;
         char* mPresetName;
+        //unknown type - always null
         datOwner<void*> field_4C;
+        //unknown type - always null
         datOwner<void*> field_50;
         int32_t mShaderPresetIndex;
         datOwner<grmShaderPresetParams> mShaderPresetParams;

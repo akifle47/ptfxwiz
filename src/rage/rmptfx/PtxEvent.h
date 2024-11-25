@@ -3,6 +3,7 @@
 #include "../math/Vector.h"
 #include "PtxDomain.h"
 #include "PtxEvolution.h"
+#include "../DatRef.h"
 
 namespace rage
 {
@@ -64,6 +65,7 @@ namespace rage
         ptxEffectOverridables mOverrideMins;
         ptxEffectOverridables mOverrideMaxes;
         char* mEffectName;
+        //unknown type - always null
         datOwner<void*> field_94;
         int32_t field_98;
         datOwner<ptxDomain> mEmitterDomain;
@@ -93,8 +95,8 @@ namespace rage
         uint32_t mColorTintMax;
         char* mEmmiterRuleName;
         char* mPtxRuleName;
-        datOwner<void*> field_48;
-        datOwner<void*> field_4C;
+        datRef<class ptxEmitRule> mEmitRule;
+        datRef<class ptxRule> mRule;
     };
     ASSERT_SIZE(ptxEventEmitter, 0x50);
 };
