@@ -56,7 +56,7 @@ namespace rage
             if(!Ptr)
                 return;
 
-            layout.SerializePtr(Ptr, sizeof(T));
+            layout.SerializePtr(Ptr, sizeof(uintptr_t));
         }
 
         inline void Place(void* that, const datResource& rsc)
