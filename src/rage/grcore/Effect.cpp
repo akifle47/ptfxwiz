@@ -340,8 +340,14 @@ namespace rage
                     entriesO[i].AsTextureRef->SerializePtrs(layout, rsc, depth + 1);
                     layout.SerializePtr(entriesO[i].AsTextureRef, sizeof(grcTextureReference));
                     newEntries[i].AsTextureRef = entriesO[i].AsTextureRef;
-                    continue;
                 }
+                else if(newEntries[i].AsTexture->mResourceType == grcTexture::eType::STANDARD)
+                {
+                    layout.SerializePtr(entriesO[i].AsTexture, sizeof(grcTexturePC*));
+                    newEntries[i].AsTexture = entriesO[i].AsTexture;
+                }
+
+                continue;
             }
 
             newEntries[i].AsVoid = ((uint8_t*)mEntries + entriesOffset);
