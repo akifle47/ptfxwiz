@@ -360,6 +360,9 @@
     <ClInclude Include="deps\rapidjson\include\writer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Color32.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\rage\rmptfx\PtxRule.cpp">

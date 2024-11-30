@@ -162,6 +162,7 @@
     <ClInclude Include="deps\rapidjson\include\stringbuffer.h" />
     <ClInclude Include="deps\rapidjson\include\writer.h" />
     <ClInclude Include="src\AString.h" />
+    <ClInclude Include="src\Color32.h" />
     <ClInclude Include="src\DDS.h" />
     <ClInclude Include="src\EffectList.h" />
     <ClInclude Include="src\Log.h" />
