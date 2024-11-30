@@ -1,4 +1,5 @@
 #pragma once
+#include "rapidjson/include/prettywriter.h"
 #include "../Base.h"
 #include "../DatRef.h"
 #include "PtxKeyFrame.h"
@@ -24,6 +25,30 @@ namespace rage
         void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
         {
             mPropIDs.SerializePtrs(layout, rsc, depth);
+        }
+
+        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer)
+        {
+            writer.StartObject();
+            {
+                writer.String("Name");
+                writer.String(mName);
+
+                if(mPropIDs.GetCount())
+                {
+                    writer.String("PropIDs");
+                    writer.StartArray();
+                    {
+                        for(uint16_t i = 0; i < mPropIDs.GetCount(); i++)
+                        {
+                            writer.String("ID");
+                            writer.Uint(mPropIDs[i]);
+                        }
+                    }
+                    writer.EndArray();
+                }
+            }
+            writer.EndObject();
         }
 
         char mName[64];
@@ -52,6 +77,18 @@ namespace rage
             field_2C.SerializePtrs(layout, rsc, depth);
         }
 
+        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer)
+        {
+            writer.StartObject();
+            {
+                writer.String("KeyFrame");
+                mKeyFrame.WriteToJson(writer);
+
+                writer.String("field_33");
+                writer.Int(field_33);
+            }
+            writer.EndObject();
+        }
         rmPtfxKeyframe mKeyFrame;
         int8_t field_28[4];
         //todo: unknown type
@@ -110,6 +147,8 @@ namespace rage
             mVortexPropsKF.SerializePtrs(layout, rsc, depth);
         }
 
+        virtual void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) = 0;
+
         atArray<ptxBiasLink> mBiasLinks;
         int8_t field_C[4];
         rmPtxfxProp mColorKF;
@@ -127,6 +166,52 @@ namespace rage
         rmPtxfxProp mCollisionImpVarKF;
         rmPtxfxProp mWindInfluenceKF;
         rmPtxfxProp mVortexPropsKF;
+
+    protected:
+        void WriteToJsonBase(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer)
+        {
+            if(mBiasLinks.GetCount())
+            {
+                writer.String("BiasLinks");
+                writer.StartArray();
+                for(uint16_t i = 0; i < mBiasLinks.GetCount(); i++)
+                {
+                    mBiasLinks[i].WriteToJson(writer);
+                }
+                writer.EndArray();
+            }
+
+            writer.String("ColorKF");
+            mColorKF.WriteToJson(writer);
+            writer.String("ColorMaxKF");
+            mColorMaxKF.WriteToJson(writer);
+            writer.String("AccelerationMinKF");
+            mAccelerationMinKF.WriteToJson(writer);
+            writer.String("AccelerationMaxKF");
+            mAccelerationMaxKF.WriteToJson(writer);
+            writer.String("DampeningMinKF");
+            mDampeningMinKF.WriteToJson(writer);
+            writer.String("DampeningMaxKF");
+            mDampeningMaxKF.WriteToJson(writer);
+            writer.String("MatrixWeightKF");
+            mMatrixWeightKF.WriteToJson(writer);
+            writer.String("PlaybackRateKF");
+            mPlaybackRateKF.WriteToJson(writer);
+            writer.String("AlphaKF");
+            mAlphaKF.WriteToJson(writer);
+            writer.String("PositionNoiseKF");
+            mPositionNoiseKF.WriteToJson(writer);
+            writer.String("VelocityNoiseKF");
+            mVelocityNoiseKF.WriteToJson(writer);
+            writer.String("CollisionVelocityDampeningKF");
+            mCollisionVelocityDampeningKF.WriteToJson(writer);
+            writer.String("CollisionImpVarKF");
+            mCollisionImpVarKF.WriteToJson(writer);
+            writer.String("WindInfluenceKF");
+            mWindInfluenceKF.WriteToJson(writer);
+            writer.String("VortexPropsKF");
+            mVortexPropsKF.WriteToJson(writer);
+        }
     };
     ASSERT_SIZE(ptxRulePropList, 0x31C);
 
@@ -166,6 +251,34 @@ namespace rage
             mDirectionalVelKF.SerializePtrs(layout, rsc, depth);
             mTextureAnimRateKF.SerializePtrs(layout, rsc, depth);
             mTrailPropsKF.SerializePtrs(layout, rsc, depth);
+        }
+
+        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) override
+        {
+            writer.StartObject();
+            {
+                WriteToJsonBase(writer);
+
+                writer.String("SizeKF");
+                mSizeKF.WriteToJson(writer);
+                writer.String("ThetaKF");
+                mThetaKF.WriteToJson(writer);
+                writer.String("InitThetaKFOT");
+                mInitThetaKFOT.WriteToJson(writer);
+                writer.String("InitRotateVelKFOT");
+                mInitRotateVelKFOT.WriteToJson(writer);
+                writer.String("RotateVelKF");
+                mRotateVelKF.WriteToJson(writer);
+                writer.String("DirectionalKF");
+                mDirectionalKF.WriteToJson(writer);
+                writer.String("DirectionalVelKF");
+                mDirectionalVelKF.WriteToJson(writer);
+                writer.String("TextureAnimRateKF");
+                mTextureAnimRateKF.WriteToJson(writer);
+                writer.String("TrailPropsKF");
+                mTrailPropsKF.WriteToJson(writer);
+            }
+            writer.EndObject();
         }
 
         rmPtxfxProp mSizeKF;
@@ -218,6 +331,36 @@ namespace rage
             mInitialRotationMax.SerializePtrs(layout, rsc, depth);
             mInitRotationSpeed.SerializePtrs(layout, rsc, depth);
             mRotationSpeed.SerializePtrs(layout, rsc, depth);
+        }
+
+        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) override
+        {
+            writer.StartObject();
+            {
+                WriteToJsonBase(writer);
+
+                writer.String("SizeMin");
+                mSizeMin.WriteToJson(writer);
+                writer.String("SizeMax");
+                mSizeMax.WriteToJson(writer);
+                writer.String("InitialThetaMin");
+                mInitialThetaMin.WriteToJson(writer);
+                writer.String("InitialThetaMax");
+                mInitialThetaMax.WriteToJson(writer);
+                writer.String("ThetaMin");
+                mThetaMin.WriteToJson(writer);
+                writer.String("ThetaMax");
+                mThetaMax.WriteToJson(writer);
+                writer.String("InitialRotationMin");
+                mInitialRotationMin.WriteToJson(writer);
+                writer.String("InitialRotationMax");
+                mInitialRotationMax.WriteToJson(writer);
+                writer.String("InitRotationSpeed");
+                mInitRotationSpeed.WriteToJson(writer);
+                writer.String("RotationSpeed");
+                mRotationSpeed.WriteToJson(writer);
+            }
+            writer.EndObject();
         }
 
         rmPtxfxProp mSizeMin;

@@ -1,4 +1,5 @@
 #pragma once
+#include "rapidjson/include/prettywriter.h"
 #include "../Array.h"
 #include "RmPtfxShaderVar.h"
 #include "../DatOwner.h"
@@ -35,11 +36,7 @@ namespace rage
             rsc.PointerFixUp(mTechName);
         }
 
-        virtual ~rmPtfxShader()
-        {
-            delete[] mName;
-            delete[] mTechName;
-        }
+        virtual ~rmPtfxShader() = default;
 
         void AddToLayout(RSC5Layout& layout, uint32_t depth)
         {
@@ -57,6 +54,35 @@ namespace rage
 
             layout.SerializePtr(mName, strlen(mName) + 1);
             layout.SerializePtr(mTechName, strlen(mTechName) + 1);
+        }
+
+        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer)
+        {
+            writer.StartObject();
+            {
+                writer.String("Name");
+                writer.String(mName);
+
+                writer.String("TechniqueName");
+                writer.String(mTechName);
+
+                writer.String("Variables");
+                writer.StartArray();
+                {
+                    for(uint16_t i = 0; i < mVars.GetCount(); i++)
+                    {
+                        if(mVars[i].Get())
+                        {
+                            mVars[i]->WriteToJson(writer);
+                        }
+                    }
+                }
+                writer.EndArray();
+
+                writer.String("field_1C");
+                writer.Bool(field_1C);
+            }
+            writer.EndObject();
         }
 
         char* mName;

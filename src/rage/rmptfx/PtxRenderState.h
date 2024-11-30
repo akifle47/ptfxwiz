@@ -24,6 +24,7 @@ namespace rage
         bool DepthWrite;
         bool DepthTest;
         bool AlphaBlend;
+        //might be padding
         int8_t field_13;
     };
 };

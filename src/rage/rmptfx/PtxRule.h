@@ -1,4 +1,5 @@
 #pragma once
+#include "rapidjson/include/prettywriter.h"
 #include "../../Utils.h"
 #include "../ReferenceCounter.h"
 #include "../DatOwner.h"
@@ -21,6 +22,8 @@ namespace rage
 
         void AddToLayout(RSC5Layout& layout, uint32_t depth);
         void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth);
+
+        virtual void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) = 0;
 
         void Place(void* that, const datResource& rsc);
 
@@ -46,6 +49,9 @@ namespace rage
         int8_t mPercentPhysical;
         int8_t mPercentKill;
         int8_t field_134[0x9];
+
+    protected:
+        void WriteToJsonBase(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer);
     };
     ASSERT_SIZE(ptxRule, 0x140);
 
@@ -70,6 +76,8 @@ namespace rage
             mProps.SerializePtrs(layout, rsc, depth);
             mShader.SerializePtrs(layout, rsc, depth);
         }
+
+        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) override;
 
         float field_140;
         float field_144;
@@ -115,13 +123,15 @@ namespace rage
             mProps.SerializePtrs(layout, rsc, depth);
         }
 
+        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) override;
+
         Vector3 mRotation;
         int8_t field_14C[4];
         Vector3 mRotationVar;
         int8_t field_15C[4];
         Vector2 mRotationSpeedVar;
         atArray<PtxNameDrawablePair> mDrawables;
-        void *field_170;
+        void* field_170;
         ptxModelRulePropList mProps;
         int8_t field_698[7];
         int8_t field_69F;

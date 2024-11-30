@@ -1,9 +1,11 @@
 #pragma once
+#include "rapidjson/include/prettywriter.h"
 #include "../../Utils.h"
 #include "../math/Vector.h"
 #include "PtxDomain.h"
 #include "PtxEvolution.h"
 #include "../DatRef.h"
+#include "../../Color32.h"
 
 namespace rage
 {
@@ -41,11 +43,13 @@ namespace rage
 
     struct ptxEffectOverridables
     {
+        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer);
+
         Vector3 mSizeScale;
         float pad_4;
         float mDuration;
         float mPlaybackRate;
-        uint32_t mColorTint;
+        Color32 mColorTint;
         float mZoom;
         uint32_t mWhichFields;
         int8_t field_24[12];
@@ -91,8 +95,8 @@ namespace rage
         float mTimeScalarMax;
         float mZoomMin;
         float mZoomMax;
-        uint32_t mColorTintMin;
-        uint32_t mColorTintMax;
+        Color32 mColorTintMin;
+        Color32 mColorTintMax;
         char* mEmmiterRuleName;
         char* mPtxRuleName;
         datRef<class ptxEmitRule> mEmitRule;

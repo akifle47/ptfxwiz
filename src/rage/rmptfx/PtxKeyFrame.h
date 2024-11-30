@@ -1,4 +1,5 @@
 #pragma once
+#include "rapidjson/include/prettywriter.h"
 #include "../../Utils.h"
 #include "../Base.h"
 #include "../Array.h"
@@ -19,11 +20,11 @@ namespace rage
 
     struct ptxKeyFrameEntry
     {
-        float mTime;
+        float Time;
 
         int8_t field_4[0xC];
 
-        Vector4 mValue;
+        Vector4 Value;
         Vector4 Delta;
     };
     ASSERT_SIZE(ptxKeyFrameEntry, 0x30);
@@ -44,6 +45,61 @@ namespace rage
         void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
         {
             mEntries.SerializePtrs(layout, rsc, depth);
+        }
+
+        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer)
+        {
+            writer.StartObject();
+            {
+                writer.String("field_15");
+                writer.Int(field_15);
+
+                writer.String("KeyFrameEntries");
+                writer.StartArray();
+                {
+                    for(uint16_t i = 0; i < mEntries.GetCount(); i++)
+                    {
+                        writer.StartObject();
+                        {
+                            ptxKeyFrameEntry& entry = mEntries[i];
+
+                            writer.String("Time");
+                            writer.Double((double)entry.Time);
+
+                            writer.SetFormatOptions(rapidjson::kFormatSingleLineArray);
+                            writer.String("Value");
+                            writer.StartArray();
+                            {
+                                writer.Double((double)entry.Value.x);
+                                writer.Double((double)entry.Value.y);
+                                writer.Double((double)entry.Value.z);
+                                writer.Double((double)entry.Value.w);
+                            }
+                            writer.EndArray();
+
+                            writer.String("Delta");
+                            writer.StartArray();
+                            {
+                                writer.Double((double)entry.Delta.x);
+                                writer.Double((double)entry.Delta.y);
+                                writer.Double((double)entry.Delta.z);
+                                writer.Double((double)entry.Delta.w);
+                            }
+                            writer.EndArray();
+                            writer.SetFormatOptions(rapidjson::kFormatDefault);
+                        }
+                        writer.EndObject();
+                    }
+                }
+                writer.EndArray();
+
+                writer.String("field_20");
+                writer.Int(field_20);
+
+                writer.String("field_24");
+                writer.Int(field_24);
+            }
+            writer.EndObject();
         }
 
         int8_t field_15;

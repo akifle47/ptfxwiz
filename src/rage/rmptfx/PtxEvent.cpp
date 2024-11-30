@@ -72,6 +72,47 @@ namespace rage
         }
     }
 
+    void ptxEffectOverridables::WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer)
+    {
+        writer.StartObject();
+        {
+            writer.SetFormatOptions(rapidjson::kFormatSingleLineArray);
+
+            writer.String("SizeScale");
+            writer.StartArray();
+            {
+                writer.Double((double)mSizeScale.x);
+                writer.Double((double)mSizeScale.y);
+                writer.Double((double)mSizeScale.z);
+            }
+            writer.EndArray();
+
+            writer.String("Duration");
+            writer.Double((double)mDuration);
+
+            writer.String("PlaybackRate");
+            writer.Double((double)mPlaybackRate);
+
+            writer.String("ColorTint");
+            writer.StartArray();
+            {
+                writer.Uint((uint32_t)mColorTint.Red);
+                writer.Uint((uint32_t)mColorTint.Green);
+                writer.Uint((uint32_t)mColorTint.Blue);
+                writer.Uint((uint32_t)mColorTint.Alpha);
+            }
+            writer.EndArray();
+
+            writer.String("Zoom");
+            writer.Double((double)mZoom);
+
+            writer.String("WhichFields");
+            writer.Uint(mWhichFields);
+
+            writer.SetFormatOptions(rapidjson::kFormatDefault);
+        }
+        writer.EndObject();
+    }
 
     ptxEventEffect::ptxEventEffect(const datResource& rsc) : ptxEvent(rsc), field_94(rsc), mEmitterDomain(rsc)
     {

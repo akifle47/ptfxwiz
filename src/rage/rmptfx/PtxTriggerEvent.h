@@ -1,4 +1,5 @@
 #pragma once
+#include "rapidjson/include/prettywriter.h"
 #include "PtxEvent.h"
 #include "PtxEffectRule.h"
 #include "../Resource.h"
@@ -20,6 +21,36 @@ namespace rage
         void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
         {
             mEffectRule.SerializePtrs(layout, rsc, depth);
+        }
+
+        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer)
+        {
+            writer.StartObject();
+            {
+                writer.String("OverrideMins");
+                mOverrideMins.WriteToJson(writer);
+                writer.String("OverrideMaxes");
+                mOverrideMaxes.WriteToJson(writer);
+
+                writer.String("EffectRule");
+                if(mEffectRule.Get())
+                    writer.String(mEffectRule->mName);
+                else
+                    writer.Null();
+
+                writer.String("Type");
+                writer.Int(mType);
+
+                writer.String("Time");
+                writer.Double((double)mTime);
+
+                writer.String("Toggle1");
+                writer.Bool(mToggle1);
+
+                writer.String("field_6F");
+                writer.Int(field_6F);
+            }
+            writer.EndObject();
         }
 
         ptxEffectOverridables mOverrideMins;

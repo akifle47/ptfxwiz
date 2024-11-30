@@ -1,4 +1,5 @@
 #pragma once
+#include "rapidjson/include/prettywriter.h"
 #include "../../Utils.h"
 #include "../Resource.h"
 #include "../DatRef.h"
@@ -27,10 +28,8 @@ namespace rage
 
         rmPtfxShaderVar(const datResource& rsc) {};
 
-        virtual ~rmPtfxShaderVar()
-        {
-            delete[] mName;
-        }
+        virtual ~rmPtfxShaderVar() = default;
+        virtual void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) = 0;
 
         void AddToLayout(RSC5Layout& layout, uint32_t depth);
         void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth);
@@ -45,6 +44,47 @@ namespace rage
         int8_t field_11;
         eVarType mType;
         int8_t field_13[13];
+
+    protected:
+        const char* TypeToString(eVarType type)
+        {
+            static const char* lut[]
+            { "BOOL", "INT", "FLOAT", "FLOAT2", "FLOAT3", "FLOAT4", "TEXTURE", "KEYFRAME" };
+
+            if((uint32_t)type >= (uint32_t)eVarType::COUNT)
+                return "INVALID_TYPE";
+            else
+                return lut[(uint32_t)type];
+        }
+
+        eVarType StringToType(const char* str)
+        {
+            static const char* lut[]
+            {"BOOL", "INT", "FLOAT", "FLOAT2", "FLOAT3", "FLOAT4", "TEXTURE", "KEYFRAME"};
+
+            if(!str)
+                return eVarType::COUNT;
+
+            for(size_t i = 0; i < std::size(lut); i++)
+            {
+                if(stricmp(str, lut[i]) == 0)
+                    return (eVarType)i;
+            }
+
+            return eVarType::COUNT;
+        }
+
+        void WriteToJsonBase(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer)
+        {
+            writer.String("Name");
+            writer.String(mName);
+
+            writer.String("Type");
+            writer.String(TypeToString(mType));
+
+            writer.String("Index");
+            writer.Int(mIndex);
+        }
     };
     ASSERT_SIZE(rmPtfxShaderVar, 0x20);
 
@@ -53,6 +93,18 @@ namespace rage
     {
     public:
         rmPtfxShaderVar_Bool(const datResource& rsc) {}
+
+        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) override
+        {
+            writer.StartObject();
+            {
+                WriteToJsonBase(writer);
+
+                writer.String("Value");
+                writer.Bool(mValue);
+            }
+            writer.EndObject();
+        }
 
         bool mValue;
         int8_t pad[15];
@@ -65,6 +117,18 @@ namespace rage
     public:
         rmPtfxShaderVar_Int(const datResource& rsc) {}
 
+        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) override
+        {
+            writer.StartObject();
+            {
+                WriteToJsonBase(writer);
+
+                writer.String("Value");
+                writer.Int(mValue);
+            }
+            writer.EndObject();
+        }
+
         int32_t mValue;
         int8_t pad[12];
     };
@@ -75,6 +139,18 @@ namespace rage
     {
     public:
         rmPtfxShaderVar_Float(const datResource& rsc) {}
+
+        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) override
+        {
+            writer.StartObject();
+            {
+                WriteToJsonBase(writer);
+
+                writer.String("Value");
+                writer.Double((double)mValue);
+            }
+            writer.EndObject();
+        }
 
         float mValue;
         int8_t pad[12];
@@ -87,6 +163,25 @@ namespace rage
     public:
         rmPtfxShaderVar_Float2(const datResource& rsc) {}
 
+        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) override
+        {
+            writer.StartObject();
+            {
+                WriteToJsonBase(writer);
+
+                writer.SetFormatOptions(rapidjson::kFormatSingleLineArray);
+                writer.String("Value");
+                writer.StartArray();
+                {
+                    writer.Double((double)mValue[0]);
+                    writer.Double((double)mValue[1]);
+                }
+                writer.EndArray();
+                writer.SetFormatOptions(rapidjson::kFormatDefault);
+            }
+            writer.EndObject();
+        }
+
         float mValue[2];
         int8_t pad[8];
     };
@@ -97,6 +192,26 @@ namespace rage
     {
     public:
         rmPtfxShaderVar_Float3(const datResource& rsc) {}
+        
+        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) override
+        {
+            writer.StartObject();
+            {
+                WriteToJsonBase(writer);
+
+                writer.SetFormatOptions(rapidjson::kFormatSingleLineArray);
+                writer.String("Value");
+                writer.StartArray();
+                {
+                    writer.Double((double)mValue[0]);
+                    writer.Double((double)mValue[1]);
+                    writer.Double((double)mValue[2]);
+                }
+                writer.EndArray();
+                writer.SetFormatOptions(rapidjson::kFormatDefault);
+            }
+            writer.EndObject();
+        }
 
         float mValue[3];
         int8_t pad[4];
@@ -108,6 +223,27 @@ namespace rage
     {
     public:
         rmPtfxShaderVar_Float4(const datResource& rsc) {}
+
+        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) override
+        {
+            writer.StartObject();
+            {
+                WriteToJsonBase(writer);
+
+                writer.SetFormatOptions(rapidjson::kFormatSingleLineArray);
+                writer.String("Value");
+                writer.StartArray();
+                {
+                    writer.Double((double)mValue[0]);
+                    writer.Double((double)mValue[1]);
+                    writer.Double((double)mValue[2]);
+                    writer.Double((double)mValue[3]);
+                }
+                writer.EndArray();
+                writer.SetFormatOptions(rapidjson::kFormatDefault);
+            }
+            writer.EndObject();
+        }
 
         float mValue[4];
     };
@@ -122,11 +258,6 @@ namespace rage
             rsc.PointerFixUp(mTextureName);
         }
 
-        ~rmPtfxShaderVar_Texture()
-        {
-            delete[] mTextureName;
-        }
-
         void AddToLayout(RSC5Layout& layout, uint32_t depth)
         {
             mTexture.AddToLayout(layout, depth);
@@ -137,6 +268,18 @@ namespace rage
         {
             mTexture.SerializePtrs(layout, rsc, depth);
             layout.SerializePtr(mTextureName, strlen(mTextureName) + 1);
+        }
+
+        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) override
+        {
+            writer.StartObject();
+            {
+                WriteToJsonBase(writer);
+
+                writer.String("Value");
+                writer.String(mTextureName);
+            }
+            writer.EndObject();
         }
 
         datRef<grcTexturePC> mTexture;
@@ -159,6 +302,18 @@ namespace rage
         void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
         {
             mKeyframe.SerializePtrs(layout, rsc, depth);
+        }
+
+        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) override
+        {
+            writer.StartObject();
+            {
+                WriteToJsonBase(writer);
+
+                writer.String("Value");
+                mKeyframe.WriteToJson(writer);
+            }
+            writer.EndObject();
         }
 
         int8_t field_20[8];
