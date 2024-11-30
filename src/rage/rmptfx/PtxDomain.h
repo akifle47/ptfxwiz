@@ -1,4 +1,5 @@
 #pragma once
+#include "rapidjson/include/prettywriter.h"
 #include "PtxKeyFrame.h"
 #include "../DatOwner.h"
 #include "../math/Matrix.h"
@@ -27,6 +28,8 @@ namespace rage
 
         uint32_t GetObjectSize() const;
 
+        virtual void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) = 0;
+
         float field_4;
         eDomainType mType;
         int32_t mDomainFunction;
@@ -50,6 +53,11 @@ namespace rage
         bool mWorldSpace;
         bool mPointRelative;
         int8_t field_126[10];
+    protected:
+        const char* TypeToString(eDomainType type);
+        eDomainType StringToType(const char* str);
+
+        void WriteToJsonBase(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer);
     };
     ASSERT_SIZE(ptxDomain, 0x130);
 
@@ -58,6 +66,8 @@ namespace rage
     {
     public:
         ptxDomainBox(const datResource& rsc) : ptxDomain(rsc) {}
+
+        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) override;
 
         float field_130;
         float field_134;
@@ -80,6 +90,8 @@ namespace rage
     public:
         ptxDomainSphere(const datResource& rsc) : ptxDomain(rsc) {}
 
+        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) override;
+
         float field_130;
         float field_134;
         float field_138;
@@ -92,6 +104,8 @@ namespace rage
     {
     public:
         ptxDomainCylinder(const datResource& rsc) : ptxDomain(rsc) {}
+
+        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) override;
 
         float field_130;
         float field_134;
@@ -113,6 +127,8 @@ namespace rage
     {
     public:
         ptxDomainVortex(const datResource& rsc) : ptxDomain(rsc) {}
+
+        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) override;
 
         float field_130;
         float field_134;

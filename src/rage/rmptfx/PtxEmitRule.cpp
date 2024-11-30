@@ -43,6 +43,31 @@ namespace rage
             layout.SerializePtr(mName, strlen(mName) + 1);
     }
 
+    void ptxEmitRuleStd::WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer)
+    {
+        writer.StartObject();
+        {
+            writer.String("Name");
+            writer.String(mName);
+
+            writer.String("Version");
+            writer.Uint(100);
+
+            writer.String("Duration");
+            writer.Double((double)mDuration);
+
+            writer.String("EmitterData");
+            mEmitterData.WriteToJson(writer);
+
+            writer.String("field_1E8");
+            writer.Int(field_1E8);
+
+            writer.String("OneShot");
+            writer.Bool(mOneShot);
+        }
+        writer.EndObject();
+    }
+
     void ptxEmitRuleStd::stdEmitterData::AddToLayout(RSC5Layout& layout, uint32_t depth)
     {
         mEmitterDomain.AddToLayout(layout, depth);
@@ -81,5 +106,51 @@ namespace rage
 
         if(mPtxRuleName)
             layout.SerializePtr(mPtxRuleName, strlen(mPtxRuleName) + 1);
+    }
+
+    void ptxEmitRuleStd::stdEmitterData::WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer)
+    {
+        writer.StartObject();
+        {
+            if(mEmitterDomain.Get())
+            {
+                writer.String("EmitterDomain");
+                mEmitterDomain->WriteToJson(writer);
+            }
+
+            if(mVelocityDomain.Get())
+            {
+                writer.String("VelocityDomain");
+                mVelocityDomain->WriteToJson(writer);
+            }
+
+            writer.String("SpawnRateKF");
+            mSpawnRateKF.WriteToJson(writer);
+            writer.String("SpawnDistKF");
+            mSpawnDistKF.WriteToJson(writer);
+            writer.String("TimeScaleKF");
+            mTimeScaleKF.WriteToJson(writer);
+            writer.String("SpawnLifeKF");
+            mSpawnLifeKF.WriteToJson(writer);
+            writer.String("SpeedKF");
+            mSpeedKF.WriteToJson(writer);
+            writer.String("SizeKFOT");
+            mSizeKFOT.WriteToJson(writer);
+            writer.String("AccelerationKFOT");
+            mAccelerationKFOT.WriteToJson(writer);
+            writer.String("DampeningKFOT");
+            mDampeningKFOT.WriteToJson(writer);
+            writer.String("MatrixWeightKFOT");
+            mMatrixWeightKFOT.WriteToJson(writer);
+            writer.String("InheritVelKFOT");
+            mInheritVelKFOT.WriteToJson(writer);
+
+            if(mPtxRuleName)
+            {
+                writer.String("PtxRuleName");
+                writer.String(mPtxRuleName);
+            }
+        }
+        writer.EndObject();
     }
 }

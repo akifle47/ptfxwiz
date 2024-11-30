@@ -1,4 +1,5 @@
 #pragma once
+#include "rapidjson/include/prettywriter.h"
 #include "../../Utils.h"
 #include "../ReferenceCounter.h"
 #include "PtxDomain.h"
@@ -19,6 +20,8 @@ namespace rage
         void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth);
 
         void Place(void* that, const datResource& rsc);
+
+        virtual void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) = 0;
 
         uint32_t GetObjectSize() const
         {
@@ -42,6 +45,8 @@ namespace rage
             
             void AddToLayout(RSC5Layout& layout, uint32_t depth);
             void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth);
+
+            void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer);
 
             datOwner<ptxDomain> mEmitterDomain;
             int8_t field_8[4];
@@ -74,9 +79,12 @@ namespace rage
         void AddToLayout(RSC5Layout& layout, uint32_t depth);
         void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth);
 
+        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) override;
+
         float mDuration;
         int8_t field_C[4];
         stdEmitterData mEmitterData;
+        //dont think this is used.
         datRef<rmPtfxKeyframe> mKeyFrames[10];
         char* mName;
         float mFileVersion;
