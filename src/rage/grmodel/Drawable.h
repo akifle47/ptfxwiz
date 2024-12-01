@@ -12,6 +12,7 @@ namespace rage
     class rmcLod
     {
     public:
+        rmcLod() = default;
         rmcLod(const datResource& rsc) : mModels(rsc) {}
 
         inline void Place(void* that, const datResource& rsc)
@@ -37,6 +38,7 @@ namespace rage
     class rmcLodGroup
     {
     public:
+        rmcLodGroup() = default;
         rmcLodGroup(const datResource& rsc) : mLods{rsc, rsc, rsc, rsc} {}
 
         void AddToLayout(RSC5Layout& layout, uint32_t depth)
@@ -71,6 +73,7 @@ namespace rage
     class rmcDrawableBase : public pgBase
     {
     public:
+        rmcDrawableBase() : mShaderGroup() {}
         rmcDrawableBase(const datResource& rsc) : mShaderGroup(rsc) {}
 
         void AddToLayout(RSC5Layout& layout, uint32_t depth)
@@ -93,6 +96,7 @@ namespace rage
     class rmcDrawable : public rmcDrawableBase
     {
     public:
+        rmcDrawable() = default;
         rmcDrawable(const datResource& rsc) : rmcDrawableBase(rsc), mSkeleton(rsc), mLodGroup(rsc) {}
 
         inline void Place(void* that, const datResource& rsc)
@@ -123,6 +127,7 @@ namespace rage
 class gtaDrawable : public rage::rmcDrawable
 {
 public:
+    gtaDrawable() = default;
     gtaDrawable(const rage::datResource& rsc) : rage::rmcDrawable(rsc), mLights(rsc) {}
 
     inline void Place(void* that, const rage::datResource& rsc)
