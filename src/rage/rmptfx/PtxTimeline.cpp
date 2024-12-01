@@ -16,4 +16,37 @@ namespace rage
         mEvents.SerializePtrs(layout, rsc, depth);
         mEffectRule.SerializePtrs(layout, rsc, depth);
     }
+
+    void ptxTimeLine::WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer)
+    {
+        writer.StartObject();
+        {
+            if(mEffectRule.Get() && mEffectRule->mName)
+            {
+                writer.String("EffectRule");
+                writer.String(mEffectRule->mName);
+            }
+
+            writer.String("field_4");
+            writer.Double((double)field_4);
+
+            writer.String("mPreUpdate");
+            writer.Double((double)mPreUpdate);
+
+            writer.String("mNumLoops");
+            writer.Int(mNumLoops);
+
+            writer.String("Events");
+            writer.StartArray();
+            for(uint16_t i = 0; i < mEvents.GetCount(); i++)
+            {
+                if(mEvents[i].Get())
+                {
+                    mEvents[i]->WriteToJson(writer);
+                }
+            }
+            writer.EndArray();
+        }
+        writer.EndObject();
+    }
 }

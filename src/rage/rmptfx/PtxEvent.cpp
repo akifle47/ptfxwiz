@@ -72,6 +72,60 @@ namespace rage
         }
     }
 
+    const char* ptxEvent::TypeToString(eEventType type)
+    {
+        static const char* lut[] {"EMITTER", "EFFECT"};
+
+        if((uint32_t)type > (uint32_t)eEventType::COUNT)
+            return "INVALID_TYPE";
+        else
+            return lut[(uint32_t)type];
+    }
+
+    ptxEvent::eEventType ptxEvent::StringToType(const char* str)
+    {
+        static const char* lut[] {"EMITTER", "EFFECT"};
+
+        if(!str)
+            return eEventType::COUNT;
+
+        for(size_t i = 0; i < std::size(lut); i++)
+        {
+            if(stricmp(str, lut[i]) == 0)
+                return (eEventType)i;
+        }
+
+        return eEventType::COUNT;
+    }
+
+    void ptxEvent::WriteToJsonBase(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer)
+    {
+        writer.String("Type");
+        writer.String(TypeToString(mType));
+
+        writer.String("field_4");
+        writer.Int(field_4);
+
+        writer.String("TriggerTime");
+        writer.Double((double)mTriggerTime);
+
+        if(mEvoGroup.Get())
+        {
+            writer.String("EvoGroup");
+            mEvoGroup->WriteToJson(writer);
+        }
+
+        writer.String("field_10");
+        writer.Double((double)field_10);
+
+        writer.String("TriggerCap");
+        writer.Int(mTriggerCap);
+
+        writer.String("field_1C");
+        writer.Int(field_1C);
+    }
+
+
     void ptxEffectOverridables::WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer)
     {
         writer.StartObject();
@@ -138,6 +192,49 @@ namespace rage
             layout.SerializePtr(mEffectName, strlen(mEffectName) + 1);
     }
 
+    void ptxEventEffect::WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer)
+    {
+        writer.StartObject();
+        {
+            if(mEffectName)
+            {
+                writer.String("EffectName");
+                writer.String(mEffectName);
+            }
+
+            WriteToJsonBase(writer);
+
+            writer.SetFormatOptions(rapidjson::kFormatSingleLineArray);
+            writer.String("RotationMin");
+            writer.StartArray();
+            {
+                writer.Double((double)mRotationMin.x);
+                writer.Double((double)mRotationMin.y);
+                writer.Double((double)mRotationMin.z);
+            }
+            writer.EndArray();
+            writer.SetFormatOptions(rapidjson::kFormatDefault);
+
+            mOverrideMins.WriteToJson(writer);
+            mOverrideMaxes.WriteToJson(writer);
+
+            writer.String("field_98");
+            writer.Uint(field_98);
+
+            writer.String("EmitterDomain");
+            if(mEmitterDomain.Get())
+                mEmitterDomain->WriteToJson(writer);
+            else
+                writer.Null();
+
+            writer.String("field_A4");
+            writer.Int(field_A4);
+            writer.String("field_AF");
+            writer.Int(field_AF);
+        }
+        writer.EndObject();
+    }
+
 
     ptxEventEmitter::ptxEventEmitter(const datResource& rsc) : ptxEvent(rsc), mEmitRule(rsc), mRule(rsc)
     {
@@ -167,5 +264,72 @@ namespace rage
             layout.SerializePtr(mEmmiterRuleName, strlen(mEmmiterRuleName) + 1);
         if(mPtxRuleName)
             layout.SerializePtr(mPtxRuleName, strlen(mPtxRuleName) + 1);
+    }
+
+    void ptxEventEmitter::WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer)
+    {
+        writer.StartObject();
+        {
+            WriteToJsonBase(writer);
+
+            if(mEmmiterRuleName)
+            {
+                writer.String("EmmiterRuleName");
+                writer.String(mEmmiterRuleName);
+            }
+            if(mPtxRuleName)
+            {
+                writer.String("PtxRuleName");
+                writer.String(mPtxRuleName);
+            }
+
+            writer.String("EmitRule");
+            if(mEmitRule.Get() && mEmitRule->mName)
+                writer.String(mEmitRule->mName);
+            else
+                writer.Null();
+
+            writer.String("Rule");
+            if(mRule.Get() && mRule->mName)
+                writer.String(mRule->mName);
+            else
+                writer.Null();
+
+            writer.String("DurationScalarMin");
+            writer.Double((double)mDurationScalarMin);
+            writer.String("DurationScalarMax");
+            writer.Double((double)mDurationScalarMax);
+            writer.String("TimeScalarMin");
+            writer.Double((double)mTimeScalarMin);
+            writer.String("TimeScalarMax");
+            writer.Double((double)mTimeScalarMax);
+            writer.String("ZoomMin");
+            writer.Double((double)mZoomMin);
+            writer.String("ZoomMax");
+            writer.Double((double)mZoomMax);
+
+            writer.SetFormatOptions(rapidjson::kFormatSingleLineArray);
+            writer.String("ColorTintMin");
+            writer.StartArray();
+            {
+                writer.Uint((uint32_t)mColorTintMin.Red);
+                writer.Uint((uint32_t)mColorTintMin.Green);
+                writer.Uint((uint32_t)mColorTintMin.Blue);
+                writer.Uint((uint32_t)mColorTintMin.Alpha);
+            }
+            writer.EndArray();
+
+            writer.String("ColorTintMax");
+            writer.StartArray();
+            {
+                writer.Uint((uint32_t)mColorTintMax.Red);
+                writer.Uint((uint32_t)mColorTintMax.Green);
+                writer.Uint((uint32_t)mColorTintMax.Blue);
+                writer.Uint((uint32_t)mColorTintMax.Alpha);
+            }
+            writer.EndArray();
+            writer.SetFormatOptions(rapidjson::kFormatDefault);
+        }
+        writer.EndObject();
     }
 }

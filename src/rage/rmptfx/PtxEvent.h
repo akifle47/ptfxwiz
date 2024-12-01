@@ -15,7 +15,8 @@ namespace rage
         enum class eEventType : uint32_t
         {
             EMITTER = 0,
-            EFFECT = 1,
+            EFFECT,
+            COUNT,
         };
 
     public:
@@ -30,6 +31,8 @@ namespace rage
 
         uint32_t GetObjectSize() const;
 
+        virtual void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) = 0;
+
         int32_t field_4;
         float mTriggerTime;
         datOwner<ptxEvolutionGroup> mEvoGroup;
@@ -37,6 +40,12 @@ namespace rage
         eEventType mType;
         int32_t mTriggerCap;
         int32_t field_1C;
+
+    protected:
+        const char* TypeToString(eEventType type);
+        eEventType StringToType(const char* str);
+
+        void WriteToJsonBase(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer);
     };
     ASSERT_SIZE(ptxEvent, 0x20);
 
@@ -64,6 +73,8 @@ namespace rage
         void AddToLayout(RSC5Layout& layout, uint32_t depth);
         void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth);
 
+        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) override;
+
         Vector3 mRotationMin;
         int8_t field_2C[0x4];
         ptxEffectOverridables mOverrideMins;
@@ -89,6 +100,8 @@ namespace rage
         void AddToLayout(RSC5Layout& layout, uint32_t depth);
         void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth);
 
+        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) override;
+
         float mDurationScalarMin;
         float mDurationScalarMax;
         float mTimeScalarMin;
@@ -99,7 +112,7 @@ namespace rage
         Color32 mColorTintMax;
         char* mEmmiterRuleName;
         char* mPtxRuleName;
-        datRef<class ptxEmitRule> mEmitRule;
+        datRef<class ptxEmitRuleStd> mEmitRule;
         datRef<class ptxRule> mRule;
     };
     ASSERT_SIZE(ptxEventEmitter, 0x50);

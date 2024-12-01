@@ -1,4 +1,5 @@
 #pragma once
+#include "rapidjson/include/prettywriter.h"
 #include "../../Utils.h"
 #include "../ReferenceCounter.h"
 #include "PtxEvolution.h"
@@ -27,6 +28,8 @@ namespace rage
             return 0x1A0;
         }
 
+        virtual void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) = 0;
+
         void Place(void* that, const datResource& rsc);
 
         rmPtfxKeyframe mKFColorTint;
@@ -50,6 +53,9 @@ namespace rage
         int32_t field_114;
         int8_t field_118[7];
         int8_t field_11F;
+
+    protected:
+        void WriteToJsonBase(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer);
     };
     ASSERT_SIZE(ptxEffectRule, 0x120);
 
@@ -65,6 +71,8 @@ namespace rage
 
         void AddToLayout(RSC5Layout& layout, uint32_t depth);
         void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth);
+
+        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) override;
 
         ptxTimeLine mTimeline;
         float mFadeDistance;

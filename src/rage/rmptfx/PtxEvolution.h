@@ -1,4 +1,5 @@
 #pragma once
+#include "rapidjson/include/prettywriter.h"
 #include "../Array.h"
 #include "../DatOwner.h"
 #include "PtxKeyFrame.h"
@@ -17,6 +18,8 @@ namespace rage
         {
             new(that) ptxEvolutionGroup(rsc); 
         }
+
+        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer);
 
         atArray<datOwner<class ptxEvolution>> mEvoList;
         atArray<struct ptxEvoBlendMode> mEvoBlendModeList;
@@ -39,6 +42,8 @@ namespace rage
         {
             new(that) ptxEvolution(rsc);
         }
+
+        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer);
 
         char* mEvoName;
         atArray<datOwner<class ptxEvoPropList>> mPropList;
@@ -67,6 +72,8 @@ namespace rage
             new(that) ptxEvoPropList(rsc);
         }
 
+        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer);
+
         int32_t field_0;
         int32_t field_4;
         int32_t field_8;
@@ -93,6 +100,8 @@ namespace rage
         {
             new(that) ptxEvoProp(rsc);
         }
+
+        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer);
 
         rmPtfxKeyframe mKeyFrames;
         int32_t mRegID;

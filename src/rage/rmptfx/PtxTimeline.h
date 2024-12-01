@@ -16,6 +16,8 @@ namespace rage
         void AddToLayout(RSC5Layout& layout, uint32_t depth);
         void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth);
 
+        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer);
+
         float field_4;
         float mPreUpdate;
         int32_t mNumLoops;
