@@ -159,9 +159,9 @@ namespace rage
 
             writer.String("CullSphere");
             writer.Double((double)mCullSphere);
-            writer.String("ield_184");
+            writer.String("field_184");
             writer.Double((double)field_184);
-            writer.String("ield_188");
+            writer.String("field_188");
             writer.Double((double)field_188);
 
             writer.SetFormatOptions(rapidjson::kFormatSingleLineArray);
