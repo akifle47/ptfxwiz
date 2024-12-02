@@ -1,3 +1,5 @@
+#include "rapidjson/include/document.h"
+#include "rapidjson/include/prettywriter.h"
 #include "rage/Dictionary.h"
 #include "rage/grcore/Texture.h"
 #include "rage/rmptfx/PtxList.h"
@@ -13,9 +15,11 @@ static const char* CACHE_FILE_NAME = "ptfxwiz.cache";
 bool ProcessInput(const char* input);
 void PrintHelp();
 
+//todo: fix the memory leaks
 void LoadAndSaveTXD(std::filesystem::path filePathIn, std::filesystem::path filePathOut);
 void LoadAndSaveDrawable(std::filesystem::path filePathIn, std::filesystem::path filePathOut);
 void LoadAndSaveParticleList(std::filesystem::path filePathIn, std::filesystem::path filePathOut);
+void ProcessParticleList(std::filesystem::path filePathIn, std::filesystem::path filePathOut);
 
 int main(int32_t argc, char** argv)
 {
@@ -153,7 +157,14 @@ bool ProcessInput(const char* input)
         }
     }
 
-    Log::Error("First argument must be an option.");
+    if(tokens.size() > 0)
+    {
+        const char* inFile = tokens[0].Get();
+        const char* outDir = tokens.size() == 1 ? "" : tokens[1].Get();
+        ProcessParticleList(inFile, outDir);
+        return false;
+    }
+
     PrintHelp();
     return false;
 }
@@ -161,17 +172,18 @@ bool ProcessInput(const char* input)
 void PrintHelp()
 {
     printf("<arguments> are required and [arguments] are optional.\n");
-    printf("Usage: <option> <in_file> [out_file]\n");
+    printf("Usage: <option>\n");
+    printf("or: <in_file> [out_directory]\n");
+    printf("example: gta_core.wpfl output/\n");
+    printf("if no output directory is provided the file(s) will be saved in the same directory <in_file> is in.\n");
     printf("    options:\n");
     printf("        -q, -quit\n");
     printf("        -h, -help    displays this message.\n");
 #ifdef _DEBUG
     printf("        -t, -txd     loads and saves a texture dictionary as a resource (wtd).\n");
     printf("        -d, -drwbl   loads and saves a drawable as a resource (wdr).\n");
+    printf("        -p, -ptx     loads and saves a particle list as a resource (wpfl)\n");
 #endif
-    //todo b
-    printf("        -p, -ptx     saves <in_file> as a wpfl if it's a TODO or as a TODO if it's a wpfl. if no [out_file]\n");
-    printf("                     is provided the file will be saved as in_file_out.\n");
 }
 
 using Txd = rage::pgDictionary<rage::grcTexturePC>;
@@ -180,9 +192,7 @@ void LoadAndSaveTXD(std::filesystem::path filePathIn, std::filesystem::path file
 {
     std::unique_ptr<rage::datResource> rsc = std::make_unique<rage::datResource>(filePathIn.string().c_str());
     if(!ResourceLoader::Load(filePathIn, 8, rsc.get()))
-    {
         return;
-    }
 
     Txd* txd((Txd*)rsc->Map->Chunks->DestAddr);
     txd->Place(txd, *rsc);
@@ -201,9 +211,7 @@ void LoadAndSaveDrawable(std::filesystem::path filePathIn, std::filesystem::path
 {
     std::unique_ptr<rage::datResource> drsc = std::make_unique<rage::datResource>(filePathIn.string().c_str());
     if(!ResourceLoader::Load(filePathIn, 110, drsc.get()))
-    {
         return;
-    }
 
     auto& drwbl = *(gtaDrawable*)drsc->Map->Chunks->DestAddr;
     drwbl.Place(&drwbl, *drsc);
@@ -222,9 +230,7 @@ void LoadAndSaveParticleList(std::filesystem::path filePathIn, std::filesystem::
 {
     std::unique_ptr<rage::datResource> rsc = std::make_unique<rage::datResource>(filePathIn.string().c_str());
     if(!ResourceLoader::Load(filePathIn, 36, rsc.get()))
-    {
         return;
-    }
 
     auto& ptxlist = *(rage::PtxList*)rsc->Map->Chunks->DestAddr;
     ptxlist.Place(&ptxlist, *rsc);
@@ -232,9 +238,48 @@ void LoadAndSaveParticleList(std::filesystem::path filePathIn, std::filesystem::
     if(filePathOut.empty())
     {
         filePathOut = filePathIn.parent_path() / filePathIn.stem();
-        filePathOut += "_out.wpfl";
+        filePathOut += "_out.wdr";
     }
 
     RSC5Layout layout;
     layout.Save(ptxlist, filePathOut, 36);
+}
+
+void ProcessParticleList(std::filesystem::path filePathIn, std::filesystem::path filePathOut)
+{
+    filePathIn.make_preferred();
+    filePathOut.make_preferred();
+    //wpfl to json
+    if (filePathIn.extension() == ".wpfl")
+    {
+        std::unique_ptr<rage::datResource> rsc = std::make_unique<rage::datResource>(filePathIn.string().c_str());
+        if (!ResourceLoader::Load(filePathIn, 36, rsc.get()))
+            return;
+
+        auto& ptxlist = *(rage::PtxList*)rsc->Map->Chunks->DestAddr;
+        ptxlist.Place(&ptxlist, *rsc);
+
+        if(!filePathOut.empty())
+        {
+            if(filePathOut.has_filename())
+                filePathOut.replace_filename(filePathIn.filename());
+            else
+                filePathOut.concat(filePathIn.filename().string());
+        }
+        else
+        {
+            filePathOut = filePathIn;
+        }
+
+        ptxlist.SaveToJson(filePathOut);
+    }
+    //json to wpfl
+    else if(filePathIn.extension() == ".json")
+    {
+        //TODO: json to wpfl
+    }
+    else
+    {
+        Log::Error("Unsupported file format. \"%s\"", filePathIn.string().c_str());
+    }
 }
