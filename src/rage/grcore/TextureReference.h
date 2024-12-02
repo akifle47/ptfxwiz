@@ -10,6 +10,20 @@ namespace rage
     class grcTextureReference : public grcTextureReferenceBase
     {
     public:
+        grcTextureReference(const char* name)
+        {
+            mResourceType = eType::REFERENCE;
+            field_10 = 0;
+            mName = strdup(name);
+            mTexture = nullptr;
+        }
+
+        ~grcTextureReference()
+        {
+            if(mName)
+                delete[] mName;
+        }
+
         grcTextureReference(const datResource& rsc)
         {
             field_10 = 0;
