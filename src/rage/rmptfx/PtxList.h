@@ -43,11 +43,13 @@ namespace rage
             mEffectRules.SerializePtrs(layout, rsc, depth);
         }
 
+        void SaveToJson(const std::filesystem::path& filePath);
+
         inline void Place(void* that, const datResource& rsc)
         {
             new(that) PtxList(rsc);
         }
-
+        
         datOwner<pgDictionary<grcTexturePC>> mTextures;
         int8_t field_4[4];
         datOwner<pgDictionary<rmcDrawable>> mDrawables;
