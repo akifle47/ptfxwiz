@@ -3,6 +3,9 @@
 
 namespace rage
 {
+    //hardcoding this for now until ptxEvoBlendMode is properly figured out
+    static constexpr size_t EVO_BLEND_MODE_COUNT = 40;
+
     ptxEvolutionGroup::ptxEvolutionGroup(const datResource& rsc) : mEvoList(rsc), mEvoBlendModeList(rsc)
     {
         //created at runtime
@@ -31,6 +34,8 @@ namespace rage
     {
         writer.StartObject();
         {
+            if(mEvoList.GetCount())
+            {
             writer.String("EvoList");
             writer.StartArray();
             for(uint16_t i = 0; i < mEvoList.GetCount(); i++)
@@ -38,7 +43,10 @@ namespace rage
                 mEvoList[i]->WriteToJson(writer);
             }
             writer.EndArray();
+            }
 
+            if(mEvoBlendModeList.GetCount())
+            {
             writer.String("EvoBlendModeList");
             writer.StartArray();
             for(uint16_t i = 0; i < mEvoBlendModeList.GetCount(); i++)
@@ -47,13 +55,20 @@ namespace rage
                 writer.StartObject();
                 {
                     writer.String("field_0");
-                    writer.Int(blendMode.field_0);
-                    writer.String("field_4");
-                    writer.Int(blendMode.field_4);
+                        writer.StartArray();
+                        for(size_t j = 0; j < EVO_BLEND_MODE_COUNT; j++)
+                        {
+                            writer.Uint(blendMode.field_0[j]);
+                        }
+                        writer.EndArray();
+
+                        //writer.String("field_4");
+                        //writer.Int(blendMode.field_4);
                 }
                 writer.EndObject();
             }
             writer.EndArray();
+        }
         }
         writer.EndObject();
     }
@@ -91,6 +106,8 @@ namespace rage
                 writer.String(mEvoName);
             }
 
+            if(mPropList.GetCount())
+            {
             writer.String("PropList");
             writer.StartArray();
             for(uint16_t i = 0; i < mPropList.GetCount(); i++)
@@ -98,6 +115,7 @@ namespace rage
                 mPropList[i]->WriteToJson(writer);
             }
             writer.EndArray();
+        }
         }
         writer.EndObject();
     }
@@ -138,6 +156,8 @@ namespace rage
             writer.String("field_24");
             writer.Int(field_24);
 
+            if(mPropList.GetCount())
+            {
             writer.String("PropList");
             writer.StartArray();
             for(uint16_t i = 0; i < mPropList.GetCount(); i++)
@@ -145,6 +165,7 @@ namespace rage
                 mPropList[i]->WriteToJson(writer);
             }
             writer.EndArray();
+        }
         }
         writer.EndObject();
     }

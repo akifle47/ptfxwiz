@@ -60,6 +60,27 @@ namespace rage
         }
     }
 
+    const char* rage::ptxRule::PtxCullModeToString(ePtxCullMode cull)
+    {
+        static const char* lut[] {"NONE", "CLOCKWISE", "COUNTERCLOCKWISE"};
+        if((uint32_t)cull >= (uint32_t)ePtxCullMode::COUNT)
+            return "INVALID";
+        else
+            return lut[(uint32_t)cull];
+    }
+
+    ePtxCullMode rage::ptxRule::StringToPtxCullMode(const char* name)
+    {
+        static const char* lut[] {"NONE", "CLOCKWISE", "COUNTERCLOCKWISE"};
+        for(size_t i = 0; i < (size_t)ePtxCullMode::COUNT; i++)
+        {
+            if(stricmp(name, lut[i]) == 0)
+                return (ePtxCullMode)i;
+        }
+
+        return ePtxCullMode::COUNT;
+    }
+
     void ptxRule::WriteToJsonBase(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer)
     {
         writer.String("Version");
@@ -86,7 +107,7 @@ namespace rage
         writer.StartObject();
         {
             writer.String("CullMode");
-            writer.Int(mRenderState.CullMode);
+            writer.String(PtxCullModeToString(mRenderState.CullMode));
 
             writer.String("BlendSet");
             writer.Int(mRenderState.BlendSet);
@@ -94,8 +115,8 @@ namespace rage
             writer.String("DepthBias");
             writer.Double((double)mRenderState.DepthBias);
 
-            writer.String("LightingMode");
-            writer.Int(mRenderState.LightingMode);
+            writer.String("Lit");
+            writer.Bool((bool)mRenderState.LightingMode);
 
             writer.String("DepthWrite");
             writer.Bool(mRenderState.DepthWrite);

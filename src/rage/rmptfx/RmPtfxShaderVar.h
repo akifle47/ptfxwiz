@@ -34,22 +34,10 @@ namespace rage
         void AddToLayout(RSC5Layout& layout, uint32_t depth);
         void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth);
 
-        void Place(void* that, const datResource& rsc);
-        uint32_t GetObjectSize() const;
-
-        int32_t field_4;
-        char* mName;
-        int32_t mIndex;
-        int8_t field_10;
-        int8_t field_11;
-        eVarType mType;
-        int8_t field_13[13];
-
-    protected:
-        const char* TypeToString(eVarType type)
+        static const char* TypeToString(eVarType type)
         {
             static const char* lut[]
-            { "BOOL", "INT", "FLOAT", "FLOAT2", "FLOAT3", "FLOAT4", "TEXTURE", "KEYFRAME" };
+            {"BOOL", "INT", "FLOAT", "FLOAT2", "FLOAT3", "FLOAT4", "TEXTURE", "KEYFRAME"};
 
             if((uint32_t)type >= (uint32_t)eVarType::COUNT)
                 return "INVALID_TYPE";
@@ -57,7 +45,7 @@ namespace rage
                 return lut[(uint32_t)type];
         }
 
-        eVarType StringToType(const char* str)
+        static eVarType StringToType(const char* str)
         {
             static const char* lut[]
             {"BOOL", "INT", "FLOAT", "FLOAT2", "FLOAT3", "FLOAT4", "TEXTURE", "KEYFRAME"};
@@ -74,6 +62,18 @@ namespace rage
             return eVarType::COUNT;
         }
 
+        void Place(void* that, const datResource& rsc);
+        uint32_t GetObjectSize() const;
+
+        int32_t field_4;
+        char* mName;
+        int32_t mIndex;
+        int8_t field_10;
+        int8_t field_11;
+        eVarType mType;
+        int8_t field_13[13];
+
+    protected:
         void WriteToJsonBase(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer)
         {
             writer.String("Name");
@@ -93,6 +93,8 @@ namespace rage
     {
     public:
         rmPtfxShaderVar_Bool(const datResource& rsc) {}
+
+        rmPtfxShaderVar_Bool(const datResource& rsc) : rmPtfxShaderVar(rsc) {}
 
         void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) override
         {
@@ -116,6 +118,7 @@ namespace rage
     {
     public:
         rmPtfxShaderVar_Int(const datResource& rsc) {}
+        rmPtfxShaderVar_Int(const datResource& rsc) : rmPtfxShaderVar(rsc) {}
 
         void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) override
         {
@@ -140,6 +143,8 @@ namespace rage
     public:
         rmPtfxShaderVar_Float(const datResource& rsc) {}
 
+        rmPtfxShaderVar_Float(const datResource& rsc) : rmPtfxShaderVar(rsc) {}
+
         void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) override
         {
             writer.StartObject();
@@ -162,6 +167,8 @@ namespace rage
     {
     public:
         rmPtfxShaderVar_Float2(const datResource& rsc) {}
+
+        rmPtfxShaderVar_Float2(const datResource& rsc) : rmPtfxShaderVar(rsc) {}
 
         void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) override
         {
@@ -192,6 +199,7 @@ namespace rage
     {
     public:
         rmPtfxShaderVar_Float3(const datResource& rsc) {}
+        rmPtfxShaderVar_Float3(const datResource& rsc) : rmPtfxShaderVar(rsc) {}
         
         void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) override
         {
@@ -223,6 +231,7 @@ namespace rage
     {
     public:
         rmPtfxShaderVar_Float4(const datResource& rsc) {}
+        rmPtfxShaderVar_Float4(const datResource& rsc) : rmPtfxShaderVar(rsc) {}
 
         void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) override
         {
@@ -254,6 +263,7 @@ namespace rage
     {
     public:
         rmPtfxShaderVar_Texture(const datResource& rsc) : mTexture(rsc)
+        rmPtfxShaderVar_Texture(const datResource& rsc) : rmPtfxShaderVar(rsc), mTexture(rsc)
         {
             rsc.PointerFixUp(mTextureName);
         }
@@ -293,6 +303,7 @@ namespace rage
     {
     public:
         rmPtfxShaderVar_Keyframe(const datResource& rsc) : mKeyframe(rsc) {}
+        rmPtfxShaderVar_Keyframe(const datResource& rsc) : rmPtfxShaderVar(rsc), mKeyframe(rsc) {}
 
         void AddToLayout(RSC5Layout& layout, uint32_t depth)
         {

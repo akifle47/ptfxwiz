@@ -51,6 +51,9 @@ namespace rage
         int8_t field_134[0x9];
 
     protected:
+        static const char* PtxCullModeToString(ePtxCullMode cull);
+        static ePtxCullMode StringToPtxCullMode(const char* name);
+
         void WriteToJsonBase(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer);
     };
     ASSERT_SIZE(ptxRule, 0x140);

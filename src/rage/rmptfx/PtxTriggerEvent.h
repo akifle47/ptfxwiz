@@ -34,9 +34,10 @@ namespace rage
 
                 writer.String("EffectRule");
                 if(mEffectRule.Get())
+                {
+                    writer.String("EffectRule");
                     writer.String(mEffectRule->mName);
-                else
-                    writer.Null();
+                }
 
                 writer.String("Type");
                 writer.Int(mType);

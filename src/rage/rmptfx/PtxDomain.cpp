@@ -218,6 +218,8 @@ namespace rage
     {
         writer.StartObject();
         {
+            WriteToJsonBase(writer);
+
             writer.String("field_130");
             writer.Double((double)field_130);
             writer.String("field_134");
@@ -264,6 +266,8 @@ namespace rage
     {
         writer.StartObject();
         {
+            WriteToJsonBase(writer);
+
             writer.String("field_130");
             writer.Double((double)field_130);
             writer.String("field_134");

@@ -7,19 +7,19 @@
 
 namespace rage
 {
-    class ptxEmitterData
+    class ptxEmitRuleStd : public atReferenceCounter
     {
     public:
-        virtual ~ptxEmitterData() = default;
-    };
-
-    class ptxEmitRule : public atReferenceCounter
+        class stdEmitterData
     {
     public:
         void AddToLayout(RSC5Layout& layout, uint32_t depth);
         void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth);
 
-        void Place(void* that, const datResource& rsc);
+            stdEmitterData(const datResource& rsc) : mEmitterDomain(rsc), mVelocityDomain(rsc), mSpawnRateKF(rsc), mSpawnDistKF(rsc), 
+                                                     mTimeScaleKF(rsc), mSpawnLifeKF(rsc), mSpeedKF(rsc), mSizeKFOT(rsc), mAccelerationKFOT(rsc), 
+                                                     mDampeningKFOT(rsc), mMatrixWeightKFOT(rsc), mInheritVelKFOT(rsc) 
+            {}
 
         virtual void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) = 0;
 
@@ -62,7 +62,7 @@ namespace rage
             rmPtfxKeyframe mDampeningKFOT;
             rmPtfxKeyframe mMatrixWeightKFOT;
             rmPtfxKeyframe mInheritVelKFOT;
-            //seems to always be null
+            //unused
             char* mPtxRuleName;
         };
         ASSERT_SIZE(stdEmitterData, 0x1A8);
@@ -79,10 +79,15 @@ namespace rage
         void AddToLayout(RSC5Layout& layout, uint32_t depth);
         void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth);
 
-        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) override;
+        void Place(void* that, const datResource& rsc)
+        {
+            new(that) ptxEmitRuleStd(rsc);
+        }
+
+        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer);
 
         float mDuration;
-        int8_t field_C[4];
+        int32_t field_C;
         stdEmitterData mEmitterData;
         //dont think this is used.
         datRef<rmPtfxKeyframe> mKeyFrames[10];
@@ -93,4 +98,6 @@ namespace rage
         int8_t field_1EC[3];
     };
     ASSERT_SIZE(ptxEmitRuleStd, 0x1F0);
+
+    using ptxEmitRule = ptxEmitRuleStd;
 }

@@ -54,8 +54,25 @@ namespace rage
 
     struct ptxEvoBlendMode
     {
-        int32_t field_0;
-        int32_t field_4;
+        void AddToLayout(RSC5Layout& layout, uint32_t depth)
+        {
+            layout.AddObject(field_0, RSC5Layout::eBlockType::VIRTUAL, 40);
+        }
+
+        void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
+        {
+            layout.SerializePtr(field_0, 40);
+        }
+
+        inline void Place(void* that, const datResource& rsc)
+        {
+            rsc.PointerFixUp(field_0);
+        }
+
+        uint8_t* field_0;
+        //count? but why are there 2? idk. always 40
+        uint16_t field_4;
+        uint16_t field_8;
     };
     ASSERT_SIZE(ptxEvoBlendMode, 0x8);
 
@@ -63,6 +80,10 @@ namespace rage
     {
     public:
         ptxEvoPropList(const datResource& rsc) : mPropList(rsc) {}
+        ptxEvoPropList(const datResource& rsc) : mPropList(rsc) 
+        {}
+
+        ~ptxEvoPropList();
 
         void AddToLayout(RSC5Layout& layout, uint32_t depth);
         void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth);
@@ -92,6 +113,8 @@ namespace rage
     {
     public:
         ptxEvoProp(const datResource& rsc) : mKeyFrames(rsc) {}
+        ptxEvoProp(const datResource& rsc) : mKeyFrames(rsc) 
+        {}
 
         void AddToLayout(RSC5Layout& layout, uint32_t depth);
         void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth);
@@ -135,7 +158,7 @@ namespace rage
                 }
             }
 
-            mList.Insert(*new std::pair<uint32_t, uint32_t>(hash, index), newEntryIndex);
+            mList.Insert(newEntryIndex) = std::pair<uint32_t, uint32_t>(hash, index);
         }
 
         int8_t field_0;

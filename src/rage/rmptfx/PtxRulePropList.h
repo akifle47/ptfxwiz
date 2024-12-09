@@ -41,7 +41,6 @@ namespace rage
                     {
                         for(uint16_t i = 0; i < mPropIDs.GetCount(); i++)
                         {
-                            writer.String("ID");
                             writer.Uint(mPropIDs[i]);
                         }
                     }
@@ -63,7 +62,8 @@ namespace rage
     public:
         rmPtxfxProp() {}
 
-        rmPtxfxProp(const datResource& rsc) : mKeyFrame(rsc), field_2C(rsc) {}
+        rmPtxfxProp(const datResource& rsc) : mKeyFrame(rsc), field_2C(rsc) 
+        {}
 
         void AddToLayout(RSC5Layout& layout, uint32_t depth)
         {
@@ -83,18 +83,15 @@ namespace rage
             {
                 writer.String("KeyFrame");
                 mKeyFrame.WriteToJson(writer);
-
-                writer.String("field_33");
-                writer.Int(field_33);
             }
             writer.EndObject();
         }
         rmPtfxKeyframe mKeyFrame;
-        int8_t field_28[4];
-        //todo: unknown type
-        datOwner<void*> field_2C;
-        int8_t field_30[3];
-        int8_t field_33;
+        int32_t field_28;
+        datOwner<int8_t> field_2C;
+        int8_t field_30;
+        int8_t field_31;
+        //2 bytes of padding
     };
     ASSERT_SIZE(rmPtxfxProp, 0x34);
 
@@ -105,7 +102,7 @@ namespace rage
         ptxRulePropList(const datResource& rsc) : mBiasLinks(rsc), mColorKF(rsc), mColorMaxKF(rsc), mAccelerationMinKF(rsc), mAccelerationMaxKF(rsc),
                                                   mDampeningMinKF(rsc), mDampeningMaxKF(rsc), mMatrixWeightKF(rsc), mPlaybackRateKF(rsc), 
                                                   mAlphaKF(rsc), mPositionNoiseKF(rsc), mVelocityNoiseKF(rsc), mCollisionVelocityDampeningKF(rsc), 
-                                                  mWindInfluenceKF(rsc), mVortexPropsKF(rsc) {}
+                                                  mCollisionImpVarKF(rsc), mWindInfluenceKF(rsc), mVortexPropsKF(rsc) {}
 
         void AddToLayout(RSC5Layout& layout, uint32_t depth)
         {
@@ -123,6 +120,7 @@ namespace rage
             mPositionNoiseKF.AddToLayout(layout, depth);
             mVelocityNoiseKF.AddToLayout(layout, depth);
             mCollisionVelocityDampeningKF.AddToLayout(layout, depth);
+            mCollisionImpVarKF.AddToLayout(layout, depth);
             mWindInfluenceKF.AddToLayout(layout, depth);
             mVortexPropsKF.AddToLayout(layout, depth);
         }
@@ -143,6 +141,7 @@ namespace rage
             mPositionNoiseKF.SerializePtrs(layout, rsc, depth);
             mVelocityNoiseKF.SerializePtrs(layout, rsc, depth);
             mCollisionVelocityDampeningKF.SerializePtrs(layout, rsc, depth);
+            mCollisionImpVarKF.SerializePtrs(layout, rsc, depth);
             mWindInfluenceKF.SerializePtrs(layout, rsc, depth);
             mVortexPropsKF.SerializePtrs(layout, rsc, depth);
         }

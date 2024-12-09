@@ -63,21 +63,7 @@ namespace rage
                 writer.String("Name");
                 writer.String(mName);
 
-                writer.String("TechniqueName");
-                writer.String(mTechName);
-
-                writer.String("Variables");
-                writer.StartArray();
-                {
-                    for(uint16_t i = 0; i < mVars.GetCount(); i++)
-                    {
-                        if(mVars[i].Get())
-                        {
-                            mVars[i]->WriteToJson(writer);
-                        }
-                    }
-                }
-                writer.EndArray();
+        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer);
 
                 writer.String("field_1C");
                 writer.Bool(field_1C);

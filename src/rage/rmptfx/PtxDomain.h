@@ -26,12 +26,15 @@ namespace rage
 
         void Place(void* that, const datResource& rsc);
 
+        static const char* TypeToString(eDomainType type);
+        static eDomainType StringToType(const char* str);
         uint32_t GetObjectSize() const;
 
         virtual void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) = 0;
 
         float field_4;
         eDomainType mType;
+        //emitter and velocity?
         int32_t mDomainFunction;
         rmPtfxKeyframe mPositionKF;
         rmPtfxKeyframe mDirectionKF;
@@ -54,9 +57,6 @@ namespace rage
         bool mPointRelative;
         int8_t field_126[10];
     protected:
-        const char* TypeToString(eDomainType type);
-        eDomainType StringToType(const char* str);
-
         void WriteToJsonBase(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer);
     };
     ASSERT_SIZE(ptxDomain, 0x130);

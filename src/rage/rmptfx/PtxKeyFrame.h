@@ -10,6 +10,9 @@ namespace rage
     class ptxNetObject : public datBase
     {
     public:
+        ptxNetObject() = default;
+        ptxNetObject(const rage::datResource&) {}
+
         int32_t field_4;
         int32_t field_8;
         int32_t field_C;
@@ -35,7 +38,8 @@ namespace rage
     public:
         rmPtfxKeyframe() {}
 
-        rmPtfxKeyframe(const datResource& rsc) : mEntries(rsc) {}
+        rmPtfxKeyframe(const datResource& rsc) : ptxNetObject(rsc), mEntries(rsc) 
+        {}
 
         void AddToLayout(RSC5Layout& layout, uint32_t depth)
         {
@@ -51,9 +55,8 @@ namespace rage
         {
             writer.StartObject();
             {
-                writer.String("field_15");
-                writer.Int(field_15);
-
+                if(mEntries.GetCount())
+                {
                 writer.String("KeyFrameEntries");
                 writer.StartArray();
                 {
@@ -92,6 +95,7 @@ namespace rage
                     }
                 }
                 writer.EndArray();
+                }
 
                 writer.String("field_20");
                 writer.Int(field_20);
