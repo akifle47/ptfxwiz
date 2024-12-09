@@ -253,7 +253,7 @@ void LoadAndSaveParticleList(std::filesystem::path filePathIn, std::filesystem::
     if(filePathOut.empty())
     {
         filePathOut = filePathIn.parent_path() / filePathIn.stem();
-        filePathOut += "_out.wdr";
+        filePathOut += "_out.wpfl";
     }
 
     RSC5Layout layout;
@@ -264,6 +264,27 @@ void ProcessParticleList(std::filesystem::path filePathIn, std::filesystem::path
 {
     filePathIn.make_preferred();
     filePathOut.make_preferred();
+
+    if(!filePathOut.empty())
+    {
+        if(filePathOut.has_filename())
+        {
+            //assume that a path with no file extension is a directory without a separator
+            if(filePathOut.has_extension())
+                filePathOut.concat("\\");
+            else
+                filePathOut.replace_filename(filePathIn.filename());
+        }
+        else
+        {
+            filePathOut.concat(filePathIn.filename().string());
+        }
+    }
+    else
+    {
+        filePathOut = filePathIn;
+    }
+
     //wpfl to json
     if (filePathIn.extension() == ".wpfl")
     {
@@ -274,40 +295,18 @@ void ProcessParticleList(std::filesystem::path filePathIn, std::filesystem::path
         auto& ptxList = *(rage::PtxList*)rsc.Map->Chunks->DestAddr;
         ptxList.Place(&ptxList, rsc);
 
-        if(!filePathOut.empty())
-        {
-            if(filePathOut.has_filename())
-                filePathOut.replace_filename(filePathIn.filename());
-            else
-                filePathOut.concat(filePathIn.filename().string());
-        }
-        else
-        {
-            filePathOut = filePathIn;
-        }
-
         ptxList.SaveToJson(filePathOut);
         rsc.Map->FreeAllChunks();
     }
     //json to wpfl
     else if(filePathIn.extension() == ".json")
     {
+        filePathOut.replace_extension(".wpfl");
+
         rage::PtxList ptxList {};
         ptxList.LoadFromJson(filePathIn);
 
-        if(!filePathOut.empty())
-        {
-            if(filePathOut.has_filename())
-                filePathOut.replace_filename(filePathIn.filename());
-            else
-                filePathOut.concat(filePathIn.filename().string());
-        }
-        else
-        {
-            filePathOut = filePathIn;
-        }
-
         RSC5Layout layout;
-        layout.Save(ptxList, filePathOut, 110);
+        layout.Save(ptxList, filePathOut, 36);
     }
 }
