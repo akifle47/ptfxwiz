@@ -56,7 +56,7 @@ namespace rage
             writer.EndObject();
 
             std::filesystem::path outFilePath = filePath;
-            outFilePath.replace_filename(filePath.stem().concat("_ptxList")).replace_extension("json");
+            outFilePath.replace_extension("json");
 
             std::ofstream file(outFilePath);
             if(!file.is_open())
@@ -135,8 +135,9 @@ namespace rage
                     auto& shaders = drawable.mShaderGroup->mShaders;
                     for(uint16_t j = 0; j < shaders.GetCount(); j++)
                     {
-                        if(shaders[j].Get())
-                        {
+                        if(!shaders[j].Get())
+                            continue;
+
                             auto& instanceData = shaders[j]->mInstanceData;
                             for(uint32_t k = 0; k < instanceData.mCount; k++)
                             {
