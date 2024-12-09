@@ -1,15 +1,20 @@
 #pragma once
 #include "rapidjson/include/prettywriter.h"
+#include "JsonHelpers.h"
 #include "../Base.h"
 #include "../DatRef.h"
 #include "PtxKeyFrame.h"
 #include "../grmodel/Drawable.h"
+
+#undef GetObject
 
 namespace rage
 {
     class ptxBiasLink
     {
     public:
+        ptxBiasLink() = default;
+
         ptxBiasLink(const datResource& rsc) : mPropIDs(rsc) {}
 
         inline void Place(void* that, const datResource& rsc)
@@ -50,6 +55,21 @@ namespace rage
             writer.EndObject();
         }
 
+        void LoadFromJson(rapidjson::GenericObject<true, rapidjson::Value>& object)
+        {
+            strncpy(mName, object["Name"].GetString(), 64);
+
+            if(object.HasMember("PropIDs") && object["PropIDs"].IsArray())
+            {
+                auto propIDsArray = object["PropIDs"].GetArray();
+                mPropIDs = {(uint16_t)propIDsArray.Size()};
+                for(auto& propID : propIDsArray)
+                {
+                    mPropIDs.Append() = propID.GetUint();
+                }
+            }
+        }
+
         char mName[64];
         atArray<uint32_t> mPropIDs;
         int8_t field_48[4];
@@ -60,7 +80,8 @@ namespace rage
     class rmPtxfxProp
     {
     public:
-        rmPtxfxProp() {}
+        rmPtxfxProp() : mKeyFrame(), field_28(-1), field_2C(&field_30), field_30(0), field_31(0) 
+        {}
 
         rmPtxfxProp(const datResource& rsc) : mKeyFrame(rsc), field_2C(rsc) 
         {}
@@ -86,6 +107,12 @@ namespace rage
             }
             writer.EndObject();
         }
+
+        void LoadFromJson(rapidjson::GenericObject<true, rapidjson::Value>& object)
+        {
+            JsonHelpers::LoadMemberObject(mKeyFrame, object, "KeyFrame");
+        }
+
         rmPtfxKeyframe mKeyFrame;
         int32_t field_28;
         datOwner<int8_t> field_2C;
@@ -99,6 +126,8 @@ namespace rage
     class ptxRulePropList : public datBase
     {
     public:
+        ptxRulePropList() = default;
+
         ptxRulePropList(const datResource& rsc) : mBiasLinks(rsc), mColorKF(rsc), mColorMaxKF(rsc), mAccelerationMinKF(rsc), mAccelerationMaxKF(rsc),
                                                   mDampeningMinKF(rsc), mDampeningMaxKF(rsc), mMatrixWeightKF(rsc), mPlaybackRateKF(rsc), 
                                                   mAlphaKF(rsc), mPositionNoiseKF(rsc), mVelocityNoiseKF(rsc), mCollisionVelocityDampeningKF(rsc), 
@@ -147,6 +176,7 @@ namespace rage
         }
 
         virtual void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) = 0;
+        virtual void LoadFromJson(rapidjson::GenericObject<true, rapidjson::Value>& object) = 0;
 
         atArray<ptxBiasLink> mBiasLinks;
         int8_t field_C[4];
@@ -211,6 +241,39 @@ namespace rage
             writer.String("VortexPropsKF");
             mVortexPropsKF.WriteToJson(writer);
         }
+
+        void LoadFromJsonBase(rapidjson::GenericObject<true, rapidjson::Value>& object)
+        {
+            if(object.HasMember("BiasLinks"))
+            {
+                if(object["BiasLinks"].IsArray())
+                {
+                    auto biasLinksArray = object["BiasLinks"].GetArray();
+                    mBiasLinks = {(uint16_t)biasLinksArray.Size()};
+                    for(const auto& biasLink : biasLinksArray)
+                    {
+                        auto biasLinkObject = biasLink.GetObject();
+                        mBiasLinks.Append().LoadFromJson(biasLinkObject);
+                    }
+                }
+            }
+
+            JsonHelpers::LoadMemberObject(mColorKF, object, "ColorKF");
+            JsonHelpers::LoadMemberObject(mColorMaxKF, object, "ColorMaxKF");
+            JsonHelpers::LoadMemberObject(mAccelerationMinKF, object, "AccelerationMinKF");
+            JsonHelpers::LoadMemberObject(mAccelerationMaxKF, object, "AccelerationMaxKF");
+            JsonHelpers::LoadMemberObject(mDampeningMinKF, object, "DampeningMinKF");
+            JsonHelpers::LoadMemberObject(mDampeningMaxKF, object, "DampeningMaxKF");
+            JsonHelpers::LoadMemberObject(mMatrixWeightKF, object, "MatrixWeightKF");
+            JsonHelpers::LoadMemberObject(mPlaybackRateKF, object, "PlaybackRateKF");
+            JsonHelpers::LoadMemberObject(mAlphaKF, object, "AlphaKF");
+            JsonHelpers::LoadMemberObject(mPositionNoiseKF, object, "PositionNoiseKF");
+            JsonHelpers::LoadMemberObject(mVelocityNoiseKF, object, "VelocityNoiseKF");
+            JsonHelpers::LoadMemberObject(mCollisionVelocityDampeningKF, object, "CollisionVelocityDampeningKF");
+            JsonHelpers::LoadMemberObject(mCollisionImpVarKF, object, "CollisionImpVarKF");
+            JsonHelpers::LoadMemberObject(mWindInfluenceKF, object, "WindInfluenceKF");
+            JsonHelpers::LoadMemberObject(mVortexPropsKF, object, "VortexPropsKF");
+        }
     };
     ASSERT_SIZE(ptxRulePropList, 0x31C);
 
@@ -218,6 +281,8 @@ namespace rage
     class ptxSpriteRulePropList : public ptxRulePropList
     {
     public:
+        ptxSpriteRulePropList() = default;
+
         ptxSpriteRulePropList(const datResource& rsc) : ptxRulePropList(rsc), mSizeKF(rsc), mThetaKF(rsc), mInitThetaKFOT(rsc),
                                                         mInitRotateVelKFOT(rsc), mRotateVelKF(rsc), mDirectionalKF(rsc), mDirectionalVelKF(rsc), 
                                                         mTextureAnimRateKF(rsc), mTrailPropsKF(rsc) {}
@@ -280,6 +345,21 @@ namespace rage
             writer.EndObject();
         }
 
+        void LoadFromJson(rapidjson::GenericObject<true, rapidjson::Value>& object) override
+        {
+            LoadFromJsonBase(object);
+
+            JsonHelpers::LoadMemberObject(mSizeKF, object, "SizeKF");
+            JsonHelpers::LoadMemberObject(mThetaKF, object, "ThetaKF");
+            JsonHelpers::LoadMemberObject(mInitThetaKFOT, object, "InitThetaKFOT");
+            JsonHelpers::LoadMemberObject(mInitRotateVelKFOT, object, "InitRotateVelKFOT");
+            JsonHelpers::LoadMemberObject(mRotateVelKF, object, "RotateVelKF");
+            JsonHelpers::LoadMemberObject(mDirectionalKF, object, "DirectionalKF");
+            JsonHelpers::LoadMemberObject(mDirectionalVelKF, object, "DirectionalVelKF");
+            JsonHelpers::LoadMemberObject(mTextureAnimRateKF, object, "TextureAnimRateKF");
+            JsonHelpers::LoadMemberObject(mTrailPropsKF, object, "TrailPropsKF");
+        }
+
         rmPtxfxProp mSizeKF;
         rmPtxfxProp mThetaKF;
         rmPtxfxProp mInitThetaKFOT;
@@ -296,6 +376,8 @@ namespace rage
     class ptxModelRulePropList : public ptxRulePropList
     {
     public:
+        ptxModelRulePropList() = default;
+
         ptxModelRulePropList(const datResource& rsc) : ptxRulePropList(rsc), mSizeMin(rsc), mSizeMax(rsc), mInitialThetaMin(rsc), 
                                                        mInitialThetaMax(rsc), mThetaMin(rsc), mThetaMax(rsc), mInitialRotationMin(rsc), 
                                                        mInitialRotationMax(rsc), mInitRotationSpeed(rsc), mRotationSpeed(rsc) {}
@@ -362,6 +444,22 @@ namespace rage
             writer.EndObject();
         }
 
+        void LoadFromJson(rapidjson::GenericObject<true, rapidjson::Value>& object) override
+        {
+            LoadFromJsonBase(object);
+
+            JsonHelpers::LoadMemberObject(mSizeMin, object, "SizeMin");
+            JsonHelpers::LoadMemberObject(mSizeMax, object, "SizeMax");
+            JsonHelpers::LoadMemberObject(mInitialThetaMin, object, "InitialThetaMin");
+            JsonHelpers::LoadMemberObject(mInitialThetaMax, object, "InitialThetaMax");
+            JsonHelpers::LoadMemberObject(mThetaMin, object, "ThetaMin");
+            JsonHelpers::LoadMemberObject(mThetaMax, object, "ThetaMax");
+            JsonHelpers::LoadMemberObject(mInitialRotationMin, object, "InitialRotationMin");
+            JsonHelpers::LoadMemberObject(mInitialRotationMax, object, "InitialRotationMax");
+            JsonHelpers::LoadMemberObject(mInitRotationSpeed, object, "InitRotationSpeed");
+            JsonHelpers::LoadMemberObject(mRotationSpeed, object, "RotationSpeed");
+        }
+
         rmPtxfxProp mSizeMin;
         rmPtxfxProp mSizeMax;
         rmPtxfxProp mInitialThetaMin;
@@ -378,9 +476,20 @@ namespace rage
     class PtxNameDrawablePair
     {
     public:
+        PtxNameDrawablePair() : mName(nullptr) {};
+
         PtxNameDrawablePair(const datResource& rsc) : mDrawable(rsc) 
         {
             rsc.PointerFixUp(mName);
+        }
+
+        ~PtxNameDrawablePair()
+        {
+            if(mName)
+            {
+                delete[] mName;
+                mName = nullptr;
+            }
         }
 
         void AddToLayout(RSC5Layout& layout, uint32_t depth)

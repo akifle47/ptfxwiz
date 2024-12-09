@@ -1,4 +1,5 @@
 #include "PtxEffectRule.h"
+#include "JsonHelpers.h"
 
 namespace rage
 {
@@ -99,6 +100,45 @@ namespace rage
         writer.Int(field_11F);
     }
 
+    void ptxEffectRule::LoadFromJsonBase(rapidjson::GenericObject<true, rapidjson::Value>& object)
+    {
+        if(object.HasMember("Name"))
+        {
+            mName = strdup(object["Name"].GetString());
+        }
+
+        JsonHelpers::LoadMemberObject(mKFColorTint, object, "KFColorTint");
+        JsonHelpers::LoadMemberObject(mKFColorTintMax, object, "KFColorTintMax");
+        JsonHelpers::LoadMemberObject(mKFZoom, object, "KFZoom");
+        JsonHelpers::LoadMemberObject(mKFRotation, object, "KFRotation");
+        JsonHelpers::LoadMemberObject(mKFDataSphere, object, "KFDataSphere");
+        JsonHelpers::LoadMemberObject(mKFDataCapsuleA, object, "KFDataCapsuleA");
+
+        field_FC = object["field_FC"].GetInt();
+
+        if(object.HasMember("PtxEvoGroup") && object["PtxEvoGroup"].IsObject())
+        {
+            auto evoGroupObject = object["PtxEvoGroup"].GetObject();
+            mPtxEvoGroup = {new ptxEvolutionGroup()};
+            mPtxEvoGroup->LoadFromJson(evoGroupObject);
+        }
+
+        field_104 = object["field_104"].GetFloat();
+
+        mZoomCullDistance = object["ZoomCullDistance"].GetInt();
+
+        mUseRandomColor = object["UseRandomColor"].GetBool();
+        mUseDefaultFunctors = object["UseDefaultFunctors"].GetBool();
+        mHasDataSphere = object["HasDataSphere"].GetBool();
+
+        mDataObjectType = object["DataObjectType"].GetInt();
+
+        mGameFlags = object["GameFlags"].GetUint();
+
+        field_114 = object["field_114"].GetInt();
+        field_11F = object["field_11F"].GetInt();
+    }
+
 
     void ptxEffectRuleStd::AddToLayout(RSC5Layout& layout, uint32_t depth)
     {
@@ -179,5 +219,43 @@ namespace rage
             writer.Int(field_19F);
         }
         writer.EndObject();
+    }
+
+    void ptxEffectRuleStd::LoadFromJson(rapidjson::GenericObject<true, rapidjson::Value>& object)
+    {
+        LoadFromJsonBase(object);
+
+        JsonHelpers::LoadMemberObject(mTimeline, object, "Timeline");
+
+        mFadeDistance = object["FadeDistance"].GetFloat();
+        mCullRadius = object["CullRadius"].GetFloat();
+        mCullDistance = object["CullDistance"].GetFloat();
+        mLodNearDistance = object["LodNearDistance"].GetFloat();
+        mLodFarDistance = object["LodFarDistance"].GetFloat();
+        mDurationMin = object["DurationMin"].GetFloat();
+        mDurationMax = object["DurationMax"].GetFloat();
+        mTimeScalarMin = object["TimeScalarMin"].GetFloat();
+        mTimeScalarMax = object["TimeScalarMax"].GetFloat();
+
+        field_16C = object["field_16C"].GetInt();
+        field_170 = object["field_170"].GetInt();
+
+        mUseCullSphere = object["UseCullSphere"].GetBool();
+        mCullNoUpdate = object["CullNoUpdate"].GetBool();
+        mCullNoEmit = object["CullNoEmit"].GetBool();
+        mCullNoDraw = object["CullNoDraw"].GetBool();
+        mSortEvents = object["SortEvents"].GetBool();
+
+        mQuality = object["Quality"].GetInt();
+
+        mCullSphere = object["CullSphere"].GetFloat();
+        field_184 = object["field_184"].GetFloat();
+        field_188 = object["field_188"].GetFloat();
+
+        mRandomOffsetPos.x = object["RandomOffsetPos"].GetArray()[0].GetFloat();;
+        mRandomOffsetPos.y = object["RandomOffsetPos"].GetArray()[1].GetFloat();;
+        mRandomOffsetPos.z = object["RandomOffsetPos"].GetArray()[2].GetFloat();;
+
+        field_19F = object["field_19F"].GetInt();
     }
 }

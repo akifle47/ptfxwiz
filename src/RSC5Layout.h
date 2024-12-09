@@ -41,6 +41,7 @@ public:
         DeSerializePtrs();
 
         mResource.SaveToDisk(filePath, version, mResourceInfo);
+        mResource.Map->FreeAllChunks();
     }
 
     //ideally these would be private functions that can be acessed by serializable classes in some way like declaring them friends but that would 

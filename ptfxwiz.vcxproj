@@ -64,6 +64,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>src/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -81,6 +82,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>src/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -162,9 +164,10 @@
     <ClInclude Include="deps\rapidjson\include\stringbuffer.h" />
     <ClInclude Include="deps\rapidjson\include\writer.h" />
     <ClInclude Include="src\AString.h" />
-    <ClInclude Include="src\Color32.h" />
+    <ClInclude Include="src\rage\Color32.h" />
     <ClInclude Include="src\DDS.h" />
     <ClInclude Include="src\EffectList.h" />
+    <ClInclude Include="src\JsonHelpers.h" />
     <ClInclude Include="src\Log.h" />
     <ClInclude Include="src\rage\2DEffects.h" />
     <ClInclude Include="src\rage\Array.h" />
@@ -209,6 +212,7 @@
     <ClInclude Include="src\Utils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\rage\rmptfx\RmPtfxShader.cpp" />
     <ClCompile Include="src\EffectList.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\rage\grcore\Effect.cpp" />

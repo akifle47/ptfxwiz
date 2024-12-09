@@ -15,7 +15,6 @@ static const char* CACHE_FILE_NAME = "ptfxwiz.cache";
 bool ProcessInput(const char* input);
 void PrintHelp();
 
-//todo: fix the memory leaks
 void LoadAndSaveTXD(std::filesystem::path filePathIn, std::filesystem::path filePathOut);
 void LoadAndSaveDrawable(std::filesystem::path filePathIn, std::filesystem::path filePathOut);
 void LoadAndSaveParticleList(std::filesystem::path filePathIn, std::filesystem::path filePathOut);
@@ -27,7 +26,9 @@ int main(int32_t argc, char** argv)
 
     char gamePath[256] {'\0'};
 
-    if(!std::filesystem::exists(CACHE_FILE_NAME))
+    std::filesystem::path cachePath {argv[0]};
+    cachePath.replace_filename(CACHE_FILE_NAME);
+    if(!std::filesystem::exists(cachePath))
     {
         printf("Select your game's executable or launcher.\n");
 
@@ -46,24 +47,31 @@ int main(int32_t argc, char** argv)
             return -1;
         }
 
-        std::ofstream cacheFile(CACHE_FILE_NAME);
+        std::ofstream cacheFile(cachePath);
         cacheFile << gamePath;
     }
     else
     {
-        std::ifstream cacheFile(CACHE_FILE_NAME);
+        std::ifstream cacheFile(cachePath);
         if(!cacheFile.is_open())
         {
-            Log::Error("Unable to open file \"%s\".", std::filesystem::absolute(CACHE_FILE_NAME).string().c_str());
+            Log::Error("Unable to open file \"%s\".", std::filesystem::absolute(cachePath).string().c_str());
+            std::ignore = getc(stdin);
             return -1;
         }
         cacheFile.getline(gamePath, 256);
     }
 
-    EffectList::PreLoad(gamePath);
+    if(!EffectList::PreLoad(gamePath))
+    {
+        std::ignore = getc(stdin);
+        return -1;
+    }
 
     if(argc == 1)
     {
+        PrintHelp();
+
         char input[256] {0};
         wchar_t inputW[256] {0};
         DWORD bytesRead = 0;
@@ -83,6 +91,12 @@ int main(int32_t argc, char** argv)
                 return 0;
             }
         }
+    }
+    else if(argc == 2)
+    {
+        ProcessParticleList(argv[1], "");
+        Log::Info("Done.");
+        std::ignore = getc(stdin);
     }
 
     return 0;
@@ -172,9 +186,10 @@ bool ProcessInput(const char* input)
 void PrintHelp()
 {
     printf("<arguments> are required and [arguments] are optional.\n");
-    printf("Usage: <option>\n");
-    printf("or: <in_file> [out_directory]\n");
-    printf("example: gta_core.wpfl output/\n");
+    printf("usage: [option] <in_file> [out_directory]\n");
+    printf("examples: gta_core.wpfl output/\n");
+    printf("          gta_core.wpfl output/\n");
+    printf("or drag and drop a file on ptfxwiz.exe\n");
     printf("if no output directory is provided the file(s) will be saved in the same directory <in_file> is in.\n");
     printf("    options:\n");
     printf("        -q, -quit\n");
@@ -252,12 +267,12 @@ void ProcessParticleList(std::filesystem::path filePathIn, std::filesystem::path
     //wpfl to json
     if (filePathIn.extension() == ".wpfl")
     {
-        std::unique_ptr<rage::datResource> rsc = std::make_unique<rage::datResource>(filePathIn.string().c_str());
-        if (!ResourceLoader::Load(filePathIn, 36, rsc.get()))
+        rage::datResource rsc {filePathIn.string().c_str()};
+        if (!ResourceLoader::Load(filePathIn, 36, &rsc))
             return;
 
-        auto& ptxlist = *(rage::PtxList*)rsc->Map->Chunks->DestAddr;
-        ptxlist.Place(&ptxlist, *rsc);
+        auto& ptxList = *(rage::PtxList*)rsc.Map->Chunks->DestAddr;
+        ptxList.Place(&ptxList, rsc);
 
         if(!filePathOut.empty())
         {
@@ -271,15 +286,28 @@ void ProcessParticleList(std::filesystem::path filePathIn, std::filesystem::path
             filePathOut = filePathIn;
         }
 
-        ptxlist.SaveToJson(filePathOut);
+        ptxList.SaveToJson(filePathOut);
+        rsc.Map->FreeAllChunks();
     }
     //json to wpfl
     else if(filePathIn.extension() == ".json")
     {
-        //TODO: json to wpfl
-    }
-    else
-    {
-        Log::Error("Unsupported file format. \"%s\"", filePathIn.string().c_str());
+        rage::PtxList ptxList {};
+        ptxList.LoadFromJson(filePathIn);
+
+        if(!filePathOut.empty())
+        {
+            if(filePathOut.has_filename())
+                filePathOut.replace_filename(filePathIn.filename());
+            else
+                filePathOut.concat(filePathIn.filename().string());
+        }
+        else
+        {
+            filePathOut = filePathIn;
+        }
+
+        RSC5Layout layout;
+        layout.Save(ptxList, filePathOut, 110);
     }
 }

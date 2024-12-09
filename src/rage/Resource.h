@@ -1,5 +1,6 @@
 #pragma once
 #include "../Utils.h"
+#include "AString.h"
 #include "../Log.h"
 
 #include <cstdint>
@@ -95,7 +96,7 @@ namespace rage
         ptrdiff_t ContainsSrc(const void* ptr) const;
         ptrdiff_t ContainsDest(const void* ptr) const;
 
-        void FreePhysicalChunks();
+        void FreeAllChunks();
         void FillMap(const uint8_t* resourceData);
 
         uint16_t VirtualCount;
@@ -125,7 +126,7 @@ namespace rage
             uint32_t chunkIndex = Map->ContainsSrc(ptr);
             if(chunkIndex == -1)
             {
-                Log::Error("Could not find pointer 0x%p in chunks for resource %s", ptr, *DebugName);
+                Log::Error("Could not find pointer 0x%p in chunks for resource %s", ptr, DebugName.Get());
                 return -1;
             }
 
@@ -134,7 +135,7 @@ namespace rage
 
         std::unique_ptr<datResourceMap> Map;
         std::unique_ptr<datResource> Next;
-        std::unique_ptr<char*> DebugName;
+        AString DebugName;
         bool WasDefrag = false;
     };
     ASSERT_SIZE(datResource, 0x10);

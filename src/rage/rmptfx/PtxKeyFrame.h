@@ -1,9 +1,12 @@
 #pragma once
+#include "rapidjson/include/document.h"
 #include "rapidjson/include/prettywriter.h"
 #include "../../Utils.h"
 #include "../Base.h"
 #include "../Array.h"
 #include "../math/Vector.h"
+
+#undef GetObject
 
 namespace rage
 {
@@ -36,7 +39,7 @@ namespace rage
     class rmPtfxKeyframe : public ptxNetObject
     {
     public:
-        rmPtfxKeyframe() {}
+        rmPtfxKeyframe() = default;
 
         rmPtfxKeyframe(const datResource& rsc) : ptxNetObject(rsc), mEntries(rsc) 
         {}
@@ -57,44 +60,44 @@ namespace rage
             {
                 if(mEntries.GetCount())
                 {
-                writer.String("KeyFrameEntries");
-                writer.StartArray();
-                {
-                    for(uint16_t i = 0; i < mEntries.GetCount(); i++)
+                    writer.String("KeyFrameEntries");
+                    writer.StartArray();
                     {
-                        writer.StartObject();
+                        for(uint16_t i = 0; i < mEntries.GetCount(); i++)
                         {
-                            ptxKeyFrameEntry& entry = mEntries[i];
-
-                            writer.String("Time");
-                            writer.Double((double)entry.Time);
-
-                            writer.SetFormatOptions(rapidjson::kFormatSingleLineArray);
-                            writer.String("Value");
-                            writer.StartArray();
+                            writer.StartObject();
                             {
-                                writer.Double((double)entry.Value.x);
-                                writer.Double((double)entry.Value.y);
-                                writer.Double((double)entry.Value.z);
-                                writer.Double((double)entry.Value.w);
-                            }
-                            writer.EndArray();
+                                ptxKeyFrameEntry& entry = mEntries[i];
 
-                            writer.String("Delta");
-                            writer.StartArray();
-                            {
-                                writer.Double((double)entry.Delta.x);
-                                writer.Double((double)entry.Delta.y);
-                                writer.Double((double)entry.Delta.z);
-                                writer.Double((double)entry.Delta.w);
+                                writer.String("Time");
+                                writer.Double((double)entry.Time);
+
+                                writer.SetFormatOptions(rapidjson::kFormatSingleLineArray);
+                                writer.String("Value");
+                                writer.StartArray();
+                                {
+                                    writer.Double((double)entry.Value.x);
+                                    writer.Double((double)entry.Value.y);
+                                    writer.Double((double)entry.Value.z);
+                                    writer.Double((double)entry.Value.w);
+                                }
+                                writer.EndArray();
+
+                                writer.String("Delta");
+                                writer.StartArray();
+                                {
+                                    writer.Double((double)entry.Delta.x);
+                                    writer.Double((double)entry.Delta.y);
+                                    writer.Double((double)entry.Delta.z);
+                                    writer.Double((double)entry.Delta.w);
+                                }
+                                writer.EndArray();
+                                writer.SetFormatOptions(rapidjson::kFormatDefault);
                             }
-                            writer.EndArray();
-                            writer.SetFormatOptions(rapidjson::kFormatDefault);
+                            writer.EndObject();
                         }
-                        writer.EndObject();
                     }
-                }
-                writer.EndArray();
+                    writer.EndArray();
                 }
 
                 writer.String("field_20");
@@ -104,6 +107,38 @@ namespace rage
                 writer.Int(field_24);
             }
             writer.EndObject();
+        }
+
+        void LoadFromJson(rapidjson::GenericObject<true, rapidjson::Value>& object)
+        {
+            if(object.HasMember("KeyFrameEntries") && object["KeyFrameEntries"].IsArray())
+            {
+                auto keyFrameEntriesArray = object["KeyFrameEntries"].GetArray();
+                mEntries = {(uint16_t)keyFrameEntriesArray.Size()};
+                for(const auto& keyFrameEntryValue : keyFrameEntriesArray)
+                {
+                    if(keyFrameEntryValue.IsObject())
+                    {
+                       auto keyFrameEntryObject = keyFrameEntryValue.GetObject();
+                       ptxKeyFrameEntry& entry = mEntries.Append();
+
+                       entry.Time = keyFrameEntryObject["Time"].GetFloat();
+
+                       entry.Value.x = keyFrameEntryObject["Value"].GetArray()[0].GetFloat();
+                       entry.Value.y = keyFrameEntryObject["Value"].GetArray()[1].GetFloat();
+                       entry.Value.z = keyFrameEntryObject["Value"].GetArray()[2].GetFloat();
+                       entry.Value.w = keyFrameEntryObject["Value"].GetArray()[3].GetFloat();
+
+                       entry.Delta.x = keyFrameEntryObject["Delta"].GetArray()[0].GetFloat();
+                       entry.Delta.y = keyFrameEntryObject["Delta"].GetArray()[1].GetFloat();
+                       entry.Delta.z = keyFrameEntryObject["Delta"].GetArray()[2].GetFloat();
+                       entry.Delta.w = keyFrameEntryObject["Delta"].GetArray()[3].GetFloat();
+                    }
+                }
+            }
+
+            field_20 = object["field_20"].GetUint();
+            field_24 = object["field_24"].GetUint();
         }
 
         int8_t field_15;

@@ -7,16 +7,14 @@
 #include "PtxEmitRule.h"
 #include "PtxEffectRule.h"
 
-#include <fstream>
-
 namespace rage
 {
     class PtxList
     {
     public:
-        PtxList() {}
+        PtxList() : field_4{0, 0, 0, 0}, field_10(0) {}
         
-        PtxList(const datResource& rsc)
+        PtxList(const datResource& rsc) : field_4{0, 0, 0, 0}, field_10(0)
         {
             mTextures.Place(&mTextures, rsc);
             mDrawables.Place(&mDrawables, rsc);
@@ -25,12 +23,50 @@ namespace rage
             mEffectRules.Place(&mEffectRules, rsc);
         }
 
+        ~PtxList()
+        {
+            if(mTextures.Get())
+            {
+                delete mTextures.Get();
+                mTextures = {0};
+            }
+            if(mDrawables.Get())
+            {
+                delete mDrawables.Get();
+                mDrawables = {0};
+            }
+            if(mRules.Get())
+            {
+                delete mRules.Get();
+                mRules = {0};
+            }
+            if(mEmitRules.Get())
+            {
+                delete mEmitRules.Get();
+                mEmitRules = {0};
+            }
+            if(mEffectRules.Get())
+            {
+                delete mEffectRules.Get();
+                mEffectRules = {0};
+            }
+        }
+
         void AddToLayout(RSC5Layout& layout, uint32_t depth)
         {
+            Log::Info("Saving textures...");
             mTextures.AddToLayout(layout, depth);
+
+            Log::Info("Saving drawables...");
             mDrawables.AddToLayout(layout, depth);
+
+            Log::Info("Saving rules...");
             mRules.AddToLayout(layout, depth);
+
+            Log::Info("Saving emit rules...");
             mEmitRules.AddToLayout(layout, depth);
+
+            Log::Info("Saving effect rules...");
             mEffectRules.AddToLayout(layout, depth);
         }
 
@@ -44,6 +80,7 @@ namespace rage
         }
 
         void SaveToJson(const std::filesystem::path& filePath);
+        void LoadFromJson(const std::filesystem::path& filePath);
 
         inline void Place(void* that, const datResource& rsc)
         {
@@ -57,6 +94,11 @@ namespace rage
         int32_t field_10;
         datOwner<pgDictionary<ptxEmitRule>> mEmitRules;
         datOwner<pgDictionary<ptxEffectRule>> mEffectRules;
+
+    private:
+        void LoadTextures(std::filesystem::path& texturesDir);
+        void LoadDrawables(std::filesystem::path& drawablesDir);
+
     };
     ASSERT_SIZE(PtxList, 0x1C);
 }

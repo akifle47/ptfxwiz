@@ -11,12 +11,30 @@ namespace rage
     class ptxEffectRule : public atReferenceCounter
     {
     public:
+        ptxEffectRule() : mName(nullptr), field_FC(1), mPtxEvoGroup(nullptr), field_104(0.0f), field_108(nullptr), mZoomCullDistance(1), mUseRandomColor(false),
+                          mUseDefaultFunctors(false), field_10F{}, mHasDataSphere(false), mDataObjectType(0), mGameFlags(0), field_114(0), field_118{}, field_11F() {}
+
         ptxEffectRule(const datResource& rsc) : mKFColorTint(rsc), mKFColorTintMax(rsc), mKFZoom(rsc), mKFRotation(rsc), mKFDataSphere(rsc),
                                                 mKFDataCapsuleA(rsc), mPtxEvoGroup(rsc)
         {
             if(mName)
             {
                 rsc.PointerFixUp(mName);
+            }
+        }
+
+        ~ptxEffectRule()
+        {
+            if(mName)
+            {
+                delete[] mName;
+                mName = nullptr;
+            }
+
+            if(mPtxEvoGroup.Get())
+            {
+                delete mPtxEvoGroup.Get();
+                mPtxEvoGroup = {nullptr};
             }
         }
 
@@ -29,6 +47,7 @@ namespace rage
         }
 
         virtual void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) = 0;
+        virtual void LoadFromJson(rapidjson::GenericObject<true, rapidjson::Value>& object) = 0;
 
         void Place(void* that, const datResource& rsc);
 
@@ -56,6 +75,7 @@ namespace rage
 
     protected:
         void WriteToJsonBase(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer);
+        void LoadFromJsonBase(rapidjson::GenericObject<true, rapidjson::Value>& object);
     };
     ASSERT_SIZE(ptxEffectRule, 0x120);
 
@@ -63,6 +83,14 @@ namespace rage
     class ptxEffectRuleStd : public ptxEffectRule
     {
     public:
+        ptxEffectRuleStd() : ptxEffectRule(), mFadeDistance(-1.0f), mCullRadius(0.0f), mCullDistance(-1.0f), mLodNearDistance(-1.0f), mLodFarDistance(-1.0f),
+                             mFileVersion(4.0f), mDurationMin(1.0f), mDurationMax(1.0f), mTimeScalarMin(1.0f), mTimeScalarMax(1.0f), field_16C(0), field_170(0),
+                             mUseCullSphere(false), mCullNoUpdate(false), mCullNoEmit(false), mCullNoDraw(true), mSortEvents(false), mQuality(0), field_17A{},
+                             mCullSphere(0.0f), field_184(0.0f), field_188(0.0f), field_18C{}, mRandomOffsetPos{.x = 0.0f, .y = 0.0f, .z = 0.0f}, field_19C{}, field_19F(0)
+        {
+            mTimeline.mEffectRule = {this};
+        }
+
         ptxEffectRuleStd(const datResource& rsc) : ptxEffectRule(rsc), mTimeline(rsc)
         {
             field_170 = 0;
@@ -73,6 +101,7 @@ namespace rage
         void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth);
 
         void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) override;
+        void LoadFromJson(rapidjson::GenericObject<true, rapidjson::Value>& object) override;
 
         ptxTimeLine mTimeline;
         float mFadeDistance;

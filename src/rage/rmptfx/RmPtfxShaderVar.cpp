@@ -4,8 +4,6 @@ namespace rage
 {
     void rmPtfxShaderVar::Place(void* that, const datResource& rsc)
     {
-        rsc.PointerFixUp(mName);
-
         switch(mType)
         {
             case eVarType::BOOL:

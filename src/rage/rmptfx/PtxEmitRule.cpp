@@ -1,4 +1,5 @@
 #include "PtxEmitRule.h"
+#include "JsonHelpers.h"
 
 namespace rage
 {
@@ -51,6 +52,17 @@ namespace rage
             writer.Bool(mOneShot);
         }
         writer.EndObject();
+    }
+
+    void ptxEmitRuleStd::LoadFromJson(rapidjson::GenericObject<true, rapidjson::Value>& object)
+    {
+        mName = strdup(object["Name"].GetString());
+        mDuration = object["Duration"].GetFloat();
+
+        JsonHelpers::LoadMemberObject(mEmitterData, object, "EmitterData");
+
+        field_1E8 = object["field_1E8"].GetInt();
+        mOneShot = object["OneShot"].GetBool();
     }
 
     void ptxEmitRuleStd::stdEmitterData::AddToLayout(RSC5Layout& layout, uint32_t depth)
@@ -127,11 +139,60 @@ namespace rage
         writer.EndObject();
     }
 
-            if(mPtxRuleName)
-            {
-                writer.String("PtxRuleName");
-                writer.String(mPtxRuleName);
-            }
+    void ptxEmitRuleStd::stdEmitterData::LoadFromJson(rapidjson::GenericObject<true, rapidjson::Value>& object)
+    {
+        if(object.HasMember("EmitterDomain") && object["EmitterDomain"].IsObject())
+        {
+            auto domainObject = object["EmitterDomain"].GetObject();
+            ptxDomain::eDomainType type = ptxDomain::StringToType(domainObject["Type"].GetString());
+            mEmitterDomain = CreateDomain(0, type);
+            mEmitterDomain->LoadFromJson(domainObject);
+        }
+
+        if(object.HasMember("VelocityDomain") && object["VelocityDomain"].IsObject())
+        {
+            auto domainObject = object["VelocityDomain"].GetObject();
+            ptxDomain::eDomainType type = ptxDomain::StringToType(domainObject["Type"].GetString());
+            mVelocityDomain = CreateDomain(1, type);
+            mVelocityDomain->LoadFromJson(domainObject);
+        }
+
+        JsonHelpers::LoadMemberObject(mSpawnRateKF, object, "SpawnRateKF");
+
+        JsonHelpers::LoadMemberObject(mSpawnDistKF, object, "SpawnDistKF");
+        JsonHelpers::LoadMemberObject(mTimeScaleKF, object, "TimeScaleKF");
+        JsonHelpers::LoadMemberObject(mSpawnLifeKF, object, "SpawnLifeKF");
+        JsonHelpers::LoadMemberObject(mSpeedKF, object, "SpeedKF");
+        JsonHelpers::LoadMemberObject(mSizeKFOT, object, "SizeKFOT");
+        JsonHelpers::LoadMemberObject(mAccelerationKFOT, object, "AccelerationKFOT");
+        JsonHelpers::LoadMemberObject(mDampeningKFOT, object, "DampeningKFOT");
+        JsonHelpers::LoadMemberObject(mMatrixWeightKFOT, object, "MatrixWeightKFOT");
+        JsonHelpers::LoadMemberObject(mInheritVelKFOT, object, "InheritVelKFOT");
+    }
+
+    ptxDomain* ptxEmitRuleStd::stdEmitterData::CreateDomain(uint32_t domainFunction, ptxDomain::eDomainType type)
+    {
+        switch(type)
+        {
+            case ptxDomain::eDomainType::BOX:
+                return new ptxDomainBox(domainFunction);
+            break;
+
+            case ptxDomain::eDomainType::SPHERE:
+                return new ptxDomainSphere(domainFunction);
+            break;
+
+            case ptxDomain::eDomainType::CYLINDER:
+                return new ptxDomainCylinder(domainFunction);
+            break;
+
+            case ptxDomain::eDomainType::VORTEX:
+                return new ptxDomainVortex(domainFunction);
+            break;
+
+            default:
+                Log::Error("Invalid ptx domain type - %d", type);
+               return nullptr;
         }
     }
 }

@@ -1,8 +1,9 @@
 #pragma once
 #include "rapidjson/include/prettywriter.h"
-#include "../Array.h"
 #include "RmPtfxShaderVar.h"
+#include "../Array.h"
 #include "../DatOwner.h"
+#include "rage/Dictionary.h"
 
 namespace rage
 {
@@ -30,13 +31,22 @@ namespace rage
     class rmPtfxShader
     {
     public:
+        rmPtfxShader() : mName(nullptr), mTechName(nullptr), mShaderTemplate(nullptr), mTechIndex(0), mVars(nullptr), field_1C(true), field_1D{0, 0, 0} {}
+
         rmPtfxShader(const datResource& rsc) : mVars(rsc), mShaderTemplate(rsc)
         {
             rsc.PointerFixUp(mName);
             rsc.PointerFixUp(mTechName);
         }
 
-        virtual ~rmPtfxShader() = default;
+        virtual ~rmPtfxShader() 
+        {
+            for(uint16_t i = 0; i < mVars.GetCount(); i++)
+            {
+                if(mVars[i].Get())
+                    delete mVars[i].Get();
+            }
+        };
 
         void AddToLayout(RSC5Layout& layout, uint32_t depth)
         {
@@ -56,20 +66,11 @@ namespace rage
             layout.SerializePtr(mTechName, strlen(mTechName) + 1);
         }
 
-        void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer)
-        {
-            writer.StartObject();
-            {
-                writer.String("Name");
-                writer.String(mName);
+        void AssignTextureVariables(pgDictionary<grcTexturePC>& txd);
 
         void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer);
 
-                writer.String("field_1C");
-                writer.Bool(field_1C);
-            }
-            writer.EndObject();
-        }
+        void LoadFromJson(rapidjson::GenericObject<true, rapidjson::Value>& object);
 
         char* mName;
         char* mTechName;

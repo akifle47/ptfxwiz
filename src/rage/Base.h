@@ -44,6 +44,11 @@ namespace rage
             mPageMap = nullptr;
         }
 
+        ~pgBase()
+        {
+            DestroyPageMap();
+        }
+
         void AddToLayout(RSC5Layout& layout, uint32_t depth)
         {
             if(depth)

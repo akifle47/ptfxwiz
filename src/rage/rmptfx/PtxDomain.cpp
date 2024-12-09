@@ -1,4 +1,5 @@
 #include "PtxDomain.h"
+#include "JsonHelpers.h"
 
 namespace rage
 {
@@ -182,6 +183,45 @@ namespace rage
         writer.Bool(mPointRelative);
     }
 
+    void ptxDomain::LoadFromJsonBase(rapidjson::GenericObject<true, rapidjson::Value>& object)
+    {
+        field_4 = object["field_4"].GetFloat();
+
+        JsonHelpers::LoadMemberObject(mPositionKF, object, "PositionKF");
+        JsonHelpers::LoadMemberObject(mDirectionKF, object, "DirectionKF");
+        JsonHelpers::LoadMemberObject(mSizeKF, object, "SizeKF");
+        JsonHelpers::LoadMemberObject(mInnerSize, object, "InnerSize");
+
+        auto field_B0_Array = object["field_B0"].GetArray();
+        auto field_B0_Row1 = field_B0_Array[0].GetArray();
+        auto field_B0_Row2 = field_B0_Array[1].GetArray();
+        auto field_B0_Row3 = field_B0_Array[2].GetArray();
+        field_B0.a.x = field_B0_Row1[0].GetFloat();
+        field_B0.a.y = field_B0_Row1[1].GetFloat();
+        field_B0.a.z = field_B0_Row1[2].GetFloat();
+        field_B0.b.x = field_B0_Row2[0].GetFloat();
+        field_B0.b.y = field_B0_Row2[1].GetFloat();
+        field_B0.b.z = field_B0_Row2[2].GetFloat();
+        field_B0.c.x = field_B0_Row3[0].GetFloat();
+        field_B0.c.y = field_B0_Row3[1].GetFloat();
+        field_B0.c.z = field_B0_Row3[2].GetFloat();
+
+        field_F0.x = object["field_F0"].GetArray()[0].GetFloat();
+        field_F0.y = object["field_F0"].GetArray()[1].GetFloat();
+        field_F0.z = object["field_F0"].GetArray()[2].GetFloat();
+
+        field_100 = object["field_100"].GetFloat();
+        field_104 = object["field_104"].GetFloat();
+        field_108 = object["field_108"].GetFloat();
+        field_10C = object["field_10C"].GetFloat();
+        field_110 = object["field_110"].GetFloat();
+        field_114 = object["field_114"].GetFloat();
+
+        field_120 = object["field_120"].GetInt();
+        mWorldSpace = object["WorldSpace"].GetBool();
+        mPointRelative = object["PointRelative"].GetBool();
+    }
+
 
     void ptxDomainBox::WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer)
     {
@@ -213,6 +253,23 @@ namespace rage
         writer.EndObject();
     }
 
+    void ptxDomainBox::LoadFromJson(rapidjson::GenericObject<true, rapidjson::Value>& object)
+    {
+        LoadFromJsonBase(object);
+
+        field_130 = object["field_130"].GetFloat();
+        field_134 = object["field_134"].GetFloat();
+        field_138 = object["field_138"].GetFloat();
+
+        field_140 = object["field_140"].GetFloat();
+        field_144 = object["field_144"].GetFloat();
+        field_148 = object["field_148"].GetFloat();
+
+        field_150 = object["field_150"].GetFloat();
+        field_154 = object["field_154"].GetFloat();
+        field_158 = object["field_158"].GetFloat();
+    }
+
 
     void ptxDomainSphere::WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer)
     {
@@ -228,6 +285,15 @@ namespace rage
             writer.Double((double)field_138);
         }
         writer.EndObject();
+    }
+
+    void ptxDomainSphere::LoadFromJson(rapidjson::GenericObject<true, rapidjson::Value>& object)
+    {
+        LoadFromJsonBase(object);
+
+        field_130 = object["field_130"].GetFloat();
+        field_134 = object["field_134"].GetFloat();
+        field_138 = object["field_138"].GetFloat();
     }
 
 
@@ -261,6 +327,23 @@ namespace rage
         writer.EndObject();
     }
 
+    void ptxDomainCylinder::LoadFromJson(rapidjson::GenericObject<true, rapidjson::Value>& object)
+    {
+        LoadFromJsonBase(object);
+
+        field_130 = object["field_130"].GetFloat();
+        field_134 = object["field_134"].GetFloat();
+        field_138 = object["field_138"].GetFloat();
+
+        field_140 = object["field_140"].GetFloat();
+        field_144 = object["field_144"].GetFloat();
+        field_148 = object["field_148"].GetFloat();
+
+        field_150 = object["field_150"].GetFloat();
+        field_154 = object["field_154"].GetFloat();
+        field_158 = object["field_158"].GetFloat();
+    }
+
 
     void ptxDomainVortex::WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer)
     {
@@ -276,5 +359,14 @@ namespace rage
             writer.Double((double)field_138);
         }
         writer.EndObject();
+    }
+
+    void ptxDomainVortex::LoadFromJson(rapidjson::GenericObject<true, rapidjson::Value>& object)
+    {
+        LoadFromJsonBase(object);
+
+        field_130 = object["field_130"].GetFloat();
+        field_134 = object["field_134"].GetFloat();
+        field_138 = object["field_138"].GetFloat();
     }
 }

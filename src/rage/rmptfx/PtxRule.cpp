@@ -1,7 +1,18 @@
+#include "JsonHelpers.h"
 #include "PtxRule.h"
+
+#undef GetObject
 
 namespace rage
 {
+    ptxRule::ptxRule(const char* className) : field_8(0), mFileVersion(4.2f), field_10(0), field_4{0, 0, 0, 0, 0, 0, 0, 0}, field_1C(0), 
+                                              mSpawnEffectA(), mSpawnEffectB(), mRenderState(), mPhysicalRange(0.0f), mStopVelocity(0.0f), mFlags(0),
+                                              field_120(0), mName(nullptr), mClassName{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                              mPercentPhysical(100), mPercentKill(0), field_134{0, 0, 0, 0, 0, 0, 0, 0, 0}
+    {
+        strncpy(mClassName, className, 10);
+    }
+
     void ptxRule::AddToLayout(RSC5Layout& layout, uint32_t depth)
     {
         mSpawnEffectA.AddToLayout(layout, depth);
@@ -148,6 +159,47 @@ namespace rage
         writer.Uint(mPercentKill);
     }
 
+    void ptxRule::LoadFromJsonBase(rapidjson::GenericObject<true, rapidjson::Value>& object)
+    {
+        mName = strdup(object["Name"].GetString());
+
+        field_10 = object["field_10"].GetInt();
+        field_1C = object["field_1C"].GetInt();
+
+        JsonHelpers::LoadMemberObject(mSpawnEffectA, object, "SpawnEffectA");
+        JsonHelpers::LoadMemberObject(mSpawnEffectB, object, "SpawnEffectB");
+
+        if(object.HasMember("RenderState"))
+        {
+            if(object["RenderState"].IsObject())
+            {
+                auto renderStateObject = object["RenderState"].GetObject();
+
+                mRenderState.CullMode = StringToPtxCullMode(renderStateObject["CullMode"].GetString());
+                mRenderState.BlendSet = renderStateObject["BlendSet"].GetInt();
+                mRenderState.DepthBias = renderStateObject["DepthBias"].GetFloat();
+                mRenderState.LightingMode = (int32_t)renderStateObject["Lit"].GetBool();
+                mRenderState.DepthWrite = renderStateObject["DepthWrite"].GetBool();
+                mRenderState.DepthTest = renderStateObject["DepthTest"].GetBool();
+                mRenderState.AlphaBlend = renderStateObject["AlphaBlend"].GetBool();
+                mRenderState.field_13 = renderStateObject["field_13"].GetInt();
+            }
+        }
+
+        mPhysicalRange = object["PhysicalRange"].GetFloat();
+        mStopVelocity = object["StopVelocity"].GetFloat();
+        mFlags = object["Flags"].GetUint();
+        mPercentPhysical = object["PercentPhysical"].GetUint();
+        mPercentKill = object["PercentKill"].GetUint();
+    }
+
+
+    ptxSprite::ptxSprite() : ptxRule("ptxsprite"), field_140(0.0f), field_144(0.0f), field_148(0.0f), field_14C(0), field_150(0.0f), field_154(0.0f),
+                             field_158(0.0f), field_15C(0), mAxisAlligned{.x = 0.0f, .y = 0.0f, .z = 0.0f}, field_16C(0), mStartTexFrameIndex(0), 
+                             mEndTexFrameIndex(0), mEndTexAnimFrame(-1), mNumTextureTilesX(1), mNumTextureTilesY(1), field_184(nullptr), mProps(),
+                             mShader(), mTrimCornersAmmount(0.0f), mTrimCorners(false), field_69D{0, 0}, field_69F(0)
+    {}
+
 
     void ptxSprite::WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer)
     {
@@ -214,6 +266,52 @@ namespace rage
         writer.EndObject();
     }
 
+    void ptxSprite::LoadFromJson(rapidjson::GenericObject<true, rapidjson::Value>& object)
+    {
+        LoadFromJsonBase(object);
+
+        field_140 = object["field_140"].GetFloat();
+        field_144 = object["field_144"].GetFloat();
+        field_148 = object["field_148"].GetFloat();
+
+        field_14C = object["field_14C"].GetInt();
+
+        field_150 = object["field_150"].GetFloat();
+        field_154 = object["field_154"].GetFloat();
+        field_158 = object["field_158"].GetFloat();
+
+        field_15C = object["field_15C"].GetInt();
+
+        mAxisAlligned.x = object["AxisAlligned"].GetArray()[0].GetFloat();
+        mAxisAlligned.y = object["AxisAlligned"].GetArray()[1].GetFloat();
+        mAxisAlligned.z = object["AxisAlligned"].GetArray()[2].GetFloat();
+
+        field_15C = object["field_16C"].GetInt();
+
+        mStartTexFrameIndex = object["StartTexFrameIndex"].GetInt();
+        mEndTexFrameIndex = object["EndTexFrameIndex"].GetInt();
+        mEndTexAnimFrame = object["EndTexAnimFrame"].GetInt();
+
+        mNumTextureTilesX = object["NumTextureTilesX"].GetInt();
+        mNumTextureTilesY = object["NumTextureTilesY"].GetInt();
+
+        JsonHelpers::LoadMemberObject(mProps, object, "Props");
+        JsonHelpers::LoadMemberObject(mShader, object, "Shader");
+    }
+
+
+    ptxModel::ptxModel() : ptxRule("ptxmodel"), mRotation{.x = 0.0f, .y = 0.0f, .z = 0.0f}, field_14C{0, 0, 0, 0}, mRotationVar{.x = 0.0f, .y = 0.0f, .z = 0.0f},
+                           field_15C{0, 0, 0, 0}, mRotationSpeedVar{.x = 0.0f, .y = 0.0f}, mDrawables(), field_170(nullptr), mProps(), field_698{0, 0, 0, 0, 0, 0, 0}, field_69F(0)
+    {}
+
+    void ptxModel::AssignDrawables(pgDictionary<rmcDrawable>& drawables)
+    {
+        for(uint16_t i = 0; i < mDrawables.GetCount(); i++)
+        {
+            mDrawables[i].mDrawable = {drawables.Find(rage::atStringHash(mDrawables[i].mName))};
+        }
+    }
+
     void ptxModel::WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer)
     {
         writer.StartObject();
@@ -267,5 +365,34 @@ namespace rage
             writer.Int(field_69F);
         }
         writer.EndObject();
+    }
+
+    void ptxModel::LoadFromJson(rapidjson::GenericObject<true, rapidjson::Value>& object)
+    {
+        LoadFromJsonBase(object);
+
+        mRotation.x = object["Rotation"].GetArray()[0].GetFloat();
+        mRotation.y = object["Rotation"].GetArray()[1].GetFloat();
+        mRotation.z = object["Rotation"].GetArray()[2].GetFloat();
+
+        mRotationVar.x = object["RotationVar"].GetArray()[0].GetFloat();
+        mRotationVar.y = object["RotationVar"].GetArray()[1].GetFloat();
+        mRotationVar.z = object["RotationVar"].GetArray()[2].GetFloat();
+
+        mRotationSpeedVar.x = object["RotationSpeedVar"].GetArray()[0].GetFloat();
+        mRotationSpeedVar.y = object["RotationSpeedVar"].GetArray()[1].GetFloat();
+
+        if(object.HasMember("Drawables"))
+        {
+            auto drawablesArray = object["Drawables"].GetArray();
+            mDrawables = {(uint16_t)drawablesArray.Size()};
+            for(auto& drawableValue : drawablesArray)
+            {
+                mDrawables.Append().mName = strdup(drawableValue.GetString());
+            }
+
+            JsonHelpers::LoadMemberObject(mProps, object, "Props");
+            field_69F = object["field_69F"].GetInt();
+        }
     }
 }

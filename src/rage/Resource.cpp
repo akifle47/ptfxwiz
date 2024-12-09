@@ -79,6 +79,12 @@ ptrdiff_t rage::datResourceMap::ContainsDest(const void* ptr) const
     return chunkIndex;
 }
 
+void rage::datResourceMap::FreeAllChunks()
+{
+    delete[] (uint8_t*)Chunks[0].DestAddr;
+    delete[] (uint8_t*)Chunks[VirtualCount].DestAddr;
+}
+
 void rage::datResourceMap::FillMap(const uint8_t* resourceData)
 {
     uint32_t pos = 0;
@@ -93,37 +99,19 @@ void rage::datResourceMap::FillMap(const uint8_t* resourceData)
 
 
 //============= datResource
-rage::datResource::datResource()
-{
-    Map = std::make_unique<datResourceMap>();
-    Next = nullptr;
-    DebugName = std::make_unique<char*>(new char[strlen("Unnamed")]);
-    strcpy(*DebugName, "Unnamed");
-}
+rage::datResource::datResource() : Map(std::make_unique<datResourceMap>()),  Next(nullptr), DebugName{"Unnamed"}
+{}
 
-rage::datResource::datResource(const datResourceInfo& info)
+rage::datResource::datResource(const datResourceInfo& info) : Map(std::make_unique<datResourceMap>()), Next(nullptr), DebugName{"Unnamed"}
 {
-    Map = std::make_unique<datResourceMap>();
-    Next = nullptr;
-    DebugName = std::make_unique<char*>(new char[strlen("Unnamed")]);
-    strcpy(*DebugName, "Unnamed");
-
     info.GenerateMap(*Map);
 }
 
-rage::datResource::datResource(const char* name)
-{
-    Map = std::make_unique<datResourceMap>();
-    Next = nullptr;
-    DebugName = std::make_unique<char*>(_strdup(name));
-}
+rage::datResource::datResource(const char* name) : Map(std::make_unique<datResourceMap>()), Next(nullptr), DebugName(name)
+{}
 
-rage::datResource::datResource(const char* name, const datResourceInfo& info)
+rage::datResource::datResource(const char* name, const datResourceInfo& info) : Map(std::make_unique<datResourceMap>()), Next(nullptr), DebugName(name)
 {
-    Map = std::make_unique<datResourceMap>();
-    Next = nullptr;
-    DebugName = std::make_unique<char*>(_strdup(name));
-
     info.GenerateMap(*Map);
 }
 

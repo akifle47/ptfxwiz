@@ -360,7 +360,10 @@
     <ClInclude Include="deps\rapidjson\include\writer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Color32.h">
+    <ClInclude Include="src\rage\Color32.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\JsonHelpers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -411,6 +414,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\rage\rmptfx\PtxList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rage\rmptfx\RmPtfxShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

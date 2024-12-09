@@ -9,7 +9,12 @@ namespace rage
     class ptxEvolutionGroup
     {
     public:
+        ptxEvolutionGroup() :field_10{}, mEvoListIndices(nullptr), field_28{}
+        {}
+
         ptxEvolutionGroup(const datResource& rsc);
+
+        ~ptxEvolutionGroup();
 
         void AddToLayout(RSC5Layout& layout, uint32_t depth);
         void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth);
@@ -20,6 +25,7 @@ namespace rage
         }
 
         void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer);
+        void LoadFromJson(rapidjson::GenericObject<true, rapidjson::Value>& object);
 
         atArray<datOwner<class ptxEvolution>> mEvoList;
         atArray<struct ptxEvoBlendMode> mEvoBlendModeList;
@@ -33,7 +39,10 @@ namespace rage
     class ptxEvolution
     {
     public:
+        ptxEvolution();
         ptxEvolution(const datResource& rsc);
+
+        ~ptxEvolution();
 
         void AddToLayout(RSC5Layout& layout, uint32_t depth);
         void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth);
@@ -44,6 +53,7 @@ namespace rage
         }
 
         void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer);
+        void LoadFromJson(rapidjson::GenericObject<true, rapidjson::Value>& object);
 
         char* mEvoName;
         atArray<datOwner<class ptxEvoPropList>> mPropList;
@@ -79,7 +89,9 @@ namespace rage
     class ptxEvoPropList
     {
     public:
-        ptxEvoPropList(const datResource& rsc) : mPropList(rsc) {}
+        ptxEvoPropList() : field_0(-1), field_4(-1), field_8(-1), field_C(-1), field_10(-1), field_14(-1), field_18(-1), field_1C(-1), field_20(-1), field_24(-1)
+        {};
+
         ptxEvoPropList(const datResource& rsc) : mPropList(rsc) 
         {}
 
@@ -94,6 +106,7 @@ namespace rage
         }
 
         void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer);
+        void LoadFromJson(rapidjson::GenericObject<true, rapidjson::Value>& object);
 
         int32_t field_0;
         int32_t field_4;
@@ -112,7 +125,9 @@ namespace rage
     class ptxEvoProp
     {
     public:
-        ptxEvoProp(const datResource& rsc) : mKeyFrames(rsc) {}
+        ptxEvoProp() : mRegID(-1) 
+        {}
+
         ptxEvoProp(const datResource& rsc) : mKeyFrames(rsc) 
         {}
 
@@ -125,6 +140,7 @@ namespace rage
         }
 
         void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer);
+        void LoadFromJson(rapidjson::GenericObject<true, rapidjson::Value>& object);
 
         rmPtfxKeyframe mKeyFrames;
         int32_t mRegID;

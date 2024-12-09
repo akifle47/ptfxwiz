@@ -16,7 +16,7 @@ namespace EffectList
         sEffects.reserve(128);
         gamePath.remove_filename();
 
-        std::filesystem::path preloadPath = gamePath / "common/shaders/preload.list";
+        std::filesystem::path preloadPath = gamePath / "common\\shaders\\preload.list";
 
         if(!std::filesystem::exists(preloadPath))
         {
@@ -52,7 +52,7 @@ namespace EffectList
 
         for(const auto& fileName : effectFileNames)
         {
-            std::filesystem::path effectPath = gamePath / "common/shaders/win32_30_nv8" / fileName.Get();
+            std::filesystem::path effectPath = gamePath / "common\\shaders\\win32_30_nv8" / fileName.Get();
             effectPath.replace_extension("fxc");
 
             sEffects.emplace_back(effectPath);

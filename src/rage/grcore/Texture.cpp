@@ -33,7 +33,7 @@ DDS_HEADER rage::grcTexturePC::GenerateDDSHeader() const
         header.Caps2 |= eDDSHeaderCap2::VOLUME;
     }
 
-    if(mMipCount > 1)
+    if(mMipCount >= 1)
     {
         header.MipMapCount = mMipCount;
         header.Flags |= eDDSHeaderFlag::MIPMAPCOUNT;
@@ -49,4 +49,27 @@ DDS_HEADER rage::grcTexturePC::GenerateDDSHeader() const
     header.PixelFormat.Flags |= eDDSPixelFormatFlag::FOURCC;
 
     return header;
+}
+
+void rage::grcTexturePC::LoadFromDDS(const DDS_HEADER& header, const void* pixelData)
+{
+    mLayerCount = (uint8_t)header.Depth;
+    mMipCount = (uint8_t)header.MipMapCount;
+
+    mWidth = (uint16_t)header.Width;
+    mHeight = (uint16_t)header.Height;
+    mFormat = (D3DFORMAT)header.PixelFormat.FourCC;
+
+    if(mFormat == D3DFMT_DXT1)
+        mStride = mWidth / 2;
+    else if(mFormat == D3DFMT_DXT5 || mFormat == D3DFMT_DXT4 || mFormat == D3DFMT_DXT3 || mFormat == D3DFMT_DXT2)
+        mStride = mWidth;
+    else
+    {
+        Log::Error("grcTexturePC::LoadFromDDS: Unsupported texture format: %d.", (uint32_t)mFormat);
+        return;
+    }
+
+    mPixelData = (void*)new uint8_t[GetSize()];
+    memcpy(mPixelData, pixelData, GetSize());
 }

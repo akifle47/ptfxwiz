@@ -125,6 +125,22 @@ namespace rage
         writer.Int(field_1C);
     }
 
+    void ptxEvent::LoadFromJsonBase(rapidjson::GenericObject<true, rapidjson::Value>& object)
+    {
+        field_4 = object["field_4"].GetInt();
+        mTriggerTime = object["TriggerTime"].GetFloat();
+
+        if(object.HasMember("EvoGroup"))
+        {
+            mEvoGroup = {new ptxEvolutionGroup()};
+            JsonHelpers::LoadMemberObject(*mEvoGroup, object, "EvoGroup");
+        }
+
+        field_10 = object["field_10"].GetFloat();
+        mTriggerCap = object["TriggerCap"].GetInt();
+        field_1C = object["field_1C"].GetInt();
+    }
+
 
     void ptxEffectOverridables::WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer)
     {
@@ -167,6 +183,26 @@ namespace rage
         }
         writer.EndObject();
     }
+
+    void ptxEffectOverridables::LoadFromJson(rapidjson::GenericObject<true, rapidjson::Value>& object)
+    {
+        mSizeScale.x = object["SizeScale"].GetArray()[0].GetFloat();
+        mSizeScale.y = object["SizeScale"].GetArray()[1].GetFloat();
+        mSizeScale.z = object["SizeScale"].GetArray()[1].GetFloat();
+
+        mDuration = object["Duration"].GetFloat();
+        mPlaybackRate = object["PlaybackRate"].GetFloat();
+
+        auto colorTintArray = object["ColorTint"].GetArray();
+        mColorTint.Red   = (uint8_t)colorTintArray[0].GetUint();
+        mColorTint.Green = (uint8_t)colorTintArray[1].GetUint();
+        mColorTint.Blue  = (uint8_t)colorTintArray[2].GetUint();
+        mColorTint.Alpha = (uint8_t)colorTintArray[3].GetUint();
+
+        mZoom = object["Zoom"].GetFloat();
+        mWhichFields = object["WhichFields"].GetUint();
+    }
+
 
     ptxEventEffect::ptxEventEffect(const datResource& rsc) : ptxEvent(rsc), field_94(rsc), mEmitterDomain(rsc)
     {
@@ -215,17 +251,19 @@ namespace rage
             writer.EndArray();
             writer.SetFormatOptions(rapidjson::kFormatDefault);
 
+            writer.String("OverrideMins");
             mOverrideMins.WriteToJson(writer);
+            writer.String("OverrideMaxes");
             mOverrideMaxes.WriteToJson(writer);
 
             writer.String("field_98");
             writer.Uint(field_98);
 
-            writer.String("EmitterDomain");
             if(mEmitterDomain.Get())
+            {
+                writer.String("EmitterDomain");
                 mEmitterDomain->WriteToJson(writer);
-            else
-                writer.Null();
+            }
 
             writer.String("field_A4");
             writer.Int(field_A4);
@@ -233,6 +271,61 @@ namespace rage
             writer.Int(field_AF);
         }
         writer.EndObject();
+    }
+
+    static ptxDomain* CreateDomain(uint32_t domainFunction, ptxDomain::eDomainType type)
+    {
+        switch(type)
+        {
+            case ptxDomain::eDomainType::BOX:
+                return new ptxDomainBox(domainFunction);
+            break;
+
+            case ptxDomain::eDomainType::SPHERE:
+                return new ptxDomainSphere(domainFunction);
+            break;
+
+            case ptxDomain::eDomainType::CYLINDER:
+                return new ptxDomainCylinder(domainFunction);
+            break;
+
+            case ptxDomain::eDomainType::VORTEX:
+                return new ptxDomainVortex(domainFunction);
+            break;
+
+            default:
+                Log::Error("Invalid ptx domain type - %d", type);
+                return nullptr;
+        }
+    }
+
+    void ptxEventEffect::LoadFromJson(rapidjson::GenericObject<true, rapidjson::Value>& object)
+    {
+        LoadFromJsonBase(object);
+        
+        if(mEffectName)
+            mEffectName = strdup(object["EffectName"].GetString());
+
+        mRotationMin.x = object["RotationMin"].GetArray()[0].GetFloat();
+        mRotationMin.y = object["RotationMin"].GetArray()[1].GetFloat();
+        mRotationMin.z = object["RotationMin"].GetArray()[2].GetFloat();
+
+        JsonHelpers::LoadMemberObject(mOverrideMins, object, "OverrideMins");
+        JsonHelpers::LoadMemberObject(mOverrideMaxes, object, "OverrideMaxes");
+
+        field_98 = object["field_98"].GetUint();
+
+        if(object.HasMember("EmitterDomain") && object["EmitterDomain"].IsObject())
+        {
+            ptxDomain::eDomainType type = ptxDomain::StringToType(object["EmitterDomain"].GetString());
+            
+            mEmitterDomain = { CreateDomain(0, type) };
+            if(mEmitterDomain.Get())
+                mEmitterDomain->LoadFromJson(object);
+        }
+
+        field_A4 = object["field_A4"].GetInt();
+        field_AF = object["field_AF"].GetInt();
     }
 
 
@@ -283,18 +376,6 @@ namespace rage
                 writer.String(mPtxRuleName);
             }
 
-            writer.String("EmitRule");
-            if(mEmitRule.Get() && mEmitRule->mName)
-                writer.String(mEmitRule->mName);
-            else
-                writer.Null();
-
-            writer.String("Rule");
-            if(mRule.Get() && mRule->mName)
-                writer.String(mRule->mName);
-            else
-                writer.Null();
-
             writer.String("DurationScalarMin");
             writer.Double((double)mDurationScalarMin);
             writer.String("DurationScalarMax");
@@ -331,5 +412,33 @@ namespace rage
             writer.SetFormatOptions(rapidjson::kFormatDefault);
         }
         writer.EndObject();
+    }
+
+    void ptxEventEmitter::LoadFromJson(rapidjson::GenericObject<true, rapidjson::Value>& object)
+    {
+        LoadFromJsonBase(object);
+
+        if(object.HasMember("EmmiterRuleName"))
+            mEmmiterRuleName = strdup(object["EmmiterRuleName"].GetString());
+
+        if(object.HasMember("PtxRuleName"))
+            mPtxRuleName = strdup(object["PtxRuleName"].GetString());
+
+        mDurationScalarMin = object["DurationScalarMin"].GetFloat();
+        mDurationScalarMax = object["DurationScalarMax"].GetFloat();
+        mTimeScalarMin = object["TimeScalarMin"].GetFloat();
+        mTimeScalarMax = object["TimeScalarMax"].GetFloat();
+        mZoomMin = object["ZoomMin"].GetFloat();
+        mZoomMax = object["ZoomMax"].GetFloat();
+
+        mColorTintMin.Red   = (uint8_t)object["ColorTintMin"].GetArray()[0].GetUint();
+        mColorTintMin.Green = (uint8_t)object["ColorTintMin"].GetArray()[1].GetUint();
+        mColorTintMin.Blue  = (uint8_t)object["ColorTintMin"].GetArray()[2].GetUint();
+        mColorTintMin.Alpha = (uint8_t)object["ColorTintMin"].GetArray()[3].GetUint();
+
+        mColorTintMax.Red   = (uint8_t)object["ColorTintMax"].GetArray()[0].GetUint();
+        mColorTintMax.Green = (uint8_t)object["ColorTintMax"].GetArray()[1].GetUint();
+        mColorTintMax.Blue  = (uint8_t)object["ColorTintMax"].GetArray()[2].GetUint();
+        mColorTintMax.Alpha = (uint8_t)object["ColorTintMax"].GetArray()[3].GetUint();
     }
 }

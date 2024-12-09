@@ -33,6 +33,7 @@ namespace rage
     enum class eTextureType : uint8_t
     {
         STANDARD = 0,
+        //dont think these are ever used or even properly supported
         CUBE     = 1,
         DEPTH    = 2,
         VOLUME   = 2,
@@ -45,10 +46,13 @@ namespace rage
         {
             STANDARD = 0,
             RENDER_TARGET,
-            REFERENCE
+            REFERENCE,
+            COUNT,
         };
 
     public:
+        grcTexture() : mResourceType(eType::STANDARD), mLayerCount(0), mRefCount(1), field_C(0) {}
+
         void AddToLayout(RSC5Layout& layout, uint32_t depth)
         {
             pgBase::AddToLayout(layout, depth);
@@ -69,8 +73,18 @@ namespace rage
     class grcTexturePC : public grcTexture
     {
     public:
-        grcTexturePC()
-        {};
+        grcTexturePC() : grcTexture(), field_10(0), mName(nullptr), mD3DTexture(nullptr), mWidth(0), mHeight(0), mFormat(D3DFMT_UNKNOWN), 
+                         mStride(0), mTextureType(eTextureType::STANDARD), mUnknown(0), mDynamic(0), mInitialized(false), mMipCount(0), 
+                         field_28{0.0f, 0.0f, 0.0f}, field_34{0.0f, 0.0f, 0.0f}, mPrevious(nullptr), mNext(nullptr), mPixelData(nullptr), 
+                         mIsSRGB(false), mCutMipLevels(0), field_4E(0), field_4F(0) {}
+
+        grcTexturePC(const char* name) : grcTexture(), field_10(0), mName(nullptr), mD3DTexture(nullptr), mWidth(0), mHeight(0), mFormat(D3DFMT_UNKNOWN),
+            mStride(0), mTextureType(eTextureType::STANDARD), mUnknown(0), mDynamic(0), mInitialized(false), mMipCount(0),
+            field_28{0.0f, 0.0f, 0.0f}, field_34{0.0f, 0.0f, 0.0f}, mPrevious(nullptr), mNext(nullptr), mPixelData(nullptr),
+            mIsSRGB(false), mCutMipLevels(0), field_4E(0), field_4F(0)
+        {
+            mName = strdup(name);
+        };
 
         grcTexturePC(const datResource& rsc)
         {
@@ -80,7 +94,6 @@ namespace rage
             rsc.PointerFixUp(mPixelData);
         }
 
-        //texture copy should probably be handled in grcTextureFactory like in rage but im not bothering wit hthat rn
         grcTexturePC(const grcTexturePC& rhs)
         {
             memcpy(this, &rhs, sizeof(grcTexturePC));
@@ -89,7 +102,7 @@ namespace rage
             mRefCount = 1;
 
             mName = nullptr;
-            mName = _strdup(rhs.mName);
+            mName = strdup(rhs.mName);
 
             mPixelData = (void*)new uint8_t[rhs.GetSize()];
             memcpy(mPixelData, rhs.mPixelData, rhs.GetSize());
@@ -97,8 +110,17 @@ namespace rage
 
         ~grcTexturePC()
         {
-            delete[] mName;
-            delete[] mPixelData;
+            if(mName)
+            {
+                delete[] mName;
+                mName = nullptr;
+            }
+
+            if(mPixelData)
+            {
+                delete[] mPixelData;
+                mPixelData = nullptr;
+            }
         }
 
         grcTexturePC &operator=(const grcTexturePC& rhs) 
@@ -142,6 +164,7 @@ namespace rage
 
         uint32_t GetSize() const;
         DDS_HEADER GenerateDDSHeader() const;
+        void LoadFromDDS(const DDS_HEADER& header, const void* pixelData);
 
         int32_t field_10;
         char* mName;
@@ -152,11 +175,10 @@ namespace rage
         uint16_t mStride;
 
         eTextureType mTextureType : 5;
+        //locked?
         uint8_t mUnknown : 1;
-        //dynamic?
-        uint8_t mUnknown2 : 1;
-        //initialized?
-        uint8_t mUnknown3 : 1;
+        bool mDynamic : 1;
+        bool mInitialized : 1;
 
         uint8_t mMipCount;
         float field_28[3];
@@ -164,7 +186,7 @@ namespace rage
         grcTexturePC* mPrevious;
         grcTexturePC* mNext;
         void* mPixelData;
-        uint8_t field_4C;
+        bool mIsSRGB;
         uint8_t mCutMipLevels;
         uint8_t field_4E;
         uint8_t field_4F;

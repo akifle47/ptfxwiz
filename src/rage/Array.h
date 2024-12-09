@@ -14,6 +14,7 @@ namespace rage
         atArray(CounterT capacity)
         {
             mElements = new T[capacity];
+            memset(mElements, 0, capacity);
             mCount = 0;
             mCapacity = capacity;
         }
@@ -91,12 +92,22 @@ namespace rage
             return mElements[index];
         }
         
-        void Insert(T &entry, CounterT index)
+        T& Front()
+        {
+            assert(mCount > 0);
+            return mElements[0];
+        }
+
+        T& Back()
+        {
+            assert(mCount > 0);
+            return mElements[mCount - 1];
+        }
+
+        T& Insert(CounterT index)
         {
             if(mCount == mCapacity)
-            {
                 Grow();
-            }
 
             for(CounterT i = mCount; i > index; i--)
             {
@@ -104,7 +115,7 @@ namespace rage
             }
 
             mCount++;
-            mElements[index] = entry;
+            return mElements[index];
         }
 
         T& Append()

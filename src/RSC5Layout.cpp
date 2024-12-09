@@ -46,9 +46,7 @@ void RSC5Layout::Create()
     std::sort(physicalObjects.begin(), physicalObjects.end(), sortBySize);
 
     ProcessObjects(virtualObjects);
-    Log::Info("Done processing virtual objects.");
     ProcessObjects(physicalObjects);
-    Log::Info("Done processing physical objects.");
 }
 
 void RSC5Layout::ProcessObjects(std::span<RSC5Object> objects)

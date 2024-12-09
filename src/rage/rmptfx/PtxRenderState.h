@@ -3,21 +3,17 @@
 
 namespace rage
 {
+    enum class ePtxCullMode
+    {
+        NONE = 1,
+        CLOCKWISE,
+        COUNTERCLOCKWISE,
+        COUNT
+    };
+
     struct ptxRenderState
     {
-        ptxRenderState()
-        {
-            CullMode = 2;
-            BlendSet = 0;
-            DepthBias = 0.0;
-            DepthWrite = 0;
-            LightingMode = 1;
-            AlphaBlend = 1;
-            DepthTest = 1;
-            field_13 = 0;
-        }
-
-        int32_t CullMode;
+        ePtxCullMode CullMode;
         int32_t BlendSet;
         float DepthBias;
         int32_t LightingMode;
