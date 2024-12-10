@@ -9,7 +9,7 @@ namespace rage
     class ptxEvolutionGroup
     {
     public:
-        ptxEvolutionGroup() :field_10{}, mEvoListIndices(nullptr), field_28{}
+        ptxEvolutionGroup() : field_10{}, mEvoListIndices(nullptr), field_28{}
         {}
 
         ptxEvolutionGroup(const datResource& rsc);

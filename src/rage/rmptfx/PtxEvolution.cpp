@@ -80,6 +80,14 @@ namespace rage
                 }
                 writer.EndArray();
             }
+
+            writer.String("field_10");
+            writer.StartArray();
+            for(size_t i = 0; i < std::size(field_10); i++)
+            {
+                writer.Int(field_10[i]);
+            }
+            writer.EndArray();
         }
         writer.EndObject();
     }
@@ -118,6 +126,17 @@ namespace rage
                 }
                 //*mEvoBlendModeList.Back().field_0 = evoListValue.GetObject()["field_0"].GetInt();
                 //mEvoBlendModeList.Back().field_4 = evoListValue.GetObject()["field_4"].GetInt();
+            }
+        }
+
+        if(object.HasMember("field_10"))
+        {
+            auto field_10Array = object["field_10"].GetArray();
+            uint32_t index = 0;
+            for(auto& field_10Value : field_10Array)
+            {
+                field_10[index] = (int8_t)field_10Value.GetInt();
+                index++;
             }
         }
     }
