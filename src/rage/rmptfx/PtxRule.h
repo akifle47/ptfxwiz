@@ -37,7 +37,7 @@ namespace rage
         int32_t field_8;
         float mFileVersion;
         int32_t field_10;
-        int8_t field_4[8];
+        int8_t field_14[8];
         int8_t field_1C;
         ptxTriggerEvent mSpawnEffectA;
         ptxTriggerEvent mSpawnEffectB;

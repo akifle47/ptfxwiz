@@ -5,7 +5,7 @@
 
 namespace rage
 {
-    ptxRule::ptxRule(const char* className) : field_8(0), mFileVersion(4.3f), field_10(0), field_4{0, 0, 0, 0, 0, 0, 0, 0}, field_1C(0), 
+    ptxRule::ptxRule(const char* className) : field_8(0), mFileVersion(4.3f), field_10(0), field_14{0, 0, 0, 0, 0, 0, 0, 0}, field_1C(0),
                                               mSpawnEffectA(), mSpawnEffectB(), mRenderState(), mPhysicalRange(0.0f), mStopVelocity(0.0f), mFlags(0),
                                               field_120(0), mName(nullptr), mClassName{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                                               mPercentPhysical(100), mPercentKill(0), field_134{0, 0, 0, 0, 0, 0, 0, 0, 0}
@@ -97,6 +97,14 @@ namespace rage
         writer.String("Version");
         writer.Uint(100);
 
+        writer.String("field_14");
+        writer.StartArray();
+        for(size_t i = 0; i < std::size(field_14); i++)
+        {
+            writer.Int(field_14[i]);
+        }
+        writer.EndArray();
+
         writer.String("Name");
         writer.String(mName);
 
@@ -161,6 +169,17 @@ namespace rage
 
     void ptxRule::LoadFromJsonBase(rapidjson::GenericObject<true, rapidjson::Value>& object)
     {
+        if(object.HasMember("field_14"))
+        {
+            auto field_14Array = object["field_14"].GetArray();
+            uint32_t index = 0;
+            for(auto& field_14Value : field_14Array)
+            {
+                field_14[index] = (int8_t)field_14Value.GetInt();
+                index++;
+            }
+        }
+
         mName = strdup(object["Name"].GetString());
 
         field_10 = object["field_10"].GetInt();
