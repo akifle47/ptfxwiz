@@ -19,12 +19,13 @@ namespace rage
         };
 
     public:
-        ptxDomain(uint32_t domainFunction, eDomainType domainType) 
+        ptxDomain(uint32_t domainFunction, eDomainType domainType)
             : field_4(), mType(domainType), mDomainFunction(domainFunction), field_B0(gMatrix34Identity), field_FC{0}, field_100(0.0f), field_104(0.0f), field_108(0.0f),
-              field_10C(0.0f), field_110(0.0f), field_114(-1.0f), mFileVersion(2.0f), field_11C(nullptr), field_120(0), mWorldSpace(false), mPointRelative(false), field_126{} 
+            field_10C(0.0f), field_110(0.0f), field_114(-1.0f), mFileVersion(2.0f), field_11C(nullptr), field_120(0), mWorldSpace(false), mPointRelative(false), field_126{}
         {}
 
-        ptxDomain(const datResource& rsc) : mPositionKF(rsc), mDirectionKF(rsc), mSizeKF(rsc), mInnerSize(rsc), field_11C(rsc), field_120(0) {}
+        ptxDomain(const datResource& rsc) : mPositionKF(rsc), mDirectionKF(rsc), mSizeKF(rsc), mInnerSize(rsc), field_11C(rsc), field_120(0)
+        {}
 
         void AddToLayout(RSC5Layout& layout, uint32_t depth);
         void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth);
@@ -72,11 +73,12 @@ namespace rage
     class ptxDomainBox : public ptxDomain
     {
     public:
-        ptxDomainBox(uint32_t domainFunction) : ptxDomain(domainFunction, eDomainType::BOX), field_130(0.0f), field_134(0.0f), field_138(0.0f), field_13C{}, 
-                                                field_140(0.0f), field_144(0.0f), field_148(0.0f), field_14C{}, field_150(0.0f), field_154(0.0f), field_158(0.0f), field_15C {}
+        ptxDomainBox(uint32_t domainFunction) : ptxDomain(domainFunction, eDomainType::BOX), field_130(0.0f), field_134(0.0f), field_138(0.0f), field_13C(0.0f),
+            field_140(0.0f), field_144(0.0f), field_148(0.0f), field_14C(0.0f), field_150(0.0f), field_154(0.0f), field_158(0.0f), field_15C(0.0f)
         {}
 
-        ptxDomainBox(const datResource& rsc) : ptxDomain(rsc) {}
+        ptxDomainBox(const datResource& rsc) : ptxDomain(rsc)
+        {}
 
         void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) override;
         void LoadFromJson(rapidjson::GenericObject<true, rapidjson::Value>& object) override;
@@ -84,15 +86,15 @@ namespace rage
         float field_130;
         float field_134;
         float field_138;
-        int8_t field_13C[4];
+        float field_13C;
         float field_140;
         float field_144;
         float field_148;
-        int8_t field_14C[4];
+        float field_14C;
         float field_150;
         float field_154;
         float field_158;
-        int8_t field_15C[4];
+        float field_15C;
     };
     ASSERT_SIZE(ptxDomainBox, 0x160);
 
@@ -100,9 +102,11 @@ namespace rage
     class ptxDomainSphere : public ptxDomain
     {
     public:
-        ptxDomainSphere(uint32_t domainFunction) : ptxDomain(domainFunction, eDomainType::SPHERE), field_130(0.0f), field_134(0.0f), field_138(0.0f), field_13C{} {}
+        ptxDomainSphere(uint32_t domainFunction) : ptxDomain(domainFunction, eDomainType::SPHERE), field_130(0.0f), field_134(0.0f), field_138(0.0f), field_13C(0.0f)
+        {}
 
-        ptxDomainSphere(const datResource& rsc) : ptxDomain(rsc) {}
+        ptxDomainSphere(const datResource& rsc) : ptxDomain(rsc)
+        {}
 
         void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) override;
         void LoadFromJson(rapidjson::GenericObject<true, rapidjson::Value>& object) override;
@@ -110,7 +114,7 @@ namespace rage
         float field_130;
         float field_134;
         float field_138;
-        int8_t field_13C[4];
+        float field_13C;
     };
     ASSERT_SIZE(ptxDomainSphere, 0x140);
 
@@ -118,10 +122,12 @@ namespace rage
     class ptxDomainCylinder : public ptxDomain
     {
     public:
-        ptxDomainCylinder(uint32_t domainFunction) : ptxDomain(domainFunction, eDomainType::CYLINDER), field_130(0.0f), field_134(0.0f), field_138(0.0f), field_13C{}, 
-                                                     field_140(0.0f), field_144(0.0f), field_148(0.0f), field_14C{}, field_150(0.0f), field_154(0.0f), field_158(0.0f), field_15C{} {}
+        ptxDomainCylinder(uint32_t domainFunction) : ptxDomain(domainFunction, eDomainType::CYLINDER), field_130(0.0f), field_134(0.0f), field_138(0.0f), field_13C(0.0f),
+            field_140(0.0f), field_144(0.0f), field_148(0.0f), field_14C(0.0f), field_150(0.0f), field_154(0.0f), field_158(0.0f), field_15C(0.0f) 
+        {}
 
-        ptxDomainCylinder(const datResource& rsc) : ptxDomain(rsc) {}
+        ptxDomainCylinder(const datResource& rsc) : ptxDomain(rsc) 
+        {}
 
         void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) override;
         void LoadFromJson(rapidjson::GenericObject<true, rapidjson::Value>& object) override;
@@ -129,15 +135,15 @@ namespace rage
         float field_130;
         float field_134;
         float field_138;
-        int8_t field_13C[4];
+        float field_13C;
         float field_140;
         float field_144;
         float field_148;
-        int8_t field_14C[4];
+        float field_14C;
         float field_150;
         float field_154;
         float field_158;
-        int8_t field_15C[4];
+        float field_15C;
     };
     ASSERT_SIZE(ptxDomainCylinder, 0x160);
 
@@ -145,9 +151,11 @@ namespace rage
     class ptxDomainVortex : public ptxDomain
     {
     public:
-        ptxDomainVortex(uint32_t domainFunction) : ptxDomain(domainFunction, eDomainType::VORTEX), field_130(0.0f), field_134(0.0f), field_138(0.0f), field_13C{} {}
+        ptxDomainVortex(uint32_t domainFunction) : ptxDomain(domainFunction, eDomainType::VORTEX), field_130(0.0f), field_134(0.0f), field_138(0.0f), field_13C(0.0f)
+        {}
 
-        ptxDomainVortex(const datResource& rsc) : ptxDomain(rsc) {}
+        ptxDomainVortex(const datResource& rsc) : ptxDomain(rsc) 
+        {}
 
         void WriteToJson(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) override;
         void LoadFromJson(rapidjson::GenericObject<true, rapidjson::Value>& object) override;
@@ -155,7 +163,7 @@ namespace rage
         float field_130;
         float field_134;
         float field_138;
-        int8_t field_13C[4];
+        float field_13C;
     };
     ASSERT_SIZE(ptxDomainVortex, 0x140);
 }

@@ -235,6 +235,8 @@ namespace rage
             writer.Double((double)field_134);
             writer.String("field_138");
             writer.Double((double)field_138);
+            writer.String("field_13C");
+            writer.Double((double)field_13C);
 
             writer.String("field_140");
             writer.Double((double)field_140);
@@ -242,6 +244,8 @@ namespace rage
             writer.Double((double)field_144);
             writer.String("field_148");
             writer.Double((double)field_148);
+            writer.String("field_14C");
+            writer.Double((double)field_14C);
 
             writer.String("field_150");
             writer.Double((double)field_150);
@@ -249,6 +253,8 @@ namespace rage
             writer.Double((double)field_154);
             writer.String("field_158");
             writer.Double((double)field_158);
+            writer.String("field_15C");
+            writer.Double((double)field_15C);
         }
         writer.EndObject();
     }
@@ -260,14 +266,17 @@ namespace rage
         field_130 = object["field_130"].GetFloat();
         field_134 = object["field_134"].GetFloat();
         field_138 = object["field_138"].GetFloat();
+        field_13C = object["field_13C"].GetFloat();
 
         field_140 = object["field_140"].GetFloat();
         field_144 = object["field_144"].GetFloat();
         field_148 = object["field_148"].GetFloat();
+        field_14C = object["field_14C"].GetFloat();
 
         field_150 = object["field_150"].GetFloat();
         field_154 = object["field_154"].GetFloat();
         field_158 = object["field_158"].GetFloat();
+        field_15C = object["field_15C"].GetFloat();
     }
 
 
@@ -283,6 +292,8 @@ namespace rage
             writer.Double((double)field_134);
             writer.String("field_138");
             writer.Double((double)field_138);
+            writer.String("field_13C");
+            writer.Double((double)field_13C);
         }
         writer.EndObject();
     }
@@ -294,6 +305,7 @@ namespace rage
         field_130 = object["field_130"].GetFloat();
         field_134 = object["field_134"].GetFloat();
         field_138 = object["field_138"].GetFloat();
+        field_13C = object["field_13C"].GetFloat();
     }
 
 
@@ -309,6 +321,8 @@ namespace rage
             writer.Double((double)field_134);
             writer.String("field_138");
             writer.Double((double)field_138);
+            writer.String("field_13C");
+            writer.Double((double)field_13C);
 
             writer.String("field_140");
             writer.Double((double)field_140);
@@ -316,6 +330,8 @@ namespace rage
             writer.Double((double)field_144);
             writer.String("field_148");
             writer.Double((double)field_148);
+            writer.String("field_14C");
+            writer.Double((double)field_14C);
 
             writer.String("field_150");
             writer.Double((double)field_150);
@@ -323,6 +339,8 @@ namespace rage
             writer.Double((double)field_154);
             writer.String("field_158");
             writer.Double((double)field_158);
+            writer.String("field_15C");
+            writer.Double((double)field_15C);
         }
         writer.EndObject();
     }
@@ -334,14 +352,17 @@ namespace rage
         field_130 = object["field_130"].GetFloat();
         field_134 = object["field_134"].GetFloat();
         field_138 = object["field_138"].GetFloat();
+        field_13C = object["field_13C"].GetFloat();
 
         field_140 = object["field_140"].GetFloat();
         field_144 = object["field_144"].GetFloat();
         field_148 = object["field_148"].GetFloat();
+        field_14C = object["field_14C"].GetFloat();
 
         field_150 = object["field_150"].GetFloat();
         field_154 = object["field_154"].GetFloat();
         field_158 = object["field_158"].GetFloat();
+        field_15C = object["field_15C"].GetFloat();
     }
 
 
@@ -357,6 +378,8 @@ namespace rage
             writer.Double((double)field_134);
             writer.String("field_138");
             writer.Double((double)field_138);
+            writer.String("field_13C");
+            writer.Double((double)field_13C);
         }
         writer.EndObject();
     }
@@ -368,5 +391,6 @@ namespace rage
         field_130 = object["field_130"].GetFloat();
         field_134 = object["field_134"].GetFloat();
         field_138 = object["field_138"].GetFloat();
+        field_13C = object["field_13C"].GetFloat();
     }
 }
