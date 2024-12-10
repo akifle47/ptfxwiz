@@ -250,6 +250,9 @@ namespace rage
             writer.String("field_15C");
             writer.Int(field_15C);
 
+            writer.String("field_16C");
+            writer.Int(field_16C);
+
             writer.SetFormatOptions(rapidjson::kFormatSingleLineArray);
             writer.String("AxisAlligned");
             writer.StartArray();
@@ -279,6 +282,9 @@ namespace rage
             writer.String("Props");
             mProps.WriteToJson(writer);
 
+            writer.String("TrimCornersAmmount");
+            writer.Double((double)mTrimCornersAmmount);
+
             writer.String("Shader");
             mShader.WriteToJson(writer);
         }
@@ -300,6 +306,7 @@ namespace rage
         field_158 = object["field_158"].GetFloat();
 
         field_15C = object["field_15C"].GetInt();
+        field_16C = object["field_16C"].GetInt();
 
         mAxisAlligned.x = object["AxisAlligned"].GetArray()[0].GetFloat();
         mAxisAlligned.y = object["AxisAlligned"].GetArray()[1].GetFloat();
@@ -313,6 +320,8 @@ namespace rage
 
         mNumTextureTilesX = object["NumTextureTilesX"].GetInt();
         mNumTextureTilesY = object["NumTextureTilesY"].GetInt();
+
+        mTrimCornersAmmount = object["TrimCornersAmmount"].GetFloat();
 
         JsonHelpers::LoadMemberObject(mProps, object, "Props");
         JsonHelpers::LoadMemberObject(mShader, object, "Shader");
