@@ -132,6 +132,9 @@ void rage::datResource::SaveToDisk(std::filesystem::path filePath, uint32_t vers
     uLongf compressedSize = totalRscSize;
     compress(compressedData.data(), &compressedSize, uncompressedData.data(), totalRscSize);
 
+    if(!std::filesystem::exists(filePath.parent_path()))
+        std::filesystem::create_directories(filePath.parent_path());
+
     std::ofstream file(filePath, std::ios::binary);
     if(!file.good())
     {
