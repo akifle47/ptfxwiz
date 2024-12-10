@@ -5,7 +5,7 @@
 
 namespace rage
 {
-    ptxRule::ptxRule(const char* className) : field_8(0), mFileVersion(4.2f), field_10(0), field_4{0, 0, 0, 0, 0, 0, 0, 0}, field_1C(0), 
+    ptxRule::ptxRule(const char* className) : field_8(0), mFileVersion(4.3f), field_10(0), field_4{0, 0, 0, 0, 0, 0, 0, 0}, field_1C(0), 
                                               mSpawnEffectA(), mSpawnEffectB(), mRenderState(), mPhysicalRange(0.0f), mStopVelocity(0.0f), mFlags(0),
                                               field_120(0), mName(nullptr), mClassName{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                                               mPercentPhysical(100), mPercentKill(0), field_134{0, 0, 0, 0, 0, 0, 0, 0, 0}
@@ -126,8 +126,8 @@ namespace rage
             writer.String("DepthBias");
             writer.Double((double)mRenderState.DepthBias);
 
-            writer.String("Lit");
-            writer.Bool((bool)mRenderState.LightingMode);
+            writer.String("LightingMode");
+            writer.Int(mRenderState.LightingMode);
 
             writer.String("DepthWrite");
             writer.Bool(mRenderState.DepthWrite);
@@ -178,7 +178,7 @@ namespace rage
                 mRenderState.CullMode = StringToPtxCullMode(renderStateObject["CullMode"].GetString());
                 mRenderState.BlendSet = renderStateObject["BlendSet"].GetInt();
                 mRenderState.DepthBias = renderStateObject["DepthBias"].GetFloat();
-                mRenderState.LightingMode = (int32_t)renderStateObject["Lit"].GetBool();
+                mRenderState.LightingMode = renderStateObject["LightingMode"].GetUint();
                 mRenderState.DepthWrite = renderStateObject["DepthWrite"].GetBool();
                 mRenderState.DepthTest = renderStateObject["DepthTest"].GetBool();
                 mRenderState.AlphaBlend = renderStateObject["AlphaBlend"].GetBool();
