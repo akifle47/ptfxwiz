@@ -104,6 +104,9 @@ namespace rage
             {
                 writer.String("KeyFrame");
                 mKeyFrame.WriteToJson(writer);
+
+                writer.String("field_28");
+                writer.Int(field_28);
             }
             writer.EndObject();
         }
@@ -111,6 +114,8 @@ namespace rage
         void LoadFromJson(rapidjson::GenericObject<true, rapidjson::Value>& object)
         {
             JsonHelpers::LoadMemberObject(mKeyFrame, object, "KeyFrame");
+
+            field_28 = object["field_28"].GetInt();
         }
 
         rmPtfxKeyframe mKeyFrame;
