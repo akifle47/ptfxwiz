@@ -78,7 +78,8 @@ namespace rage
         int8_t field_10;
         int8_t field_11;
         eVarType mType;
-        int8_t field_13[13];
+        int8_t field_13;
+        int8_t field_14[12];
 
     protected:
         void WriteToJsonBase(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer)
@@ -91,6 +92,15 @@ namespace rage
 
             writer.String("Index");
             writer.Int(mIndex);
+
+            writer.String("field_10");
+            writer.Int(field_10);
+
+            writer.String("field_11");
+            writer.Int(field_11);
+            
+            writer.String("field_13");
+            writer.Int(field_13);
         }
 
         void LoadFromJsonBase(rapidjson::GenericObject<true, rapidjson::Value>& object)
@@ -98,6 +108,10 @@ namespace rage
             mName = strdup(object["Name"].GetString());
             mType = StringToType(object["Type"].GetString());
             mIndex = object["Index"].GetInt();
+
+            field_10 = object["field_10"].GetInt();
+            field_11 = object["field_11"].GetInt();
+            field_13 = object["field_13"].GetInt();
         }
     };
     ASSERT_SIZE(rmPtfxShaderVar, 0x20);
