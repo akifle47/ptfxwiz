@@ -243,22 +243,22 @@ namespace rage
         }
     }
 
-    void PtxList::LoadFromJson(const std::filesystem::path& filePath)
+    bool PtxList::LoadFromJson(const std::filesystem::path& filePath)
     {
         auto documentOpt = ReadJsonFile(filePath);
         if(!documentOpt.has_value())
-            return;
+            return false;
 
         rapidjson::Document& document = documentOpt.value();
 
         if(!document.IsObject())
         {
             Log::Error("Root of ptxList must be an object.");
-            return;
+            return false;
         }
 
         if(!document.HasMember("Type") || strcmp("PtxList", document["Type"].GetString()) != 0)
-            return;
+            return false;
 
 
         if(document.HasMember("Textures"))

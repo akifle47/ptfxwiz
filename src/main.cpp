@@ -304,9 +304,10 @@ void ProcessParticleList(std::filesystem::path filePathIn, std::filesystem::path
         filePathOut.replace_extension(".wpfl");
 
         rage::PtxList ptxList {};
-        ptxList.LoadFromJson(filePathIn);
-
-        RSC5Layout layout;
-        layout.Save(ptxList, filePathOut, 36);
+        if(ptxList.LoadFromJson(filePathIn))
+        {
+            RSC5Layout layout;
+            layout.Save(ptxList, filePathOut, 36);
+        }
     }
 }

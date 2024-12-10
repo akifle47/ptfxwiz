@@ -12,7 +12,7 @@ namespace rage
     class PtxList
     {
     public:
-        PtxList() : field_4{0, 0, 0, 0}, field_10(0) {}
+        PtxList() : mTextures(nullptr), mDrawables(nullptr), mRules(nullptr), mEmitRules(nullptr), mEffectRules(nullptr), field_4{0, 0, 0, 0}, field_10(0) {}
         
         PtxList(const datResource& rsc) : field_4{0, 0, 0, 0}, field_10(0)
         {
@@ -80,7 +80,7 @@ namespace rage
         }
 
         void SaveToJson(const std::filesystem::path& filePath);
-        void LoadFromJson(const std::filesystem::path& filePath);
+        bool LoadFromJson(const std::filesystem::path& filePath);
 
         inline void Place(void* that, const datResource& rsc)
         {
