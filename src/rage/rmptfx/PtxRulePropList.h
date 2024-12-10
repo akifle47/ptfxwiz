@@ -15,7 +15,7 @@ namespace rage
     public:
         ptxBiasLink() = default;
 
-        ptxBiasLink(const datResource& rsc) : mPropIDs(rsc) {}
+        ptxBiasLink(const datResource& rsc) : mPropIDs(rsc), field_48() {}
 
         inline void Place(void* that, const datResource& rsc)
         {
@@ -72,7 +72,8 @@ namespace rage
 
         char mName[64];
         atArray<uint32_t> mPropIDs;
-        int8_t field_48[4];
+        int8_t field_48;
+        int8_t field_49[3];
     };
     ASSERT_SIZE(ptxBiasLink, 0x4C);
 
