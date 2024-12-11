@@ -1,4 +1,5 @@
 #pragma once
+#include "Utils.h"
 
 using DWORD = unsigned long;
 
@@ -16,15 +17,7 @@ enum class eDDSHeaderFlag : DWORD
      LINEARSIZE  = 0x80000,
      DEPTH       = 0x800000
 };
-inline eDDSHeaderFlag operator|(eDDSHeaderFlag lhs, eDDSHeaderFlag rhs)
-{
-    return eDDSHeaderFlag(DWORD(lhs) | DWORD(rhs));
-}
-inline eDDSHeaderFlag operator|=(eDDSHeaderFlag& lhs, eDDSHeaderFlag rhs)
-{
-    lhs = eDDSHeaderFlag(DWORD(lhs) | DWORD(rhs));
-    return lhs;
-}
+BITMASK_ENUM_OPERATORS(eDDSHeaderFlag)
 
 enum class eDDSHeaderCap : DWORD
 {
@@ -33,15 +26,7 @@ enum class eDDSHeaderCap : DWORD
     MIPMAP  = 0x400000,
     TEXTURE = 0x1000
 };
-inline eDDSHeaderCap operator|(eDDSHeaderCap lhs, eDDSHeaderCap rhs)
-{
-    return eDDSHeaderCap(DWORD(lhs) | DWORD(rhs));
-}
-inline eDDSHeaderCap operator|=(eDDSHeaderCap& lhs, eDDSHeaderCap rhs)
-{
-    lhs = eDDSHeaderCap(DWORD(lhs) | DWORD(rhs));
-    return lhs;
-}
+BITMASK_ENUM_OPERATORS(eDDSHeaderCap)
 
 enum class eDDSHeaderCap2 : DWORD
 {
@@ -56,15 +41,7 @@ enum class eDDSHeaderCap2 : DWORD
     CUBEMAP_FACES     = CUBEMAP_POSITIVEX | CUBEMAP_NEGATIVEX | CUBEMAP_POSITIVEY | CUBEMAP_NEGATIVEY | CUBEMAP_POSITIVEZ | CUBEMAP_NEGATIVEZ,
     VOLUME            = 0x200000
 };
-inline eDDSHeaderCap2 operator|(eDDSHeaderCap2 lhs, eDDSHeaderCap2 rhs)
-{
-    return eDDSHeaderCap2(DWORD(lhs) | DWORD(rhs));
-}
-inline eDDSHeaderCap2 operator|=(eDDSHeaderCap2& lhs, eDDSHeaderCap2 rhs)
-{
-    lhs = eDDSHeaderCap2(DWORD(lhs) | DWORD(rhs));
-    return lhs;
-}
+BITMASK_ENUM_OPERATORS(eDDSHeaderCap2)
 
 enum class eDDSPixelFormatFlag : DWORD
 {
@@ -76,15 +53,7 @@ enum class eDDSPixelFormatFlag : DWORD
     YUV         = 0x200,
     LUMINANCE   = 0x20000
 };
-inline eDDSPixelFormatFlag operator|(eDDSPixelFormatFlag lhs, eDDSPixelFormatFlag rhs)
-{
-    return eDDSPixelFormatFlag(DWORD(lhs) | DWORD(rhs));
-}
-inline eDDSPixelFormatFlag operator|=(eDDSPixelFormatFlag& lhs, eDDSPixelFormatFlag rhs)
-{
-    lhs = eDDSPixelFormatFlag(DWORD(lhs) | DWORD(rhs));
-    return lhs;
-}
+BITMASK_ENUM_OPERATORS(eDDSPixelFormatFlag)
 
 struct DDS_PIXELFORMAT 
 {
