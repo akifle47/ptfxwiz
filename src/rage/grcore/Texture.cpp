@@ -26,9 +26,10 @@ DDS_HEADER rage::grcTexturePC::GenerateDDSHeader() const
     header.Width = mWidth;
     header.Height = mHeight;
 
+    header.Depth = mLayerCount + 1;
     if(mLayerCount > 1 || mTextureType == eTextureType::VOLUME)
     {
-        header.Depth = mLayerCount;
+        header.Depth = mLayerCount + 1;
         header.Flags |= eDDSHeaderFlag::DEPTH;
         header.Caps2 |= eDDSHeaderCap2::VOLUME;
     }
@@ -53,8 +54,15 @@ DDS_HEADER rage::grcTexturePC::GenerateDDSHeader() const
 
 void rage::grcTexturePC::LoadFromDDS(const DDS_HEADER& header, const void* pixelData)
 {
-    mLayerCount = (uint8_t)header.Depth;
-    mMipCount = (uint8_t)header.MipMapCount;
+    if(header.Flags & eDDSHeaderFlag::DEPTH)
+        mLayerCount = (uint8_t)header.Depth - 1;
+    else
+        mLayerCount = 0;
+
+    if(header.Flags & eDDSHeaderFlag::MIPMAPCOUNT)
+        mMipCount = (uint8_t)header.MipMapCount;
+    else
+        mMipCount = 1;
 
     mWidth = (uint16_t)header.Width;
     mHeight = (uint16_t)header.Height;
