@@ -303,7 +303,7 @@ namespace rage
     {
         LoadFromJsonBase(object);
         
-        if(mEffectName)
+        if(object.HasMember("EffectName"))
             mEffectName = strdup(object["EffectName"].GetString());
 
         mRotationMin.x = object["RotationMin"].GetArray()[0].GetFloat();
@@ -317,11 +317,12 @@ namespace rage
 
         if(object.HasMember("EmitterDomain") && object["EmitterDomain"].IsObject())
         {
-            ptxDomain::eDomainType type = ptxDomain::StringToType(object["EmitterDomain"].GetString());
+            auto domainObj = object["EmitterDomain"].GetObject();
+            ptxDomain::eDomainType type = ptxDomain::StringToType(domainObj["Type"].GetString());
             
             mEmitterDomain = { CreateDomain(0, type) };
             if(mEmitterDomain.Get())
-                mEmitterDomain->LoadFromJson(object);
+                mEmitterDomain->LoadFromJson(domainObj);
         }
 
         field_A4 = object["field_A4"].GetInt();
