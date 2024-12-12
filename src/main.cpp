@@ -10,6 +10,7 @@
 #include <fstream>
 
 static const char* CACHE_FILE_NAME = "ptfxwiz.cache";
+static std::filesystem::path gBaseGameFileSystemPath;
 
 //returns whether it should quit
 bool ProcessInput(const char* input);
@@ -67,6 +68,9 @@ int main(int32_t argc, char** argv)
         std::ignore = getc(stdin);
         return -1;
     }
+
+    gBaseGameFileSystemPath = gamePath;
+    gBaseGameFileSystemPath.remove_filename().concat("pc\\data\\effects\\");
 
     if(argc == 1)
     {
@@ -186,8 +190,9 @@ void PrintHelp()
 {
     printf("<arguments> are required and [arguments] are optional.\n");
     printf("usage: [option] <in_file> [out_directory]\n");
-    printf("examples: gta_core.wpfl output/\n");
-    printf("          gta_core.wpfl output/\n");
+    printf("examples: %sgta_core.wpfl\n", gBaseGameFileSystemPath.string().c_str());
+    printf("          %sgta_core.wpfl output/\n", gBaseGameFileSystemPath.string().c_str());
+    printf("          %sgta_core.json output/\n", gBaseGameFileSystemPath.string().c_str());
     printf("or drag and drop a file on ptfxwiz.exe\n");
     printf("if no output directory is provided the file(s) will be saved in the same directory <in_file> is in.\n");
     printf("    options:\n");
