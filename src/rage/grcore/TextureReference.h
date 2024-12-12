@@ -26,6 +26,7 @@ namespace rage
 
         grcTextureReference(const datResource& rsc)
         {
+            mResourceType = eType::REFERENCE;
             field_10 = 0;
             rsc.PointerFixUp(mName);
         }
