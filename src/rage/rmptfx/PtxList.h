@@ -68,6 +68,8 @@ namespace rage
 
             Log::Info("Saving effect rules...");
             mEffectRules.AddToLayout(layout, depth);
+
+            Log::Info("Saving resource...");
         }
 
         void SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)

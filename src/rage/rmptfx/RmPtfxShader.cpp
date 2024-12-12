@@ -96,7 +96,8 @@ namespace rage
                     break;
 
                     default:
-                        Log::Error("Invalid rmptfx shader var type - %d", (uint32_t)varType);
+                        Log::Error("Shader variable \"%s\" in shader \"%s\" uses an invalid type - %d", 
+                                    varValue.HasMember("Name") ? varValue["Name"].GetString() : "null", mName ? mName : "null", (uint32_t)varType);
                 }
 
                 auto varObject = varValue.GetObject();

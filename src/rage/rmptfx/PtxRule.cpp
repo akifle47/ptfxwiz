@@ -30,7 +30,7 @@ namespace rage
         }
         else
         {
-            Log::Error("Invalid ptxRule type - %s", mClassName);
+            Log::Error("ptxRule \"%s\" uses an invalid type - %s", mName ? mName : "null", mClassName);
         }
     }
 
@@ -51,7 +51,7 @@ namespace rage
         }
         else
         {
-            Log::Error("Invalid ptxRule type - %s", mClassName);
+            Log::Error("ptxRule \"%s\" uses an invalid type - %s", mName ? mName : "null", mClassName);
         }
     }
 
@@ -67,7 +67,7 @@ namespace rage
         }
         else
         {
-            Log::Error("Invalid ptxRule type - %s", mClassName);
+            Log::Error("ptxRule \"%s\" uses an invalid type - %s", mName ? mName : "null", mClassName);
         }
     }
 

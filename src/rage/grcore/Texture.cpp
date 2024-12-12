@@ -74,7 +74,7 @@ void rage::grcTexturePC::LoadFromDDS(const DDS_HEADER& header, const void* pixel
         mStride = mWidth;
     else
     {
-        Log::Error("grcTexturePC::LoadFromDDS: Unsupported texture format: %d.", (uint32_t)mFormat);
+        Log::Error("Can't load texture \"%s\" because it uses an unsupported format: %d.", mName ? mName : "null", (uint32_t)mFormat);
         return;
     }
 

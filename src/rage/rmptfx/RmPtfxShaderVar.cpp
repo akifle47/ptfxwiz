@@ -39,7 +39,7 @@ namespace rage
             break;
 
             default:
-                Log::Error("Invalid rmptfx shader var type - %d", mType);
+                Log::Error("Shader variable \"%s\" uses an invalid type - %d", mName ? mName : "null", mType);
         }
     }
 
@@ -108,7 +108,7 @@ namespace rage
             break;
 
             default:
-                Log::Error("Invalid rmptfx shader var type - %d", mType);
+                Log::Error("Shader variable \"%s\" uses an invalid type - %d", mName ? mName : "null", mType);
                 return 0;
         }
     }

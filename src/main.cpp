@@ -95,7 +95,6 @@ int main(int32_t argc, char** argv)
     else if(argc == 2)
     {
         ProcessParticleList(argv[1], "");
-        Log::Info("Done.");
         std::ignore = getc(stdin);
     }
 
@@ -297,6 +296,7 @@ void ProcessParticleList(std::filesystem::path filePathIn, std::filesystem::path
 
         ptxList.SaveToJson(filePathOut);
         rsc.Map->FreeAllChunks();
+        Log::Info("Done.");
     }
     //json to wpfl
     else if(filePathIn.extension() == ".json")
@@ -308,6 +308,7 @@ void ProcessParticleList(std::filesystem::path filePathIn, std::filesystem::path
         {
             RSC5Layout layout;
             layout.Save(ptxList, filePathOut, 36);
+            Log::Info("Done.");
         }
     }
 }

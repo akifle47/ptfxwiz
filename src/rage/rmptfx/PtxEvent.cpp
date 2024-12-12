@@ -294,7 +294,6 @@ namespace rage
             break;
 
             default:
-                Log::Error("Invalid ptx domain type - %d", type);
                 return nullptr;
         }
     }
@@ -323,6 +322,10 @@ namespace rage
             mEmitterDomain = { CreateDomain(0, type) };
             if(mEmitterDomain.Get())
                 mEmitterDomain->LoadFromJson(domainObj);
+            else
+            {
+                Log::Error("ptxEventEffect \"%s\"'s EmitterDomain uses an invalid domain type - %d", mEffectName ? mEffectName : "null", type);
+            }
         }
 
         field_A4 = object["field_A4"].GetInt();

@@ -24,7 +24,7 @@ namespace rage
             rapidjson::Document document;
             if(document.Parse(fileData.data()).HasParseError())
             {
-                Log::Error("Error parsing \"%s\". %d", filePath.string().c_str(), (uint32_t)document.GetParseError());
+                Log::Error("Error parsing \"%s\". Code: %d. Offset: %d", filePath.string().c_str(), (uint32_t)document.GetParseError(), document.GetErrorOffset());
                 return {};
             }
 

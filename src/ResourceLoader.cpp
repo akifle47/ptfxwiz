@@ -16,7 +16,7 @@ bool ResourceLoader::Load(std::filesystem::path filePath, uint32_t expectedVersi
 
     if(!std::filesystem::exists(filePath))
     {
-        Log::Error("File \"%s\" does not exist.", absolutePath.Get());
+        Log::Error("Resource file \"%s\" does not exist.", absolutePath.Get());
         return false;
     }
 
@@ -36,7 +36,7 @@ bool ResourceLoader::Load(std::filesystem::path filePath, uint32_t expectedVersi
 
     if(rscHeader.Magic != rage::datResourceFileHeader::MAGIC_RSC5)
     {
-        Log::Error("File \"%s\" uses an unsupported version or is not a resource file.", absolutePath.Get());
+        Log::Error("Resource file \"%s\" uses an unsupported version or is not a resource file.", absolutePath.Get());
         return false;
     }
 
