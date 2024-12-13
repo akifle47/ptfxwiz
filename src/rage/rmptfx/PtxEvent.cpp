@@ -204,7 +204,7 @@ namespace rage
     }
 
 
-    ptxEventEffect::ptxEventEffect(const datResource& rsc) : ptxEvent(rsc), field_94(rsc), mEmitterDomain(rsc)
+    ptxEventEffect::ptxEventEffect(const datResource& rsc) : ptxEvent(rsc), mEffectRule(rsc), mEmitterDomain(rsc)
     {
         if(mEffectName)
             rsc.PointerFixUp(mEffectName);
@@ -212,7 +212,7 @@ namespace rage
 
     void ptxEventEffect::AddToLayout(RSC5Layout& layout, uint32_t depth)
     {
-        field_94.AddToLayout(layout, depth);
+        mEffectRule.AddToLayout(layout, depth);
         mEmitterDomain.AddToLayout(layout, depth);
 
         if(mEffectName)
@@ -221,7 +221,7 @@ namespace rage
 
     void ptxEventEffect::SerializePtrs(RSC5Layout& layout, datResource& rsc, uint32_t depth)
     {
-        field_94.SerializePtrs(layout, rsc, depth);
+        mEffectRule.SerializePtrs(layout, rsc, depth);
         mEmitterDomain.SerializePtrs(layout, rsc, depth);
 
         if(mEffectName)
@@ -236,6 +236,12 @@ namespace rage
             {
                 writer.String("EffectName");
                 writer.String(mEffectName);
+            }
+
+            if(mEffectRule.Get())
+            {
+                writer.String("EffectRule");
+                writer.String(mEffectRule->mName);
             }
 
             WriteToJsonBase(writer);
@@ -267,8 +273,6 @@ namespace rage
 
             writer.String("field_A4");
             writer.Int(field_A4);
-            writer.String("field_AF");
-            writer.Int(field_AF);
         }
         writer.EndObject();
     }
@@ -305,6 +309,9 @@ namespace rage
         if(object.HasMember("EffectName"))
             mEffectName = strdup(object["EffectName"].GetString());
 
+        if(object.HasMember("EffectRule"))
+            mEffectRule = {(ptxEffectRule*)strdup(object["EffectName"].GetString())};
+
         mRotationMin.x = object["RotationMin"].GetArray()[0].GetFloat();
         mRotationMin.y = object["RotationMin"].GetArray()[1].GetFloat();
         mRotationMin.z = object["RotationMin"].GetArray()[2].GetFloat();
@@ -329,7 +336,6 @@ namespace rage
         }
 
         field_A4 = object["field_A4"].GetInt();
-        field_AF = object["field_AF"].GetInt();
     }
 
 

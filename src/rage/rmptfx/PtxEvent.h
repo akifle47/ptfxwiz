@@ -82,7 +82,7 @@ namespace rage
     class ptxEventEffect : public ptxEvent
     {
     public:
-        ptxEventEffect() : ptxEvent(eEventType::EFFECT), mRotationMin{.x = 0.0f, .y = 0.0f, .z = 0.0f}, field_2C{}, mEffectName(nullptr), field_94(nullptr), 
+        ptxEventEffect() : ptxEvent(eEventType::EFFECT), mRotationMin{.x = 0.0f, .y = 0.0f, .z = 0.0f}, field_2C{}, mEffectName(nullptr), mEffectRule(nullptr),
                            field_98(0), mEmitterDomain(nullptr), field_A0{}, field_A4(0), field_A5{}, field_AF(0)
         {}
 
@@ -108,8 +108,7 @@ namespace rage
         ptxEffectOverridables mOverrideMins;
         ptxEffectOverridables mOverrideMaxes;
         char* mEffectName;
-        //unknown type - always null
-        datOwner<void*> field_94;
+        datRef<class ptxEffectRule> mEffectRule;
         int32_t field_98;
         datOwner<ptxDomain> mEmitterDomain;
         int8_t field_A0[4];

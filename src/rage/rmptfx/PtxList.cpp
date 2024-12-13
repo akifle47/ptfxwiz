@@ -390,6 +390,11 @@ namespace rage
                                     emitter.mEmitRule = mEmitRules->Find(rage::atStringHash(emitter.mEmmiterRuleName));
                                     emitter.mRule = mRules->Find(rage::atStringHash(emitter.mPtxRuleName));
                                 }
+                                else if(events[i]->mType == ptxEvent::eEventType::EFFECT)
+                                {
+                                    ptxEventEffect& effect = (ptxEventEffect&)*events[i];
+                                    effect.mEffectRule = { mEffectRules->Find(rage::atStringHash((char*)effect.mEffectRule.Get())) };
+                                }
                             }
 
                             mEffectRules->AddEntry(name, effectRule);
